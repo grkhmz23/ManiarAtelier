@@ -18,10 +18,10 @@ packages = ["psmisc", "unzipNLS", "zip"]
 language = "nodejs"
 
 [deployment]
-deploymentTarget = "cloudrun"
-build = ["npm", "run", "build"]
+deploymentTarget = "autoscale"
+build = ["npm run build"]
 publicDir = "dist"
-run = ["sh", "-c", "npm run start"]
+run = ["npm run start"]
 
 [[ports]]
 localPort = 5000

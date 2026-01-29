@@ -1,5 +1,5 @@
 import React from "react";
-import { ShieldShader } from "@/components/ui/shield-shader";
+import { ShieldShader } from "../ui/shield-shader";
 
 type AsTag = "section" | "div" | "article";
 
