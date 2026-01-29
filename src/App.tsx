@@ -9,7 +9,6 @@ import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
 import WatchDock, { DockSection } from "@/components/watch/watch-dock";
 import WatchPanel from "@/components/watch/watch-panel";
 
-import { ShieldShader } from "@/components/ui/shield-shader";
 import ProductModal from "@/components/shop/product-modal";
 import CartDrawer, { CartLine } from "@/components/shop/cart-drawer";
 import ChatDrawer from "@/components/chat/chat-drawer";
@@ -254,7 +253,7 @@ export default function App() {
       <div className="pt-[112px] px-4 md:px-8">
         <div className="mx-auto max-w-7xl flex flex-col gap-4 md:gap-5">
           <div>
-            <WatchPanel shader={false}
+            <WatchPanel
               id="hero"
               ref={(n) => {
                 refs.hero.current = n;
@@ -338,7 +337,7 @@ export default function App() {
             </WatchPanel>
           </div>
 
-          <WatchPanel shader={false}
+          <WatchPanel
             id="collection"
             ref={(n) => {
               refs.collection.current = n;
@@ -389,7 +388,7 @@ export default function App() {
             </div>
           </WatchPanel>
 
-          <WatchPanel shader={false}
+          <WatchPanel
             id="atelier"
             ref={(n) => {
               refs.atelier.current = n;
@@ -470,7 +469,7 @@ export default function App() {
             </div>
           </WatchPanel>
 
-          <WatchPanel shader={false}
+          <WatchPanel
             id="journal"
             ref={(n) => {
               refs.journal.current = n;
@@ -518,7 +517,7 @@ export default function App() {
             </div>
           </WatchPanel>
 
-          <WatchPanel shader={false}
+          <WatchPanel
             id="about"
             ref={(n) => {
               refs.about.current = n;

@@ -10,7 +10,6 @@ export interface WatchPanelProps {
   className?: string;
   as?: AsTag;
   variant?: Variant;
-  shader?: boolean; // Enable shield shader
 
   kicker?: string;
   title?: string;
@@ -48,7 +47,6 @@ const WatchPanel = React.forwardRef<HTMLElement, WatchPanelProps>(
       as = "section",
       className,
       variant = "default",
-      shader = false,
       kicker,
       title,
       rightSlot,
@@ -75,7 +73,7 @@ const WatchPanel = React.forwardRef<HTMLElement, WatchPanelProps>(
         )}
       >
         {/* Shield Shader Effect */}
-        {shader && <ShieldShader />}
+        <ShieldShader />
 
         {/* Inner glass + engraving */}
         <div className="pointer-events-none absolute inset-0 dock-panel-glass" />
