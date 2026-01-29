@@ -77,9 +77,16 @@ const WatchPanel = React.forwardRef<HTMLElement, WatchPanelProps>(
         {/* Shield Shader Effect */}
         {shader && <ShieldShader />}
 
-        {/* Inner glass + engraving */}
-        <div className="pointer-events-none absolute inset-0 dock-panel-glass" />
-        <div className="pointer-events-none absolute inset-0 dock-panel-engrave" />
+        {/* Shield Shader Effect */}
+        {shader && <ShieldShader />}
+
+        {/* Inner glass + engraving - only on outer panels */}
+        {variant === "default" && (
+          <>
+            <div className="pointer-events-none absolute inset-0 dock-panel-glass" />
+            <div className="pointer-events-none absolute inset-0 dock-panel-engrave" />
+          </>
+        )}
 
         {hasHeader && (
           <div className={cn(
@@ -99,7 +106,7 @@ const WatchPanel = React.forwardRef<HTMLElement, WatchPanelProps>(
               ) : null}
             </div>
 
-            <div className="dock-divider mt-4" />
+            <div className="mt-4" />
           </div>
         )}
 
