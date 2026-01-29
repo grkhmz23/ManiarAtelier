@@ -266,6 +266,23 @@ body {
     mix-blend-mode: multiply;
   }
 
+  .dock-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(214, 172, 84, 0.35),
+      transparent
+    );
+  }
+
+  .dock-kicker {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(244, 229, 167, 0.70);
+  }
 
   .dock-title {
     font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
@@ -884,169 +901,3 @@ body {
     50% { transform: translate(-100px, -20px) scale(0.8); opacity: 0.2; }
     75% { transform: translate(-30px, -50px) scale(1.1); opacity: 0.4; }
   }
-
-.hex-shader-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: 
-    linear-gradient(45deg, 
-      transparent 20%, 
-      rgba(214, 172, 84, 0.4) 50%, 
-      transparent 80%
-    ),
-    radial-gradient(ellipse at center, 
-      rgba(244, 229, 167, 0.3), 
-      transparent 70%
-    );
-  background-size: 150% 150%, 100% 100%;
-  animation: hexShaderSweep 10s ease-in-out infinite;
-}
-
-.hex-shader-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: 
-    repeating-linear-gradient(
-      120deg,
-      transparent,
-      transparent 10px,
-      rgba(214, 172, 84, 0.15) 10px,
-      rgba(214, 172, 84, 0.15) 11px
-    );
-  animation: hexShaderLines 8s linear infinite;
-}
-
-@keyframes hexShaderFlow {
-  0% { 
-    background-position: 0 0, 15px 15px, 10px 10px;
-    filter: hue-rotate(0deg) brightness(1);
-  }
-  50% {
-    filter: hue-rotate(10deg) brightness(1.2);
-  }
-  100% { 
-    background-position: 30px 30px, 45px 45px, 55px 55px;
-    filter: hue-rotate(0deg) brightness(1);
-  }
-}
-
-@keyframes hexShaderSweep {
-  0%, 100% { 
-    background-position: 0% 50%, 50% 50%; 
-    opacity: 0.7;
-  }
-  50% { 
-    background-position: 100% 50%, 50% 50%; 
-    opacity: 1;
-  }
-}
-
-@keyframes hexShaderLines {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(20px); }
-}
-
-/* Clean inner panels - override with simpler style */
-.dock-panel-inner {
-  background: linear-gradient(180deg, rgba(7, 8, 23, 0.98), rgba(7, 8, 23, 0.98)) !important;
-  border: 1px solid rgba(214, 172, 84, 0.08) !important;
-  border-bottom: 3px solid rgba(3, 4, 10, 0.9) !important;
-  border-top: 1px solid rgba(244, 229, 167, 0.05) !important;
-}
-  .dock-divider {
-    height: 0px;
-    background: transparent;
-    display: none;
-  }
-
-/* FINAL OVERRIDE - Hide dock-divider borders */
-.dock-divider {
-  display: none !important;
-  height: 0 !important;
-  opacity: 0 !important;
-}
-
-/* Animated Hex Shield Shader - BOOSTED - CLEAN VERSION */
-.hex-shader-container {
-  position: absolute;
-  inset: 0;
-  background-image: 
-    radial-gradient(circle at 20% 50%, rgba(214, 172, 84, 0.8) 3px, transparent 3px),
-    radial-gradient(circle at 80% 50%, rgba(244, 229, 167, 0.6) 3px, transparent 3px),
-    radial-gradient(circle at 50% 20%, rgba(228, 201, 124, 0.5) 2px, transparent 2px);
-  background-size: 30px 30px, 30px 30px, 45px 45px;
-  background-position: 0 0, 15px 15px, 10px 10px;
-  animation: hexShaderFlow 12s linear infinite;
-  opacity: 0.85;
-  mix-blend-mode: screen;
-}
-
-.hex-shader-container::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: 
-    linear-gradient(45deg, 
-      transparent 20%, 
-      rgba(214, 172, 84, 0.4) 50%, 
-      transparent 80%
-    ),
-    radial-gradient(ellipse at center, 
-      rgba(244, 229, 167, 0.3), 
-      transparent 70%
-    );
-  background-size: 150% 150%, 100% 100%;
-  animation: hexShaderSweep 10s ease-in-out infinite;
-}
-
-.hex-shader-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: 
-    repeating-linear-gradient(
-      120deg,
-      transparent,
-      transparent 10px,
-      rgba(214, 172, 84, 0.15) 10px,
-      rgba(214, 172, 84, 0.15) 11px
-    );
-  animation: hexShaderLines 8s linear infinite;
-}
-
-@keyframes hexShaderFlow {
-  0% { 
-    background-position: 0 0, 15px 15px, 10px 10px;
-    filter: hue-rotate(0deg) brightness(1);
-  }
-  50% {
-    filter: hue-rotate(10deg) brightness(1.2);
-  }
-  100% { 
-    background-position: 30px 30px, 45px 45px, 55px 55px;
-    filter: hue-rotate(0deg) brightness(1);
-  }
-}
-
-@keyframes hexShaderSweep {
-  0%, 100% { 
-    background-position: 0% 50%, 50% 50%; 
-    opacity: 0.7;
-  }
-  50% { 
-    background-position: 100% 50%, 50% 50%; 
-    opacity: 1;
-  }
-}
-
-@keyframes hexShaderLines {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(20px); }
-}
-
-/* Hide dock-divider borders */
-.dock-divider {
-  display: none !important;
-}

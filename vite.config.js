@@ -11,17 +11,14 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: 5000,
+    port: 5173,
     strictPort: true,
-    allowedHosts: true,
-    hmr: {
-      clientPort: 443
-    }
+    allowedHosts: [".replit.dev", ".worf.replit.dev", ".replit.app"],
   },
   preview: {
     host: "0.0.0.0",
-    port: 5000,
+    port: 5173,
     strictPort: true,
-    allowedHosts: true,
+    allowedHosts: [".replit.dev", ".worf.replit.dev", ".replit.app"],
   },
 })
