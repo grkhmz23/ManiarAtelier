@@ -75,7 +75,6 @@ export const ShieldShader = ({ className }: { className?: string }) => {
   return (
     <div className={cn("absolute inset-0 pointer-events-none overflow-hidden rounded-inherit", className)}>
       <Canvas orthographic camera={{ position: [0, 0, 1], zoom: 1 }} dpr={[1, 2]}>
-        <color attach="background" args={["#00000000"]} />
         <FullscreenShader />
       </Canvas>
     </div>
