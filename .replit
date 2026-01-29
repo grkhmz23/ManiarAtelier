@@ -1,0 +1,63 @@
+run = "npm run dev"
+modules = ["nodejs-20", "python-3.11"]
+
+# Keep hidden files minimal, do NOT hide your vite config while debugging hosts
+hidden = [
+  ".config",
+  ".gitignore"
+]
+
+# Vite apps boot from index/main, not App.tsx
+entrypoint = "src/index.tsx"
+
+[nix]
+channel = "stable-24_05"
+packages = ["psmisc", "unzipNLS", "zip"]
+
+[unitTest]
+language = "nodejs"
+
+[deployment]
+deploymentTarget = "cloudrun"
+build = ["npm", "run", "build"]
+publicDir = "dist"
+run = ["sh", "-c", "npm run start"]
+
+[[ports]]
+localPort = 5173
+externalPort = 80
+
+[[ports]]
+localPort = 5174
+externalPort = 3000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "dev-server"
+
+[[workflows.workflow]]
+name = "dev-server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"

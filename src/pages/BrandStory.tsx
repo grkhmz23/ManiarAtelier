@@ -1,0 +1,193 @@
+"use client";
+
+import React from "react";
+import { ArrowRight, ArrowLeft, MapPin, Sparkles, Star } from "lucide-react";
+import WatchPanel from "@/components/watch/watch-panel";
+
+const STORY_SECTIONS = [
+  {
+    id: "eastern-roots",
+    kicker: "Philosophy",
+    title: "What Eastern Style Means",
+    image: "/images/elegant.png",
+    content: `Eastern style isn't just aesthetic—it's architecture for the body. Flowing lines that respect movement. Structured shoulders that command presence without constriction. Every piece designed to make the wearer feel both rooted and elevated.`,
+    caption: "Silhouettes that honor tradition while embracing modern movement"
+  },
+  {
+    id: "morocco-craft",
+    kicker: "Origin",
+    title: "Morocco's Contribution",
+    image: "/images/nero-oro.png",
+    content: `Morocco sits at the crossroads of Africa, Arabia, and the Mediterranean. This geography shaped centuries of textile mastery: Fes embroidery, Atlas wool weaving, Marrakech leather tanning, Saharan indigo dyeing. We don't replicate these traditions—we channel them into contemporary forms.`,
+    caption: "Crossroads of three continents, distilled into fabric"
+  },
+  {
+    id: "tailoring",
+    kicker: "Technique",
+    title: "Tailoring Traditions",
+    image: "/images/model-blue-long.png",
+    content: `Moroccan tailoring evolved from the djellabahs of scholars and the caftans of royalty. The precision isn't industrial—it's generational. Seams are placed for drape, not just fit. Panels are cut to layer naturally. This is garment architecture passed down through hands.`,
+    caption: "Generations of knowledge in every seam placement"
+  },
+  {
+    id: "embroidery",
+    kicker: "Detail",
+    title: "Embroidery & Sfifa",
+    image: "/images/nero-e-oro-marrakesh.png",
+    content: `Sfifa is the art of handmade braided trim—hours of work for inches of detail. Combined with tarz (embroidery) and zari (metallic threadwork), these aren't decorations. They're signatures. Each region has distinct patterns, and we source from masters who've spent decades perfecting single techniques.`,
+    caption: "Hours of handwork for inches of distinction"
+  },
+  {
+    id: "fabric",
+    kicker: "Material",
+    title: "Fabric Sourcing",
+    image: "/images/verde-acqua.png",
+    content: `We source wool from the Middle Atlas, cotton from the Gharb plains, and silk blends from traditional looms in Fes. Each fabric is chosen not for trend but for hand-feel and longevity. The goal: pieces that age into heirlooms, not landfill.`,
+    caption: "Materials chosen for decades, not seasons"
+  },
+  {
+    id: "dyeing",
+    kicker: "Color",
+    title: "Natural Dyeing Heritage",
+    image: "/images/uomo-gilet.png",
+    content: `Moroccan dyers have worked with saffron, indigo, pomegranate, and henna for centuries. While we use modern processes for consistency, our color palette draws from these natural origins—deep ochres, soft sage, midnight blues. Colors that don't shout but resonate.`,
+    caption: "Palette drawn from earth, not screen"
+  }
+];
+
+const WHY_NOW = [
+  {
+    title: "Modern Cuts",
+    description: "Traditional silhouettes refined for contemporary proportions and city life."
+  },
+  {
+    title: "Diaspora Connection",
+    description: "For those who carry heritage but live globally—clothes that belong everywhere."
+  },
+  {
+    title: "Celebration Wear",
+    description: "Weddings, Eid, gatherings. Pieces that mark moments without costume drama."
+  },
+  {
+    title: "Daily Elevation",
+    description: "Not just special occasions. Elevated basics for people who refuse ordinary."
+  },
+  {
+    title: "Modest Fashion",
+    description: "Coverage without compromise. Elegance that respects without restricting."
+  },
+  {
+    title: "Conscious Luxury",
+    description: "Quality over quantity. Fewer pieces, more meaning, less waste."
+  }
+];
+
+interface BrandStoryProps {
+  onBack: () => void;
+  onNavigate?: (page: string) => void;
+}
+
+export default function BrandStory({ onBack, onNavigate }: BrandStoryProps) {
+  return (
+    <div className="min-h-screen pt-[112px] px-4 md:px-8 pb-20">
+      <div className="mx-auto max-w-6xl flex flex-col gap-5">
+        {/* Back Navigation */}
+        <button
+          type="button"
+          onClick={onBack}
+          className="dock-btn elevation-btn w-fit"
+        >
+          <ArrowLeft size={16} /> Back to Home
+        </button>
+
+        {/* Hero Section */}
+        <WatchPanel kicker="Brand Story" title="The Soul of Maniar">
+          <div className="grid md:grid-cols-2 gap-6 items-center">
+            <div>
+              <p className="text-lg leading-relaxed dock-muted">
+                Maniar isn't about selling clothes. It's about offering a way of dressing that most of the world has forgotten—or never knew existed.
+              </p>
+              <p className="mt-4 text-lg leading-relaxed dock-muted">
+                Eastern tailoring. Moroccan craft. Modern discipline. Every piece is designed to make you feel like you're wearing something that <em>matters</em>.
+              </p>
+              <div className="mt-6 flex items-center gap-3">
+                <MapPin size={18} className="text-[#D6AC54]" />
+                <span className="dock-kicker">Rooted in Morocco • Made for the World</span>
+              </div>
+            </div>
+            <div className="rounded-2xl overflow-hidden border border-[rgba(214,172,84,0.16)] bg-[rgba(7,8,23,0.55)] elevation-card">
+              <img
+                src="/images/elegant.png"
+                alt="Maniar brand essence"
+                className="w-full h-[360px] object-cover opacity-[0.92]"
+              />
+            </div>
+          </div>
+        </WatchPanel>
+
+        {/* Story Sections */}
+        {STORY_SECTIONS.map((section, idx) => (
+          <WatchPanel key={section.id} kicker={section.kicker} title={section.title}>
+            <div className={`grid md:grid-cols-2 gap-6 items-center ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+              <div className={idx % 2 === 1 ? 'md:order-2' : ''}>
+                <p className="text-base leading-relaxed dock-muted">
+                  {section.content}
+                </p>
+              </div>
+              <div className={`rounded-2xl overflow-hidden border border-[rgba(214,172,84,0.16)] bg-[rgba(7,8,23,0.55)] elevation-card ${idx % 2 === 1 ? 'md:order-1' : ''}`}>
+                <img
+                  src={section.image}
+                  alt={section.title}
+                  className="w-full h-[300px] object-cover opacity-[0.92]"
+                />
+                <div className="p-4">
+                  <div className="dock-divider mb-3" />
+                  <p className="dock-muted text-sm italic">{section.caption}</p>
+                </div>
+              </div>
+            </div>
+          </WatchPanel>
+        ))}
+
+        {/* Why Now Section */}
+        <WatchPanel kicker="Relevance" title="Why Now">
+          <p className="text-base leading-relaxed dock-muted mb-6">
+            This isn't nostalgia. It's recognition that the best way forward sometimes means looking at what worked for centuries—and refining it for today.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {WHY_NOW.map((item) => (
+              <WatchPanel key={item.title} as="div" variant="compact" kicker="" title={item.title}>
+                <p className="dock-muted text-sm leading-relaxed">{item.description}</p>
+              </WatchPanel>
+            ))}
+          </div>
+        </WatchPanel>
+
+        {/* CTA Section */}
+        <WatchPanel kicker="Next Step" title="Experience the Craft">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <p className="dock-muted">
+              Ready to see how tradition meets modern tailoring?
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => onNavigate?.('craft')}
+                className="dock-btn dock-btn-primary elevation-btn"
+              >
+                Explore Craft & Origin <ArrowRight size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={onBack}
+                className="dock-btn elevation-btn"
+              >
+                View Collection
+              </button>
+            </div>
+          </div>
+        </WatchPanel>
+      </div>
+    </div>
+  );
+}
