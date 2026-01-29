@@ -11,14 +11,14 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: 5173,
+    port: 5000,
     strictPort: true,
-    allowedHosts: [".replit.dev", ".worf.replit.dev", ".replit.app"],
+    allowedHosts: true,
   },
   preview: {
     host: "0.0.0.0",
-    port: 5173,
+    port: 5000,
     strictPort: true,
-    allowedHosts: [".replit.dev", ".worf.replit.dev", ".replit.app"],
+    allowedHosts: true,
   },
 })
