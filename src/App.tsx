@@ -5,6 +5,7 @@ import { ArrowRight, ArrowDown, MapPin, Sparkles, X, BookOpen, Truck, Heart } fr
 import ReactorKnob from "@/components/ui/control-knob";
 import IndustrialSwitch from "@/components/ui/toggle-switch";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
+import AnimatedCardStack from "@/components/ui/animate-card-stack";
 import WatchDock, { DockSection } from "@/components/watch/watch-dock";
 import WatchPanel from "@/components/watch/watch-panel";
 
@@ -342,38 +343,45 @@ export default function App() {
             kicker="New Season"
             title="The Collection"
           >
+            <div className="mb-8">
+              <AnimatedCardStack />
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
               {CATALOG.slice(0, 4).map((product) => (
-                <WatchPanel key={product.id} as="article" variant="flush" className="p-0">
-                  <button type="button" onClick={() => openProduct(product)} className="w-full text-left">
-                    <div className="relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.16)] border-b-[4px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(7,8,23,0.55)] elevation-card elevation-card">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full aspect-[3/4] object-cover opacity-[0.95] transition-transform duration-700 hover:scale-[1.02]"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_25%_18%,rgba(244,229,167,0.10),transparent_45%)]" />
+                <button
+                  key={product.id}
+                  type="button"
+                  onClick={() => setSelectedProduct(product)}
+                  className="text-left w-full"
+                >
+                  <div className="relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.16)] border-b-[4px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(7,8,23,0.55)] elevation-card">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full aspect-[3/4] object-cover opacity-[0.95] transition-transform duration-700 hover:scale-[1.02]"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_25%_18%,rgba(244,229,167,0.10),transparent_45%)]" />
 
-                      {product.badge ? (
-                        <div className="absolute top-4 left-4 rounded-full px-3 py-1 bg-[rgba(10,14,33,0.85)] border border-[rgba(214,172,84,0.22)] border-b-[2px] border-b-[rgba(3,4,10,0.9)] elevation-sm text-[10px] font-mono tracking-[0.22em] uppercase elevation-card">
-                          {product.badge}
-                        </div>
-                      ) : null}
+                    {product.badge ? (
+                      <div className="absolute top-4 left-4 rounded-full px-3 py-1 bg-[rgba(10,14,33,0.85)] border border-[rgba(214,172,84,0.22)] border-b-[2px] border-b-[rgba(3,4,10,0.9)] elevation-sm text-[10px] font-mono tracking-[0.22em] uppercase elevation-card">
+                        {product.badge}
+                      </div>
+                    ) : null}
 
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <div className="dock-divider mb-3" />
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <div className="font-serif text-lg leading-tight">{product.name}</div>
-                            <div className="dock-muted text-sm mt-1">{formatEUR(product.priceEUR)}</div>
-                          </div>
-                          <ArrowRight size={18} className="dock-muted shrink-0 mt-1" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <div className="dock-divider mb-3" />
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="font-serif text-lg leading-tight">{product.name}</div>
+                          <div className="dock-muted text-sm mt-1">{formatEUR(product.priceEUR)}</div>
                         </div>
+                        <ArrowRight size={18} className="dock-muted shrink-0 mt-1" />
                       </div>
                     </div>
-                  </button>
-                </WatchPanel>
+                  </div>
+                </button>
               ))}
             </div>
 
