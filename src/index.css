@@ -588,3 +588,14 @@ button, a, .dock-btn, .watch-btn {
   border: 1px solid rgba(214, 172, 84, 0.16) !important;
   border-bottom: 2px solid rgba(214, 172, 84, 0.2) !important;
 }
+
+/* CLEAN INNER PANELS - Remove dark backgrounds */
+.dock-panel-inner {
+  background: transparent !important;
+  border: 1px solid rgba(214, 172, 84, 0.18) !important;
+  border-bottom: 2px solid rgba(214, 172, 84, 0.25) !important;
+  box-shadow: 
+    0 4px 0 -1px rgba(5, 6, 14, 0.4),
+    0 8px 16px -4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(244, 229, 167, 0.08) !important;
+}
