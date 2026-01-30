@@ -136,8 +136,7 @@ export default function WatchDock({
               </div>
 
               <div className="hidden md:flex items-center gap-2">
-                <PusherButton
-                  size="sm"
+                <PusherButton className="watch-crown-btn" size="sm"
                   active={cinematic}
                   onClick={() => setCinematic(!cinematic)}
                   aria-label="Toggle cinema dial"
@@ -146,8 +145,7 @@ export default function WatchDock({
                   <Sparkles size={16} />
                 </PusherButton>
 
-                <PusherButton
-                  size="sm"
+                <PusherButton className="watch-crown-btn" size="sm"
                   active={nightMode}
                   onClick={() => setNightMode(!nightMode)}
                   aria-label="Toggle night density"
@@ -165,8 +163,7 @@ export default function WatchDock({
             </div>
 
             <div className="flex items-center justify-end gap-2 min-w-[220px]">
-              <PusherButton
-                size="md"
+              <PusherButton className="watch-crown-btn" size="md"
                 onClick={onOpenChat}
                 aria-label="Open concierge chat"
                 title="Concierge"
@@ -199,7 +196,7 @@ export default function WatchDock({
                 )}
               </button>
 
-              <PusherButton size="md" onClick={onOpenMenu} aria-label="Open menu" title="Menu">
+              <PusherButton className="watch-crown-btn" size="md" onClick={onOpenMenu} aria-label="Open menu" title="Menu">
                 <Menu size={18} />
               </PusherButton>
             </div>

@@ -76,6 +76,10 @@ body {
       linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(7, 8, 23, 0.35));
   }
 
+  /* Cinema veil: stays dark luxury, just shifts contrast/exposure */
+  .watch-veil { display: none; }
+
+
   .watch-stage {
     position: relative;
     isolation: isolate;
@@ -92,6 +96,11 @@ body {
 }
 
 @layer components {
+  /* ============================================
+     ELEVATION SYSTEM - Building/City Effect
+     All components raised uniformly like buildings
+     ============================================ */
+
   /* Base elevation - the "2cm raised" foundation */
   .elevation-base {
     transform: translateY(0) translateZ(0);
@@ -104,7 +113,7 @@ body {
       inset 0 1px 0 rgba(244, 229, 167, 0.12),
       0 0 80px -20px var(--elevation-gold-glow);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   .elevation-base:hover {
     box-shadow:
@@ -115,6 +124,30 @@ body {
       inset 0 -2px 0 rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(244, 229, 167, 0.15),
       0 0 100px -20px rgba(214, 172, 84, 0.12);
+  }
+  }
+
+  /* Smaller elevation for nested elements */
+  .elevation-sm {
+    box-shadow:
+      0 4px 0 -1px rgba(5, 6, 14, 0.9),
+      0 6px 0 -1px rgba(3, 4, 10, 0.85),
+      0 12px 24px -6px var(--elevation-color),
+      0 18px 36px -8px var(--elevation-ambient),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(244, 229, 167, 0.10);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .elevation-sm:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 5px 0 -1px rgba(5, 6, 14, 0.9),
+      0 7px 0 -1px rgba(3, 4, 10, 0.85),
+      0 14px 28px -6px var(--elevation-color),
+      0 22px 44px -8px var(--elevation-ambient),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(244, 229, 167, 0.12);
   }
 
   /* Image elevation - specific for product images */
@@ -134,6 +167,60 @@ body {
       0 13px 0 -2px rgba(3, 4, 10, 0.9),
       0 30px 60px -10px var(--elevation-color),
       0 32px 64px -12px var(--elevation-ambient);
+  }
+
+  /* Header/Dock specific elevation */
+  .elevation-header {
+    box-shadow:
+      0 8px 0 -2px rgba(5, 6, 14, 0.98),
+      0 12px 0 -2px rgba(3, 4, 10, 0.95),
+      0 20px 50px -10px rgba(0, 0, 0, 0.7),
+      0 35px 80px -15px rgba(0, 0, 0, 0.5),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(244, 229, 167, 0.10),
+      0 0 120px -30px rgba(214, 172, 84, 0.1);
+  }
+
+  /* Button elevation */
+  .elevation-btn {
+    box-shadow:
+      0 3px 0 -1px rgba(5, 6, 14, 0.9),
+      0 5px 0 -1px rgba(3, 4, 10, 0.85),
+      0 8px 16px -4px var(--elevation-color),
+      0 12px 24px -6px var(--elevation-ambient),
+      inset 0 1px 0 rgba(244, 229, 167, 0.12);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .elevation-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 5px 0 -1px rgba(5, 6, 14, 0.9),
+      0 7px 0 -1px rgba(3, 4, 10, 0.85),
+      0 12px 24px -4px var(--elevation-color),
+      0 18px 36px -6px var(--elevation-ambient),
+      inset 0 1px 0 rgba(244, 229, 167, 0.15);
+  }
+
+  .elevation-btn:active {
+    transform: translateY(0);
+    box-shadow:
+      0 2px 0 -1px rgba(5, 6, 14, 0.9),
+      0 3px 0 -1px rgba(3, 4, 10, 0.85),
+      0 6px 12px -4px var(--elevation-color),
+      0 8px 16px -6px var(--elevation-ambient),
+      inset 0 1px 0 rgba(244, 229, 167, 0.10);
+  }
+
+  /* Modal/Drawer elevation - highest */
+  .elevation-modal {
+    box-shadow:
+      0 12px 0 -2px rgba(5, 6, 14, 0.98),
+      0 18px 0 -3px rgba(3, 4, 10, 0.95),
+      0 30px 80px -15px rgba(0, 0, 0, 0.8),
+      0 50px 120px -20px rgba(0, 0, 0, 0.6),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(244, 229, 167, 0.08);
   }
 
   /* The "dock module" look with elevation */
@@ -177,7 +264,7 @@ body {
   }
 
   .dock-kicker {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-size: 10px;
     letter-spacing: 0.28em;
     text-transform: uppercase;
@@ -213,6 +300,94 @@ body {
     border-bottom: 4px solid rgba(150, 110, 30, 0.6);
   }
 
+  .dock-muted {
+    color: rgba(244, 229, 167, 0.70);
+  }
+
+  /* Watch surface for chat/cart items */
+  .watch-surface {
+    background: linear-gradient(180deg, rgba(10, 14, 33, 0.88), rgba(7, 8, 23, 0.92));
+    border: 1px solid rgba(214, 172, 84, 0.12);
+    border-bottom: 4px solid rgba(3, 4, 10, 0.9);
+    border-radius: 16px;
+  }
+
+  /* Watch buttons */
+  .watch-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 0 16px;
+    border: 1px solid rgba(214, 172, 84, 0.18);
+    border-bottom: 4px solid rgba(3, 4, 10, 0.8);
+    background: rgba(10, 14, 33, 0.70);
+    color: rgba(244, 229, 167, 0.90);
+    font-size: 13px;
+    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .watch-btn:hover {
+    background: rgba(22, 26, 49, 0.80);
+    transform: translateY(-1px);
+  }
+
+  .watch-btn:active {
+    transform: translateY(1px);
+    border-bottom-width: 1px;
+  }
+
+  .watch-btn-primary {
+    background: rgba(214, 172, 84, 0.18);
+    border-color: rgba(228, 201, 124, 0.45);
+    border-bottom: 4px solid rgba(150, 110, 30, 0.6);
+  }
+
+  .watch-btn-primary:hover {
+    background: rgba(214, 172, 84, 0.25);
+  }
+
+  /* Universal elevation for any rounded element */
+  .elevation-card {
+    box-shadow:
+      0 8px 0 -1px rgba(5, 6, 14, 0.98),
+      0 12px 0 -2px rgba(3, 4, 10, 0.95),
+      0 14px 28px -6px var(--elevation-color),
+      0 20px 40px -10px var(--elevation-ambient),
+      inset 0 1px 0 rgba(244, 229, 167, 0.08);
+    border-bottom: 4px solid rgba(3, 4, 10, 0.9) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .elevation-card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Watch chip/badge */
+  .watch-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(10, 14, 33, 0.75);
+    border: 1px solid rgba(214, 172, 84, 0.16);
+    border-bottom: 4px solid rgba(3, 4, 10, 0.85);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: rgba(244, 229, 167, 0.75);
+  }
+
+  /* Inner panels - dark like header */
+  .dock-panel-inner {
+    background: linear-gradient(180deg, rgba(10, 14, 33, 0.98), rgba(7, 8, 23, 0.98)) !important;
+    border: none !important;
+    border-bottom: none !important;
+    border-top: none !important;
+  }
+
   /* Watch bezel - 3D frame around edges */
   .watch-bezel {
     position: fixed;
@@ -228,33 +403,133 @@ body {
   }
 
   /* Watch glass overlay */
-  .watch-glass-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.1) 100%);
-  }
+  
 }
 
-/* Strong 3D elevation for all panels */
-.dock-panel,
-.dock-panel-inner {
-  box-shadow:
-    0 12px 0 -2px rgba(5, 6, 14, 0.98),
-    0 18px 0 -3px rgba(3, 4, 10, 0.95),
-    0 30px 80px -15px rgba(0, 0, 0, 0.8),
-    0 50px 120px -20px rgba(0, 0, 0, 0.6),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.4),
-    inset 0 2px 0 rgba(244, 229, 167, 0.12),
-    0 0 120px -30px rgba(214, 172, 84, 0.15) !important;
-  transform: translateZ(0);
-}
+  /* Visible watch glass effect */
+  
+
+  /* Animated light reflection moving across */
+  
+
+  
+
+  /* Watch case - left and right side frames */
+  
+
+  
+
+  
+
+  /* Gold accent lines on case */
+  
+
+  
+
+  
+
+  /* Inner edge of watch case - creates depth */
+  
+
+  
+
+  
+
+
+  /* Animated Glow Border Effect */
+  
+
+  
+
+  
+
+  
+
+  
+
+  /* Subtle version for inner panels */
+  
+
+  
+
+  /* Disable animated glow on specific elements */
+  .no-glow
+
+  /* Make glow respect parent opacity during scroll transitions */
+  [style*="opacity"] 
+  
+  /* Smoother glow on scroll */
+  
+  
+  
+
+  /* Page-wide animated glow background */
+  
+
+  
+
+  
+
+  
+
+  /* Outer panel animated border glow */
+  
+
+  
+
+  
+
+  
+
+  /* Register the custom property for animation */
+  @property --panel-glow-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  /* Camera flash effect - luxury photography feel */
+  
+
+  
+
+  /* Subtle light sweep across panels */
+  
+
+  
+
+  /* Gold shimmer on hover */
+  
+
+  
+
+  
+
+  
+
+  /* Lens flare accent */
+    position: fixed;
+    top: 10%;
+    right: 15%;
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+    z-index: 9989;
+    background: radial-gradient(
+      circle,
+      rgba(244, 229, 167, 0.15) 0%,
+      rgba(214, 172, 84, 0.08) 30%,
+      transparent 70%
+    );
+    filter: blur(20px);
 
 .dock-panel:hover,
 .dock-panel-inner:hover {
   transform: translateY(-2px) translateZ(0);
 }
+
+/* Disable heavy animations for performance */
+
 
 /* PERFORMANCE: Disable all decorative animations */
 * {
@@ -264,4 +539,52 @@ body {
 /* Keep only essential UI transitions */
 button, a, .dock-btn, .watch-btn {
   transition: transform 0.15s ease, background 0.15s ease !important;
+}
+
+
+/* WATCH CROWN BUTTONS */
+.watch-crown-btn {
+  height: 42px; width: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(30,35,60,0.95), rgba(10,14,30,1));
+  border: 2px solid rgba(214,172,84,0.25);
+  box-shadow: 0 6px 0 rgba(5,6,14,0.98), 0 10px 20px rgba(0,0,0,0.8), inset 0 2px 1px rgba(244,229,167,0.15);
+  transition: all 0.15s ease;
+}
+.watch-crown-btn:hover { transform: translateY(-2px); }
+.watch-crown-btn:active { transform: translateY(3px); }
+
+/* OUTER PANELS - SAME 3D DEPTH AS HEADER */
+.dock-panel {
+  box-shadow:
+    /* Main layers - same as header */
+    0 12px 0 -2px rgba(5, 6, 14, 0.98),
+    0 18px 0 -3px rgba(3, 4, 10, 0.95),
+    /* Deep shadows */
+    0 30px 80px -15px rgba(0, 0, 0, 0.8),
+    0 50px 120px -20px rgba(0, 0, 0, 0.6),
+    /* Inner depth */
+    inset 0 -3px 0 rgba(0, 0, 0, 0.4),
+    inset 0 2px 0 rgba(244, 229, 167, 0.12),
+    /* Gold glow */
+    0 0 120px -30px rgba(214, 172, 84, 0.15) !important;
+  transform: translateZ(0);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dock-panel:hover {
+  transform: translateY(-3px) translateZ(0);
+  box-shadow:
+    0 15px 0 -2px rgba(5, 6, 14, 0.98),
+    0 22px 0 -3px rgba(3, 4, 10, 0.95),
+    0 35px 90px -15px rgba(0, 0, 0, 0.8),
+    0 60px 140px -20px rgba(0, 0, 0, 0.6),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.4),
+    inset 0 2px 0 rgba(244, 229, 167, 0.15),
+    0 0 140px -30px rgba(214, 172, 84, 0.2) !important;
+}
+
+/* OVERRIDE: Clean borders for inner panels and image containers */
+.elevation-card {
+  border: 1px solid rgba(214, 172, 84, 0.16) !important;
+  border-bottom: 2px solid rgba(214, 172, 84, 0.2) !important;
 }

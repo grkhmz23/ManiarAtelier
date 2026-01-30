@@ -312,7 +312,7 @@ export default function App() {
                 </WatchPanel>
 
                 <WatchPanel as="div" variant="compact" kicker="Preview" title="Signature Frame">
-                  <div className="relative rounded-2xl overflow-hidden border border-[rgba(214,172,84,0.16)] border-b-[4px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(7,8,23,0.55)] elevation-card elevation-card">
+                  <div className="relative rounded-2xl overflow-hidden border border-[rgba(214,172,84,0.16)] bg-[rgba(7,8,23,0.55)] elevation-card elevation-card">
                     <img
                       src={CATALOG[0]?.image}
                       alt="Signature preview"
