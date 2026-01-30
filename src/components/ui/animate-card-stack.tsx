@@ -46,7 +46,7 @@ function CardContent({ contentType }: { contentType: 1 | 2 | 3 }) {
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
-      <div className="flex h-[200px] w-full items-center justify-center overflow-hidden rounded-xl border border-[rgba(214,172,84,0.25)]">
+      <div className="flex h-[260px] w-full items-center justify-center overflow-hidden rounded-xl border border-[rgba(214,172,84,0.25)]">
         <img
           src={data.image}
           alt={data.title}
@@ -83,7 +83,7 @@ function AnimatedCard({ card, index, isAnimating }: { card: Card; index: number;
       exit={exitAnim}
       transition={{ type: "spring", duration: 1, bounce: 0 }}
       style={{ zIndex, left: "50%", x: "-50%", bottom: 0 }}
-      className="absolute flex h-[280px] w-[324px] items-center justify-center overflow-hidden rounded-t-xl border-x border-t border-[rgba(214,172,84,0.25)] bg-[rgba(10,14,33,0.85)] p-1 shadow-lg backdrop-blur will-change-transform sm:w-[512px]"
+      className="absolute flex h-[364px] w-[420px] items-center justify-center overflow-hidden rounded-t-xl border-x border-t border-[rgba(214,172,84,0.25)] bg-[rgba(10,14,33,0.85)] p-1 shadow-lg backdrop-blur will-change-transform sm:w-[666px]"
     >
       <CardContent contentType={card.contentType} />
     </motion.div>
@@ -105,7 +105,7 @@ export default function AnimatedCardStack() {
 
   return (
     <div className="flex w-full flex-col items-center justify-center pt-2">
-      <div className="relative h-[380px] w-full overflow-hidden sm:w-[644px]">
+      <div className="relative h-[494px] w-full overflow-hidden sm:w-[837px]">
         <AnimatePresence initial={false}>
           {cards.slice(0, 3).map((card, index) => (
             <AnimatedCard key={card.id} card={card} index={index} isAnimating={isAnimating} />

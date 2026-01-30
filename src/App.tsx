@@ -6,6 +6,7 @@ import ReactorKnob from "@/components/ui/control-knob";
 import IndustrialSwitch from "@/components/ui/toggle-switch";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
 import AnimatedCardStack from "@/components/ui/animate-card-stack";
+import { CardStack, CardStackItem } from "@/components/ui/card-stack";
 import WatchDock, { DockSection } from "@/components/watch/watch-dock";
 import WatchPanel from "@/components/watch/watch-panel";
 
@@ -46,6 +47,7 @@ const MENU_ITEMS: Array<{ id: DockSection; label: string }> = [
   { id: "collection", label: "Collection" },
   { id: "atelier", label: "Atelier" },
   { id: "journal", label: "Journal" },
+
   { id: "about", label: "About" },
 ];
 
@@ -53,7 +55,14 @@ const PAGE_MENU_ITEMS: Array<{ id: PageType; label: string; icon: React.ReactNod
   { id: "brand", label: "Brand Story", icon: <Heart size={16} /> },
   { id: "craft", label: "Craft & Origin", icon: <Sparkles size={16} /> },
   { id: "shipping", label: "Shipping & Returns", icon: <Truck size={16} /> },
+
   { id: "journal", label: "Style Guides", icon: <BookOpen size={16} /> },
+];
+
+const heroCards: CardStackItem[] = [
+  { id: 1, title: "Heritage Craftsmanship", description: "Traditional Moroccan tailoring meets modern luxury", imageSrc: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800" },
+  { id: 2, title: "Premium Materials", description: "Sourced from the finest textile houses across Morocco", imageSrc: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800" },
+  { id: 3, title: "Timeless Design", description: "Classic silhouettes with contemporary precision", imageSrc: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800" },
 ];
 
 function clamp01(n: number) {
@@ -286,51 +295,17 @@ export default function App() {
                 </div>
               }
             >
-              <div className="grid lg:grid-cols-2 gap-4 md:gap-5 items-stretch">
-                <WatchPanel as="div" variant="compact" kicker="Status" title="Instrument Mode">
-                  <div className="flex items-center gap-2 text-xs dock-muted">
-                    <MapPin size={14} />
-                    Dial-driven exposure and contrast. Dark luxury always.
-                  </div>
-
-                  <p className="mt-4 text-sm md:text-base dock-muted leading-relaxed">
-                    Old-timer luxury, modern discipline. The dial changes the ambience like a mechanical complication.
-                  </p>
-
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={() => scrollToSection("collection")}
-                      className="dock-btn dock-btn-primary elevation-btn"
-                    >
-                      Enter Collection <ArrowRight size={16} />
-                    </button>
-
-                    <button type="button" onClick={() => setChatOpen(true)} className="dock-btn elevation-btn">
-                      Ask Concierge
-                    </button>
-                  </div>
-                </WatchPanel>
-
-                <WatchPanel as="div" variant="compact" kicker="Preview" title="Signature Frame">
-                  <div className="relative rounded-2xl overflow-hidden border border-[rgba(214,172,84,0.16)] bg-[rgba(7,8,23,0.55)] elevation-card elevation-card">
-                    <img
-                      src={CATALOG[0]?.image}
-                      alt="Signature preview"
-                      className="w-full h-[320px] md:h-[360px] object-cover opacity-[0.92]"
-                      loading="lazy"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="text-sm">
-                          <div className="font-serif text-lg">Crafted like a mechanism</div>
-                          <div className="dock-muted text-xs mt-1">Materials, balance, and durability.</div>
-                        </div>
-                        <ArrowDown size={18} className="dock-muted" />
-                      </div>
-                    </div>
-                  </div>
-                </WatchPanel>
+              <div className="py-8">
+                <CardStack
+                  items={heroCards}
+                  initialIndex={0}
+                  autoAdvance
+                  intervalMs={3000}
+                  pauseOnHover
+                  showDots
+                  cardWidth={480}
+                  cardHeight={300}
+                />
               </div>
             </WatchPanel>
           </div>
@@ -343,7 +318,7 @@ export default function App() {
             kicker="New Season"
             title="The Collection"
           >
-            <div className="mb-8">
+            <div className="mb-8 -mt-20">
               <AnimatedCardStack />
             </div>
 
@@ -353,9 +328,18 @@ export default function App() {
                   key={product.id}
                   type="button"
                   onClick={() => setSelectedProduct(product)}
-                  className="text-left w-full"
+                  className="text-left w-full block"
                 >
-                  <div className="relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.16)] border-b-[4px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(7,8,23,0.55)] elevation-card">
+                  <div className="group relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.25)] bg-gradient-to-br from-[rgba(10,14,33,0.95)] via-[rgba(20,25,45,0.90)] to-[rgba(10,14,33,0.95)] shadow-2xl backdrop-blur-xl hover:border-[rgba(214,172,84,0.45)] hover:shadow-[0_0_40px_rgba(214,172,84,0.2)] transform transition-all duration-500 hover:scale-105 hover:-rotate-1 elevation-card">
+                    {/* Animated background layers */}
+                    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-[rgba(214,172,84,0.05)] to-[rgba(244,229,167,0.10)] opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
+                      <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-gradient-to-tr from-[rgba(214,172,84,0.15)] to-transparent blur-3xl opacity-30 group-hover:opacity-50 transform group-hover:scale-110 transition-all duration-700"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(244,229,167,0.08)] to-transparent transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+                    </div>
+                    {/* Corner accents */}
+                    <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-[rgba(214,172,84,0.15)] to-transparent rounded-br-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-[rgba(214,172,84,0.15)] to-transparent rounded-tl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                     <img
                       src={product.image}
                       alt={product.name}

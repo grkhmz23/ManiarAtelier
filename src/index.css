@@ -599,3 +599,155 @@ button, a, .dock-btn, .watch-btn {
     0 8px 16px -4px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(244, 229, 167, 0.08) !important;
 }
+
+/* MANIAR LOGO COLOR SCHEME */
+:root {
+  --maniar-gold: #D4AF6A;
+  --maniar-dark: #0A0E1A;
+  --maniar-darker: #05070F;
+}
+
+/* Background - Gold */
+body,
+.maniar-watch {
+  background: var(--maniar-gold) !important;
+}
+
+/* Header - Dark Navy */
+.fixed.top-0 > div > div {
+  background: linear-gradient(180deg, var(--maniar-dark), var(--maniar-darker)) !important;
+  border-color: rgba(212, 175, 106, 0.3) !important;
+}
+
+/* All Panels - Dark Navy */
+.dock-panel,
+.dock-panel-inner {
+  background: linear-gradient(180deg, var(--maniar-dark), var(--maniar-darker)) !important;
+  border-color: rgba(212, 175, 106, 0.3) !important;
+}
+
+/* All Text - Gold */
+body,
+.dock-panel,
+.dock-panel-inner,
+h1, h2, h3, h4, h5, h6,
+p, span, div,
+button {
+  color: var(--maniar-gold) !important;
+}
+
+/* Buttons - Gold borders */
+.dock-btn,
+.watch-btn,
+.watch-crown-btn {
+  border-color: rgba(212, 175, 106, 0.4) !important;
+  color: var(--maniar-gold) !important;
+  background: rgba(10, 14, 26, 0.6) !important;
+}
+
+.dock-btn:hover,
+.watch-btn:hover {
+  background: rgba(10, 14, 26, 0.8) !important;
+  border-color: rgba(212, 175, 106, 0.6) !important;
+}
+
+/* Product cards - Dark with gold accents */
+.elevation-card {
+  background: linear-gradient(135deg, var(--maniar-dark), var(--maniar-darker)) !important;
+  border-color: rgba(212, 175, 106, 0.3) !important;
+}
+
+/* MANIAR LOGO COLOR SCHEME */
+:root {
+  --maniar-gold: #D4AF6A;
+  --maniar-dark: #0A0E1A;
+  --maniar-darker: #05070F;
+}
+
+/* Background - Gold */
+body,
+.maniar-watch {
+  background: var(--maniar-gold) !important;
+}
+
+/* Header - Dark Navy */
+.fixed.top-0 > div > div {
+  background: linear-gradient(180deg, var(--maniar-dark), var(--maniar-darker)) !important;
+  border-color: rgba(212, 175, 106, 0.3) !important;
+}
+
+/* All Panels - Dark Navy */
+.dock-panel,
+.dock-panel-inner {
+  background: linear-gradient(180deg, var(--maniar-dark), var(--maniar-darker)) !important;
+  border-color: rgba(212, 175, 106, 0.3) !important;
+}
+
+/* All Text - Gold */
+body, h1, h2, h3, h4, h5, h6, p, span, div, button {
+  color: var(--maniar-gold) !important;
+}
+
+/* Buttons - Gold borders */
+.dock-btn, .watch-btn, .watch-crown-btn {
+  border-color: rgba(212, 175, 106, 0.4) !important;
+  color: var(--maniar-gold) !important;
+  background: rgba(10, 14, 26, 0.6) !important;
+}
+
+.dock-btn:hover, .watch-btn:hover {
+  background: rgba(10, 14, 26, 0.8) !important;
+  border-color: rgba(212, 175, 106, 0.6) !important;
+}
+
+/* Product cards - Dark with gold accents */
+.elevation-card {
+  background: linear-gradient(135deg, var(--maniar-dark), var(--maniar-darker)) !important;
+  border-color: rgba(212, 175, 106, 0.3) !important;
+}
+
+/* REMOVE INNER PANEL BORDERS - CLEAN CONTENT */
+.dock-panel-inner {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* Remove any borders from content within inner panels */
+.dock-panel-inner > * {
+  border: none !important;
+}
+
+/* INNER PANELS - SAME COLOR AS MEN/WOMEN BUTTONS */
+.dock-panel-inner {
+  background: rgba(20, 25, 50, 0.9) !important;
+  border: 1px solid rgba(212, 175, 106, 0.25) !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+}
+
+/* REVERT INNER PANELS - CLEAN AGAIN */
+.dock-panel-inner {
+  background: transparent !important;
+  border: none !important;
+  padding: 24px !important;
+}
+
+/* CONTENT BOXES INSIDE INNER PANELS - MEN/WOMEN BUTTON COLOR */
+.dock-panel-inner > div,
+.dock-panel-inner > p {
+  background: rgba(20, 25, 50, 0.9) !important;
+  border: 1px solid rgba(212, 175, 106, 0.25) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+/* Button container */
+.dock-panel-inner .flex {
+  background: rgba(20, 25, 50, 0.9) !important;
+  border: 1px solid rgba(212, 175, 106, 0.25) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+}
