@@ -319,9 +319,7 @@ export default function App() {
                       className="w-full h-[320px] md:h-[360px] object-cover opacity-[0.92]"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(250,245,230,0.85),transparent_45%)]" />
                     <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="dock-divider mb-3" />
                       <div className="flex items-center justify-between gap-3">
                         <div className="text-sm">
                           <div className="font-serif text-lg">Crafted like a mechanism</div>
