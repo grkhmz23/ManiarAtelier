@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, ArrowDown, MapPin, Sparkles, X, BookOpen, Truck, Heart } from "lucide-react";
 
-import PatternShader from "@/components/ui/pattern-shader";
 import ReactorKnob from "@/components/ui/control-knob";
 import IndustrialSwitch from "@/components/ui/toggle-switch";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
@@ -616,11 +615,6 @@ export default function App() {
 
       <InstagramStoriesFloat />
 
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 watch-veil" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(214,172,84,0.08),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(228,201,124,0.06),transparent_65%)]" />
-      </div>
 
       {/* Menu Modal */}
       <motion.div

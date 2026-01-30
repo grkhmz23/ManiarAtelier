@@ -1,5 +1,4 @@
 import React from "react";
-import { ShieldShader } from "../ui/shield-shader";
 
 type AsTag = "section" | "div" | "article";
 
@@ -73,7 +72,6 @@ const WatchPanel = React.forwardRef<HTMLElement, WatchPanelProps>(
         )}
       >
         {/* Shield Shader Effect */}
-        <ShieldShader />
 
         {/* Inner glass + engraving */}
         <div className="pointer-events-none absolute inset-0 dock-panel-glass" />
