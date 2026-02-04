@@ -273,14 +273,14 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => navigateToPage("men")}
-                    className={"px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 border border-[rgba(214,172,84,0.25)] border-t-2 border-t-[rgba(244,229,167,0.12)] border-b-[4px] border-b-[rgba(0,0,0,0.9)] elevation-btn " + (currentPage === "men" ? "bg-[rgba(20,25,50,0.95)] text-[#F4E5A7] border-t-[rgba(244,229,167,0.15)]" : "bg-[rgba(20,25,50,0.9)] text-[rgba(244,229,167,0.7)] hover:bg-[rgba(30,35,60,0.95)] border-t-[rgba(244,229,167,0.1)]")}
+                    className={"px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "men" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
                   >
                     Men
                   </button>
                   <button
                     type="button"
                     onClick={() => navigateToPage("women")}
-                    className={"px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 border border-[rgba(214,172,84,0.25)] border-t-2 border-t-[rgba(244,229,167,0.12)] border-b-[4px] border-b-[rgba(0,0,0,0.9)] elevation-btn " + (currentPage === "women" ? "bg-[rgba(20,25,50,0.95)] text-[#F4E5A7] border-t-[rgba(244,229,167,0.15)]" : "bg-[rgba(20,25,50,0.9)] text-[rgba(244,229,167,0.7)] hover:bg-[rgba(30,35,60,0.95)] border-t-[rgba(244,229,167,0.1)]")}
+                    className={"px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "women" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
                   >
                     Women
                   </button>
@@ -659,8 +659,6 @@ export default function App() {
             </div>
 
             <div className="mt-8">
-              <div className="dock-kicker mb-3">Shop</div>
-              <div className="grid sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => navigateToPage("men")}
@@ -683,12 +681,6 @@ export default function App() {
                   </div>
                   <p className="dock-muted text-sm mt-2">Kaftans, skirts, sets & more</p>
                 </button>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <div className="dock-kicker mb-3">Sections</div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {MENU_ITEMS.map((item) => (
                   <button
                     key={item.id}
@@ -753,8 +745,9 @@ export default function App() {
           </div>
         </motion.div>
       </motion.div>
+    )}
 
-      {renderPage()}
+    {renderPage()}
 
       <footer className="mt-16 mx-4 md:mx-8 mb-8 rounded-[22px] md:rounded-[26px] p-8 md:p-12 dock-panel elevation-base border border-[rgba(214,172,84,0.16)] border-b-[6px] border-b-[rgba(0,0,0,0.95)] border-t-2 border-t-[rgba(244,229,167,0.25)] bg-[linear-gradient(180deg,rgba(214,172,84,0.35),rgba(214,172,84,0.25))]">
         <div className="mx-auto max-w-7xl">
@@ -766,59 +759,37 @@ export default function App() {
             <div>
               <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Shop</h4>
               <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
-                <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-[#F4E5A7]">Men</button></li>
-                <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-[#F4E5A7]">Women</button></li>
-                <li><button type="button" onClick={() => scrollToSection("collection")} className="hover:text-[#F4E5A7]">Collection</button></li>
+                <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-[#F4E5A7] transition-colors">Men's Collection</button></li>
+                <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-[#F4E5A7] transition-colors">Women's Collection</button></li>
+                <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-[#F4E5A7] transition-colors">Our Story</button></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">About</h4>
+              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Support</h4>
               <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
-                <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-[#F4E5A7]">Brand Story</button></li>
-                <li><button type="button" onClick={() => navigateToPage("craft")} className="hover:text-[#F4E5A7]">Craft & Origin</button></li>
-                <li><button type="button" onClick={() => navigateToPage("journal")} className="hover:text-[#F4E5A7]">Journal</button></li>
+                <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-[#F4E5A7] transition-colors">Shipping & Duties</button></li>
+                <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-[#F4E5A7] transition-colors">Contact Concierge</button></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Contact</h4>
-              <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
-                <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-[#F4E5A7]">Concierge</button></li>
-                <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-[#F4E5A7]">Shipping & Returns</button></li>
-              </ul>
+              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Connect</h4>
+              <div className="flex gap-4">
+                <a href="#" className="hover:text-[#F4E5A7] transition-colors">Instagram</a>
+                <a href="#" className="hover:text-[#F4E5A7] transition-colors">WhatsApp</a>
+              </div>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-[rgba(214,172,84,0.1)] flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-[rgba(244,229,167,0.4)]">© 2026 Maniar Atelier. All rights reserved.</p>
-            <div className="flex items-center gap-6 text-xs text-[rgba(244,229,167,0.4)]">
-              <span>Privacy</span>
-              <span>Terms</span>
-              <span>Instagram</span>
+          <div className="mt-12 pt-8 border-t border-[rgba(214,172,84,0.1)] flex flex-col md:flex-row justify-between gap-4 text-xs dock-muted">
+            <p>© 2026 MANIAR. All rights reserved.</p>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-[#F4E5A7] transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-[#F4E5A7] transition-colors">Terms of Service</a>
             </div>
           </div>
         </div>
       </footer>
-
-      <ProductModal
-        open={productOpen}
-        product={selectedProduct}
-        onClose={() => setProductOpen(false)}
-        onAdd={(product: Product, size: ProductSize) => {
-          addToCart(product, size, 1);
-          setProductOpen(false);
-          setCartOpen(true);
-        }}
-      />
-
-      <CartDrawer
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        lines={cartLines}
-        onInc={incLine}
-        onDec={decLine}
-        onRemove={removeLine}
-      />
-
-      <ChatDrawer open={chatOpen} onClose={() => setChatOpen(false)} />
     </div>
   );
 }
+
+export default App;
