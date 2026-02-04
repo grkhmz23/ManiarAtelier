@@ -694,7 +694,6 @@ export default function App() {
                     </div>
                   </button>
                 ))}
-              </div>
             </div>
 
             <div className="mt-8">
@@ -745,9 +744,8 @@ export default function App() {
           </div>
         </motion.div>
       </motion.div>
-    )}
 
-    {renderPage()}
+      {renderPage()}
 
       <footer className="mt-16 mx-4 md:mx-8 mb-8 rounded-[22px] md:rounded-[26px] p-8 md:p-12 dock-panel elevation-base border border-[rgba(214,172,84,0.16)] border-b-[6px] border-b-[rgba(0,0,0,0.95)] border-t-2 border-t-[rgba(244,229,167,0.25)] bg-[linear-gradient(180deg,rgba(214,172,84,0.35),rgba(214,172,84,0.25))]">
         <div className="mx-auto max-w-7xl">
@@ -792,4 +790,3 @@ export default function App() {
   );
 }
 
-export default App;
