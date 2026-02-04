@@ -93,7 +93,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
           <motion.button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-sm dock-muted hover:text-[#F4E5A7] transition-colors self-start"
+            className="inline-flex items-center gap-2 text-sm text-[#F4E5A7] hover:text-[#D6AC54] transition-colors self-start bg-[rgba(7,8,23,0.6)] px-4 py-2 rounded-xl border border-[rgba(214,172,84,0.2)]"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}

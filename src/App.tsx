@@ -7,6 +7,7 @@ import IndustrialSwitch from "@/components/ui/toggle-switch";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
 import AnimatedCardStack from "@/components/ui/animate-card-stack";
 import { CardStack, CardStackItem } from "@/components/ui/card-stack";
+import { ContainedCategoryFX } from "@/components/ui/contained-category-fx";
 import WatchDock, { DockSection } from "@/components/watch/watch-dock";
 import WatchPanel from "@/components/watch/watch-panel";
 
@@ -47,7 +48,6 @@ const MENU_ITEMS: Array<{ id: DockSection; label: string }> = [
   { id: "collection", label: "Collection" },
   { id: "atelier", label: "Atelier" },
   { id: "journal", label: "Journal" },
-
   { id: "about", label: "About" },
 ];
 
@@ -55,7 +55,6 @@ const PAGE_MENU_ITEMS: Array<{ id: PageType; label: string; icon: React.ReactNod
   { id: "brand", label: "Brand Story", icon: <Heart size={16} /> },
   { id: "craft", label: "Craft & Origin", icon: <Sparkles size={16} /> },
   { id: "shipping", label: "Shipping & Returns", icon: <Truck size={16} /> },
-
   { id: "journal", label: "Style Guides", icon: <BookOpen size={16} /> },
 ];
 
@@ -310,6 +309,25 @@ export default function App() {
             </WatchPanel>
           </div>
 
+          {/* Category Showcase */}
+          <WatchPanel
+            kicker="Materials & Heritage"
+            title="Our Categories"
+          >
+            <ContainedCategoryFX
+              sections={[
+                { id: "heritage", background: "/images/category/category1.jpg", leftLabel: "Est. 2024", title: "Heritage Textiles", rightLabel: "Marrakech" },
+                { id: "materials", background: "/images/category/category2.jpg", leftLabel: "Premium", title: "Atlas Materials", rightLabel: "Mountains" },
+                { id: "mens", background: "/images/category/category3.jpg", leftLabel: "Collection", title: "Men's Couture", rightLabel: "Timeless" },
+                { id: "womens", background: "/images/category/category4.jpg", leftLabel: "Collection", title: "Women's Elegance", rightLabel: "Graceful" },
+                { id: "craft", background: "/images/category/category5.png", leftLabel: "Handmade", title: "Craftsmanship", rightLabel: "47 Steps" },
+                { id: "story", background: "/images/category/category6.jpg", leftLabel: "Heritage", title: "Our Story", rightLabel: "Discover" },
+              ]}
+              autoAdvance={true}
+              intervalMs={4000}
+            />
+          </WatchPanel>
+
           <WatchPanel
             id="collection"
             ref={(n) => {
@@ -331,13 +349,11 @@ export default function App() {
                   className="text-left w-full block"
                 >
                   <div className="group relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.25)] bg-gradient-to-br from-[rgba(10,14,33,0.95)] via-[rgba(20,25,45,0.90)] to-[rgba(10,14,33,0.95)] shadow-2xl backdrop-blur-xl hover:border-[rgba(214,172,84,0.45)] hover:shadow-[0_0_40px_rgba(214,172,84,0.2)] transform transition-all duration-500 hover:scale-105 hover:-rotate-1 elevation-card">
-                    {/* Animated background layers */}
                     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                       <div className="absolute inset-0 bg-gradient-to-tr from-[rgba(214,172,84,0.05)] to-[rgba(244,229,167,0.10)] opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
                       <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-gradient-to-tr from-[rgba(214,172,84,0.15)] to-transparent blur-3xl opacity-30 group-hover:opacity-50 transform group-hover:scale-110 transition-all duration-700"></div>
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(244,229,167,0.08)] to-transparent transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
                     </div>
-                    {/* Corner accents */}
                     <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-[rgba(214,172,84,0.15)] to-transparent rounded-br-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                     <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-[rgba(214,172,84,0.15)] to-transparent rounded-tl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                     <img
@@ -587,8 +603,6 @@ export default function App() {
         } as React.CSSProperties
       }>
 
-      {/* Watch Glass Overlay */}
-
       <WatchDock
         section={section}
         onNavigate={scrollToSection}
@@ -602,9 +616,7 @@ export default function App() {
         setCinematic={setCinematic}
       />
 
-
       <InstagramStoriesFloat />
-
 
       {/* Menu Modal */}
       <motion.div
@@ -646,7 +658,6 @@ export default function App() {
               </button>
             </div>
 
-            {/* Shop Navigation */}
             <div className="mt-8">
               <div className="dock-kicker mb-3">Shop</div>
               <div className="grid sm:grid-cols-2 gap-3">
@@ -675,7 +686,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Section Navigation */}
             <div className="mt-8">
               <div className="dock-kicker mb-3">Sections</div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -695,7 +705,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Page Navigation */}
             <div className="mt-8">
               <div className="dock-kicker mb-3">Pages</div>
               <div className="grid sm:grid-cols-2 gap-3">
@@ -747,7 +756,6 @@ export default function App() {
 
       {renderPage()}
 
-      {/* Footer */}
       <footer className="mt-16 mx-4 md:mx-8 mb-8 rounded-[22px] md:rounded-[26px] p-8 md:p-12 dock-panel elevation-base border border-[rgba(214,172,84,0.16)] border-b-[6px] border-b-[rgba(0,0,0,0.95)] border-t-2 border-t-[rgba(244,229,167,0.25)] bg-[linear-gradient(180deg,rgba(214,172,84,0.35),rgba(214,172,84,0.25))]">
         <div className="mx-auto max-w-7xl">
           <div className="grid md:grid-cols-4 gap-8">
@@ -767,7 +775,7 @@ export default function App() {
               <h4 className="text-sm font-medium tracking-wide uppercase mb-4">About</h4>
               <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
                 <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-[#F4E5A7]">Brand Story</button></li>
-                <li><button type="button" onClick={() => navigateToPage("craft")} className="hover:text-[#F4E5A7]">Craft \& Origin</button></li>
+                <li><button type="button" onClick={() => navigateToPage("craft")} className="hover:text-[#F4E5A7]">Craft & Origin</button></li>
                 <li><button type="button" onClick={() => navigateToPage("journal")} className="hover:text-[#F4E5A7]">Journal</button></li>
               </ul>
             </div>
@@ -775,7 +783,7 @@ export default function App() {
               <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Contact</h4>
               <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
                 <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-[#F4E5A7]">Concierge</button></li>
-                <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-[#F4E5A7]">Shipping \& Returns</button></li>
+                <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-[#F4E5A7]">Shipping & Returns</button></li>
               </ul>
             </div>
           </div>
@@ -789,7 +797,6 @@ export default function App() {
           </div>
         </div>
       </footer>
-
 
       <ProductModal
         open={productOpen}
