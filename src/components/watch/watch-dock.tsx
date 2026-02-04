@@ -123,7 +123,12 @@ export default function WatchDock({
 
           <div className="relative px-4 md:px-6 h-[84px] flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 min-w-[260px]">
-              <div className="flex items-center gap-3">
+              <button 
+                type="button" 
+                onClick={() => onNavigate("hero")} 
+                className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer"
+                aria-label="Go to home"
+              >
                 <div className="h-10 w-10 rounded-full overflow-hidden border border-[rgba(214,172,84,0.18)] border-b-2 border-b-[rgba(3,4,10,0.9)] shadow-sm bg-[rgba(10,14,33,0.82)] elevation-sm">
                   <img src="/logoManiar.jpeg" alt="Maniar" className="h-full w-full object-cover" />
                 </div>
@@ -133,7 +138,7 @@ export default function WatchDock({
                     {date} · {time}
                   </div>
                 </div>
-              </div>
+              </button>
 
               <div className="hidden md:flex items-center gap-2">
                 <PusherButton className="watch-crown-btn" size="sm"

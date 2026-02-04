@@ -10,7 +10,7 @@ import { CardStack, CardStackItem } from "@/components/ui/card-stack";
 import { ContainedCategoryFX } from "@/components/ui/contained-category-fx";
 import WatchDock, { DockSection } from "@/components/watch/watch-dock";
 import WatchPanel from "@/components/watch/watch-panel";
-
+import { LandingSplash } from "@/components/landing-splash";
 import ProductModal from "@/components/shop/product-modal";
 import CartDrawer, { CartLine } from "@/components/shop/cart-drawer";
 import ChatDrawer from "@/components/chat/chat-drawer";
@@ -74,6 +74,7 @@ function cssNumber(n: number) {
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageType>("home");
+  const [showLanding, setShowLanding] = useState(true);
   const [section, setSection] = useState<DockSection>("hero");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -590,7 +591,9 @@ export default function App() {
       : "text-[rgba(244,229,167,0.6)] hover:text-[#F4E5A7] hover:bg-[rgba(214,172,84,0.08)]");
 
   return (
-    <div
+    <>
+      {showLanding && <LandingSplash onEnter={() => setShowLanding(false)} />}
+      <div
       className="min-h-screen maniar-watch"
       style={
         {
@@ -787,6 +790,7 @@ export default function App() {
         </div>
       </footer>
     </div>
+      </>
   );
 }
 
