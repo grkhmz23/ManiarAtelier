@@ -12,7 +12,7 @@ entrypoint = "src/index.tsx"
 
 [nix]
 channel = "stable-24_05"
-packages = ["psmisc", "unzipNLS", "zip"]
+packages = ["psmisc", "unzipNLS", "zip", "lsof"]
 
 [unitTest]
 language = "nodejs"

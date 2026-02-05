@@ -26,7 +26,30 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
         <SpiralAnimation />
       </div>
 
-      {/* Logo and Enter Button */}
+      {/* Logo - positioned at spiral center */}
+      <AnimatePresence>
+        {startVisible && (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 1.2, ease: [0.2, 0.8, 0.2, 1] }}
+            className="absolute z-10"
+            style={{
+              left: '44%',
+              top: '42%',
+            }}
+          >
+            <div className="absolute inset-0 blur-2xl bg-[#D6AC54]/20 rounded-full" />
+            <img
+              src="/logo-transparent.png"
+              alt="Maniar"
+              className="relative w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(214,172,84,0.3)]"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Enter Button and Subtitle */}
       <AnimatePresence>
         {startVisible && (
           <motion.div
@@ -34,24 +57,8 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 1.5, ease: [0.2, 0.8, 0.2, 1] }}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-12"
+            className="absolute left-1/2 bottom-[25%] -translate-x-1/2 z-10 flex flex-col items-center gap-8"
           >
-            {/* Maniar Logo */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 1.2, ease: [0.2, 0.8, 0.2, 1] }}
-              className="relative"
-            >
-              <div className="absolute inset-0 blur-2xl bg-[#D6AC54]/20 rounded-full" />
-              <img
-                src="/logo-transparent.png"
-                alt="Maniar"
-                className="relative w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(214,172,84,0.3)]"
-              />
-            </motion.div>
-
-            {/* Enter Button */}
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -61,10 +68,10 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
             >
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#D6AC54]/0 via-[#D6AC54]/20 to-[#D6AC54]/0 blur-xl group-hover:via-[#D6AC54]/30 transition-all duration-700" />
-              
+
               {/* Border */}
               <div className="absolute inset-0 rounded-full border border-[#D6AC54]/40 group-hover:border-[#F4E5A7]/60 transition-all duration-700" />
-              
+
               {/* Text */}
               <span className="relative text-[#F4E5A7] text-2xl md:text-3xl tracking-[0.3em] uppercase font-light group-hover:tracking-[0.4em] transition-all duration-700 group-hover:text-[#D6AC54] drop-shadow-[0_0_10px_rgba(244,229,167,0.3)]">
                 Enter
