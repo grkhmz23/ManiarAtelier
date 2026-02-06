@@ -100,7 +100,7 @@ export default function WatchDock({
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[200]">
-      <div className={cn("mx-auto w-full px-2 sm:px-4 md:px-10 h-[72px] sm:h-[84px] flex items-center")}>
+      <div className={cn("mx-auto w-full px-4 md:px-10 h-[84px] flex items-center")}>
         <motion.div
           className={cn(
             "relative w-full rounded-[30px] overflow-hidden",
@@ -121,8 +121,8 @@ export default function WatchDock({
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_90%,rgba(214,172,84,0.10),transparent_55%)]" />
           <div className="absolute inset-0 opacity-[0.10] bg-[repeating-linear-gradient(45deg,rgba(214,172,84,0.45),rgba(214,172,84,0.45)_1px,transparent_1px,transparent_12px)]" />
 
-          <div className="relative px-3 sm:px-4 md:px-6 h-[72px] sm:h-[84px] flex items-center justify-between gap-2 sm:gap-4">
-            <div className="flex items-center gap-2 sm:gap-4 min-w-0 shrink-0">
+          <div className="relative px-4 md:px-6 h-[84px] flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4 min-w-[260px]">
               <button 
                 type="button" 
                 onClick={() => onNavigate("hero")} 
@@ -167,7 +167,7 @@ export default function WatchDock({
               ))}
             </div>
 
-            <div className="flex items-center justify-end gap-1.5 sm:gap-2 min-w-0 shrink-0">
+            <div className="flex items-center justify-end gap-2 min-w-[220px]">
               <PusherButton className="watch-crown-btn" size="md"
                 onClick={onOpenChat}
                 aria-label="Open concierge chat"

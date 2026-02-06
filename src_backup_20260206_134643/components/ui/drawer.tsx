@@ -25,15 +25,11 @@ export default function Drawer({
   useEffect(() => {
     if (!open) return;
 
-    document.body.style.overflow = "hidden";
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
   return (
@@ -51,18 +47,18 @@ export default function Drawer({
           />
           <motion.div
             className={cn(
-              "absolute right-0 top-0 h-full flex flex-col",
+              "absolute right-0 top-0 h-full",
               widthClassName,
-              "bg-[rgba(7,8,23,0.96)] backdrop-blur-xl",
+              "bg-[rgba(7,8,23,0.92)]",
               "border-l border-[rgba(214,172,84,0.16)]",
               "elevation-modal",
             )}
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
+            initial={{ x: 24, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 24, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
           >
-            <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-[rgba(214,172,84,0.14)] flex items-start justify-between gap-3 shrink-0">
+            <div className="px-5 pt-5 pb-4 border-b border-[rgba(214,172,84,0.14)] flex items-start justify-between gap-3">
               <div>
                 <div className="text-[10px] tracking-[0.22em] uppercase text-[rgba(244,229,167,0.60)] font-mono">
                   Maniar Atelier
@@ -80,12 +76,12 @@ export default function Drawer({
               </button>
             </div>
 
-            <div className="px-4 sm:px-5 py-4 sm:py-5 overflow-y-auto flex-1 min-h-0">
+            <div className="px-5 py-5 overflow-y-auto h-[calc(100%-136px)]">
               {children}
             </div>
 
             {footer && (
-              <div className="px-4 sm:px-5 py-3 sm:py-4 border-t border-[rgba(214,172,84,0.14)] bg-[rgba(10,14,33,0.70)] shrink-0 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+              <div className="px-5 py-4 border-t border-[rgba(214,172,84,0.14)] bg-[rgba(10,14,33,0.70)]">
                 {footer}
               </div>
             )}

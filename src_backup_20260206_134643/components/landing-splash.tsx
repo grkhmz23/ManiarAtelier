@@ -43,7 +43,7 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
             <img
               src="/logo-transparent.png"
               alt="Maniar"
-              className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 object-contain drop-shadow-[0_0_25px_rgba(214,172,84,0.3)]"
+              className="relative w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-[0_0_25px_rgba(214,172,84,0.3)]"
             />
           </motion.div>
         )}
@@ -66,11 +66,18 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
               onClick={onEnter}
               className="group relative px-12 py-4 overflow-hidden"
             >
+              {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#D6AC54]/0 via-[#D6AC54]/20 to-[#D6AC54]/0 blur-xl group-hover:via-[#D6AC54]/30 transition-all duration-700" />
+
+              {/* Border */}
               <div className="absolute inset-0 rounded-full border border-[#D6AC54]/40 group-hover:border-[#F4E5A7]/60 transition-all duration-700" />
-              <span className="relative text-[#F4E5A7] text-xl sm:text-2xl md:text-3xl tracking-[0.2em] sm:tracking-[0.3em] uppercase font-light group-hover:tracking-[0.4em] transition-all duration-700 group-hover:text-[#D6AC54] drop-shadow-[0_0_10px_rgba(244,229,167,0.3)]">
+
+              {/* Text */}
+              <span className="relative text-[#F4E5A7] text-2xl md:text-3xl tracking-[0.3em] uppercase font-light group-hover:tracking-[0.4em] transition-all duration-700 group-hover:text-[#D6AC54] drop-shadow-[0_0_10px_rgba(244,229,167,0.3)]">
                 Enter
               </span>
+
+              {/* Animated pulse */}
               <motion.div
                 className="absolute inset-0 rounded-full border-2 border-[#D6AC54]/60"
                 animate={{
@@ -85,6 +92,7 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
               />
             </motion.button>
 
+            {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

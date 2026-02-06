@@ -259,7 +259,7 @@ export default function App() {
 
   const renderHomePage = () => (
     <main className="watch-stage">
-      <div className="pt-[88px] sm:pt-[100px] md:pt-[112px] px-3 sm:px-4 md:px-8">
+      <div className="pt-[112px] px-4 md:px-8">
         <div className="mx-auto max-w-7xl flex flex-col gap-4 md:gap-5">
           <div>
             <WatchPanel
@@ -270,36 +270,32 @@ export default function App() {
               kicker="Morocco • Est. 2026"
               title="Maniar"
               rightSlot={
-                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4">
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => navigateToPage("men")}
-                      className={"px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "men" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
-                    >
-                      Men
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => navigateToPage("women")}
-                      className={"px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "women" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
-                    >
-                      Women
-                    </button>
-                  </div>
-                  <div className="hidden md:flex items-center gap-4">
-                    <div className="w-px h-6 bg-[rgba(214,172,84,0.2)]" />
-                    <ReactorKnob
-                      label="Dial"
-                      size="md"
-                      initial={Math.round(craft * 100)}
-                      onChange={setCraft}
-                    />
-                  </div>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => navigateToPage("men")}
+                    className={"px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "men" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
+                  >
+                    Men
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigateToPage("women")}
+                    className={"px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "women" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
+                  >
+                    Women
+                  </button>
+                  <div className="w-px h-6 bg-[rgba(214,172,84,0.2)]" />
+                  <ReactorKnob
+                    label="Dial"
+                    size="md"
+                    initial={Math.round(craft * 100)}
+                    onChange={setCraft}
+                  />
                 </div>
               }
             >
-              <div className="py-4 sm:py-8 overflow-hidden">
+              <div className="py-8">
                 <CardStack
                   items={heroCards}
                   initialIndex={0}
@@ -307,8 +303,8 @@ export default function App() {
                   intervalMs={3000}
                   pauseOnHover
                   showDots
-                  cardWidth={340}
-                  cardHeight={220}
+                  cardWidth={480}
+                  cardHeight={300}
                 />
               </div>
             </WatchPanel>
@@ -341,7 +337,7 @@ export default function App() {
             kicker="New Season"
             title="The Collection"
           >
-            <div className="mb-6 sm:mb-8 -mt-8 sm:-mt-12 md:-mt-20 overflow-hidden">
+            <div className="mb-8 -mt-20">
               <AnimatedCardStack />
             </div>
 
@@ -350,7 +346,7 @@ export default function App() {
                 <button
                   key={product.id}
                   type="button"
-                  onClick={() => openProduct(product)}
+                  onClick={() => setSelectedProduct(product)}
                   className="text-left w-full block"
                 >
                   <div className="group relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.25)] bg-gradient-to-br from-[rgba(10,14,33,0.95)] via-[rgba(20,25,45,0.90)] to-[rgba(10,14,33,0.95)] shadow-2xl backdrop-blur-xl hover:border-[rgba(214,172,84,0.45)] hover:shadow-[0_0_40px_rgba(214,172,84,0.2)] transform transition-all duration-500 hover:scale-105 hover:-rotate-1 elevation-card">
@@ -641,14 +637,14 @@ export default function App() {
         />
 
         <motion.div
-          className="relative w-[min(920px,calc(100vw-16px))] sm:w-[min(920px,calc(100vw-24px))] max-h-[90vh] overflow-y-auto rounded-[20px] sm:rounded-[28px] border border-[rgba(214,172,84,0.18)] border-b-[3px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(10,14,33,0.96)] backdrop-blur-xl elevation-modal"
+          className="relative w-[min(920px,calc(100vw-24px))] max-h-[90vh] overflow-y-auto rounded-[28px] border border-[rgba(214,172,84,0.18)] border-b-[3px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(10,14,33,0.92)] elevation-modal"
           initial={false}
           animate={{ y: isMenuOpen ? 0 : 12, scale: isMenuOpen ? 1 : 0.98 }}
           transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
         >
           <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(45deg,rgba(214,172,84,0.10),rgba(214,172,84,0.10)_1px,transparent_1px,transparent_12px)]" />
 
-          <div className="relative p-4 sm:p-6 md:p-10">
+          <div className="relative p-6 md:p-10">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="dock-kicker">Maniar Navigation</div>
@@ -665,7 +661,7 @@ export default function App() {
               </button>
             </div>
 
-            <div className="mt-8 flex flex-col gap-3">
+            <div className="mt-8">
                 <button
                   type="button"
                   onClick={() => navigateToPage("men")}
@@ -754,9 +750,9 @@ export default function App() {
 
       {renderPage()}
 
-      <footer className="mt-12 sm:mt-16 mx-3 sm:mx-4 md:mx-8 mb-6 sm:mb-8 rounded-[18px] sm:rounded-[22px] md:rounded-[26px] p-5 sm:p-8 md:p-12 dock-panel elevation-base border border-[rgba(214,172,84,0.16)] border-b-[6px] border-b-[rgba(0,0,0,0.95)] border-t-2 border-t-[rgba(244,229,167,0.25)] bg-[linear-gradient(180deg,rgba(214,172,84,0.35),rgba(214,172,84,0.25))]">
+      <footer className="mt-16 mx-4 md:mx-8 mb-8 rounded-[22px] md:rounded-[26px] p-8 md:p-12 dock-panel elevation-base border border-[rgba(214,172,84,0.16)] border-b-[6px] border-b-[rgba(0,0,0,0.95)] border-t-2 border-t-[rgba(244,229,167,0.25)] bg-[linear-gradient(180deg,rgba(214,172,84,0.35),rgba(214,172,84,0.25))]">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             <div>
               <h3 className="font-serif text-xl mb-4">Maniar</h3>
               <p className="text-sm text-[rgba(244,229,167,0.6)] leading-relaxed">Moroccan heritage, modern elegance. Handcrafted garments from the Atlas mountains.</p>
@@ -794,34 +790,6 @@ export default function App() {
         </div>
       </footer>
     </div>
-
-      {/* ── Drawers & Modals (were missing from JSX!) ── */}
-      <ProductModal
-        open={productOpen}
-        product={selectedProduct}
-        onClose={() => {
-          setProductOpen(false);
-          setSelectedProduct(null);
-        }}
-        onAdd={(product, size) => {
-          addToCart(product, size);
-          setProductOpen(false);
-        }}
-      />
-
-      <CartDrawer
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        lines={cartLines}
-        onInc={incLine}
-        onDec={decLine}
-        onRemove={removeLine}
-      />
-
-      <ChatDrawer
-        open={chatOpen}
-        onClose={() => setChatOpen(false)}
-      />
       </>
   );
 }

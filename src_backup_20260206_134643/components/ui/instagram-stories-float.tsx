@@ -78,7 +78,7 @@ export default function InstagramStoriesFloat() {
 
       {/* Draggable, pinned-right launcher */}
       <motion.div
-        className="fixed right-3 sm:right-5 top-[calc(60%+44px)] sm:top-[calc(50%+44px)] -translate-y-1/2 z-[230] pointer-events-auto select-none cursor-move"
+        className="fixed right-5 top-[calc(50%+44px)] -translate-y-1/2 z-[230] pointer-events-auto select-none cursor-move"
         drag
         dragConstraints={boundsRef}
         dragElastic={0.08}

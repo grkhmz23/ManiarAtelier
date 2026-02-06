@@ -86,7 +86,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
 
   return (
     <main className="watch-stage">
-      <div className="pt-[88px] sm:pt-[100px] md:pt-[112px] px-3 sm:px-4 md:px-8 pb-12">
+      <div className="pt-[112px] px-4 md:px-8 pb-12">
         <div className="mx-auto max-w-7xl flex flex-col gap-4 md:gap-5">
 
           {/* Back Navigation */}
@@ -133,7 +133,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
               </WatchPanel>
 
               {/* Hero Images Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 md:gap-3">
+              <div className="grid grid-cols-3 gap-2 md:gap-3">
                 {HERO_IMAGES.map((img, i) => (
                   <motion.div
                     key={img}

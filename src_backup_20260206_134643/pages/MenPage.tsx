@@ -16,30 +16,30 @@ import {
   getCategoriesForGender,
 } from "@/lib/catalog";
 
-interface WomenPageProps {
+interface MenPageProps {
   onBack: () => void;
   onOpenProduct: (product: Product) => void;
   onOpenChat: () => void;
 }
 
 const HERO_IMAGES = [
-  "/images/verde-acqua.png",
-  "/images/gonna-bianca.png",
-  "/images/elegant.png",
+  "/images/model-blue-long.png",
+  "/images/nero-oro.png",
+  "/images/uomo-gilet.png",
 ];
 
-export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPageProps) {
+export default function MenPage({ onBack, onOpenProduct, onOpenChat }: MenPageProps) {
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | "all">("all");
   const [selectedSize, setSelectedSize] = useState<ProductSize | "all">("all");
   const [selectedPriceRange, setSelectedPriceRange] = useState<PriceRangeId>("all");
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
 
-  const womenProducts = useMemo(() => getProductsByGender("women"), []);
-  const womenCategories = useMemo(() => getCategoriesForGender("women"), []);
+  const menProducts = useMemo(() => getProductsByGender("men"), []);
+  const menCategories = useMemo(() => getCategoriesForGender("men"), []);
 
   const filteredProducts = useMemo(() => {
-    let products = [...womenProducts];
+    let products = [...menProducts];
 
     // Filter by category
     if (selectedCategory !== "all") {
@@ -67,7 +67,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
     }
 
     return products;
-  }, [womenProducts, selectedCategory, selectedSize, selectedPriceRange, sortBy]);
+  }, [menProducts, selectedCategory, selectedSize, selectedPriceRange, sortBy]);
 
   const activeFiltersCount = useMemo(() => {
     let count = 0;
@@ -86,7 +86,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
 
   return (
     <main className="watch-stage">
-      <div className="pt-[88px] sm:pt-[100px] md:pt-[112px] px-3 sm:px-4 md:px-8 pb-12">
+      <div className="pt-[112px] px-4 md:px-8 pb-12">
         <div className="mx-auto max-w-7xl flex flex-col gap-4 md:gap-5">
 
           {/* Back Navigation */}
@@ -103,23 +103,23 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
           </motion.button>
 
           {/* Hero Section */}
-          <WatchPanel kicker="Collection" title="Women">
+          <WatchPanel kicker="Collection" title="Men">
             <div className="grid lg:grid-cols-2 gap-4 md:gap-5 items-stretch">
 
               {/* Hero Text */}
-              <WatchPanel as="div" variant="compact" kicker="The Feminine Edit" title="Graceful Power">
+              <WatchPanel as="div" variant="compact" kicker="The Gentleman's Edit" title="Refined Presence">
                 <p className="dock-muted text-sm md:text-base leading-relaxed">
-                  Fluid silhouettes that move with intention. Kaftans that catch light like polished brass, 
-                  skirts with structure and softness in balance.
+                  Structured silhouettes meet Moroccan heritage. Each piece is built for presence—
+                  not trends. Coats that command rooms, gilets that layer with intention.
                 </p>
                 <p className="dock-muted text-sm leading-relaxed mt-3">
-                  From satin weaves to hand-finished edges, each piece is designed for presence without performance.
+                  From Atlas wool to hand-finished seams, every detail is a considered choice.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <button
                     type="button"
                     onClick={() => {
-                      const el = document.getElementById("women-products");
+                      const el = document.getElementById("men-products");
                       el?.scrollIntoView({ behavior: "smooth", block: "start" });
                     }}
                     className="dock-btn dock-btn-primary elevation-btn"
@@ -133,7 +133,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
               </WatchPanel>
 
               {/* Hero Images Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 md:gap-3">
+              <div className="grid grid-cols-3 gap-2 md:gap-3">
                 {HERO_IMAGES.map((img, i) => (
                   <motion.div
                     key={img}
@@ -144,7 +144,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
                   >
                     <img
                       src={img}
-                      alt={`Women's collection ${i + 1}`}
+                      alt={`Men's collection ${i + 1}`}
                       className="w-full h-full object-cover opacity-[0.92]"
                       loading="lazy"
                     />
@@ -188,7 +188,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
                 >
                   All
                 </button>
-                {womenCategories.map((cat) => (
+                {menCategories.map((cat) => (
                   <button
                     key={cat}
                     type="button"
@@ -307,7 +307,7 @@ export default function WomenPage({ onBack, onOpenProduct, onOpenChat }: WomenPa
           </WatchPanel>
 
           {/* Products Grid */}
-          <WatchPanel id="women-products" kicker={`${filteredProducts.length} Items`} title="Shop">
+          <WatchPanel id="men-products" kicker={`${filteredProducts.length} Items`} title="Shop">
             {filteredProducts.length === 0 ? (
               <div className="text-center py-12">
                 <p className="dock-muted text-lg">No products match your filters.</p>
