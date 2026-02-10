@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, X, BookOpen, Truck, Heart, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Truck, Heart, Sparkles } from "lucide-react";
 
 import GlassNav, { NavSection } from "@/components/ui/glass-nav";
 import GlassCard from "@/components/ui/glass-card";
 import { AtelierHero } from "@/components/home/atelier-hero";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
+import { KineticMenu } from "@/components/ui/kinetic-menu";
+import "@/components/ui/kinetic-menu.css";
 import { LandingSplash } from "@/components/landing-splash";
 import ProductModal from "@/components/shop/product-modal";
 import CartDrawer, { CartLine } from "@/components/shop/cart-drawer";
@@ -383,89 +384,16 @@ export default function App() {
 
         <InstagramStoriesFloat />
 
-        {/* ── Menu Modal ── */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              className="fixed inset-0 z-[300] flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.div className="absolute inset-0 bg-black/60 backdrop-blur-xl" onClick={() => setIsMenuOpen(false)} />
-
-              <motion.div
-                className="relative w-[min(800px,calc(100vw-24px))] max-h-[85vh] overflow-y-auto rounded-[24px] border border-white/10 bg-[#0B1026]/95 backdrop-blur-2xl shadow-[0_40px_120px_rgba(0,0,0,0.7)]"
-                initial={{ y: 16, scale: 0.97, opacity: 0 }}
-                animate={{ y: 0, scale: 1, opacity: 1 }}
-                exit={{ y: 16, scale: 0.97, opacity: 0 }}
-                transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
-              >
-                <div className="p-6 md:p-8">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">Navigation</div>
-                      <div className="mt-1 font-semibold text-2xl text-white/90">Menu</div>
-                    </div>
-                    <button type="button" onClick={() => setIsMenuOpen(false)} className="h-9 w-9 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition" aria-label="Close menu">
-                      <X size={18} />
-                    </button>
-                  </div>
-
-                  <div className="mt-6 flex flex-col gap-2">
-                    {[
-                      { label: "Men's Collection", desc: "Coats, djellabas, gilets & more", action: () => navigateToPage("men") },
-                      { label: "Women's Collection", desc: "Kaftans, skirts, sets & more", action: () => navigateToPage("women") },
-                    ].map((item) => (
-                      <button key={item.label} type="button" onClick={item.action} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="font-semibold text-lg text-white/85">{item.label}</div>
-                          <ArrowRight size={16} className="text-white/40" />
-                        </div>
-                        <p className="text-sm text-white/45 mt-1">{item.desc}</p>
-                      </button>
-                    ))}
-
-                    <div className="h-px bg-gradient-to-r from-transparent via-[#D6AC54]/20 to-transparent my-2" />
-
-                    {(["hero","collection","atelier","journal","about"] as NavSection[]).map((id) => (
-                      <button key={id} type="button" onClick={() => scrollToSection(id)} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="font-semibold text-lg text-white/85 capitalize">{id === "hero" ? "Home" : id}</div>
-                          <ArrowRight size={16} className="text-white/40" />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="mt-6">
-                    <div className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Pages</div>
-                    <div className="grid sm:grid-cols-2 gap-2">
-                      {PAGE_MENU_ITEMS.map((item) => (
-                        <button key={item.id} type="button" onClick={() => navigateToPage(item.id)} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all p-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-white/40">{item.icon}</span>
-                            <div className="font-semibold text-white/85">{item.label}</div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <button type="button" onClick={() => { setIsMenuOpen(false); setChatOpen(true); }} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                      Open Concierge
-                    </button>
-                    <button type="button" onClick={() => { setIsMenuOpen(false); setCartOpen(true); }} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                      View Cart ({cartCount})
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* ── Kinetic Menu (GSAP slide-in) ── */}
+        <KineticMenu
+          open={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          onNavigate={scrollToSection}
+          onNavigatePage={navigateToPage}
+          onOpenCart={() => setCartOpen(true)}
+          onOpenChat={() => setChatOpen(true)}
+          cartCount={cartCount}
+        />
 
         {renderPage()}
 
