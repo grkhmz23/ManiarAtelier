@@ -19,7 +19,7 @@ language = "nodejs"
 
 [deployment]
 deploymentTarget = "static"
-build = ["npm run build"]
+build = ["npm", "run", "build"]
 publicDir = "dist"
 run = ["npm run start"]
 

@@ -3,64 +3,46 @@
 @tailwind utilities;
 
 /* =============================================
-   MANIAR ATELIER — Master Stylesheet (cleaned)
-   Dark luxury: navy bg + gold accents
+   MANIAR ATELIER — Glassmorphism Stylesheet
+   Dark base (#0B1026) + white/alpha glass system
    ============================================= */
 
 :root {
-  --maniar-bg: #070817;
-  --maniar-navy-2: #0a0e21;
-  --maniar-navy-3: #161a31;
-  --maniar-ink: #f4e5a7;
-  --maniar-ink-muted: rgba(244, 229, 167, 0.72);
-  --maniar-gold: #d6ac54;
-  --maniar-gold-hi: #e4c97c;
-
-  /* Driven by App.tsx */
-  --maniar-craft: 0.37;
-  --maniar-cinema: 0.0;
-  --maniar-night: 0.0;
-  --maniar-exposure: 1.0;
-
-  /* Elevation system */
-  --elevation-color: rgba(0, 0, 0, 0.65);
-  --elevation-ambient: rgba(0, 0, 0, 0.35);
-  --elevation-gold-glow: rgba(214, 172, 84, 0.08);
+  --maniar-bg: #0B1026;
 }
 
 /* ── Reset ── */
 html, body {
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--maniar-bg);
-  color: var(--maniar-ink);
+  color: rgba(255, 255, 255, 0.9);
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Dark-themed select options */
 select option {
-  background: #0a0e21;
-  color: #f4e5a7;
+  background: #0B1026;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 ::selection {
-  background: rgba(214, 172, 84, 0.28);
+  background: rgba(244, 229, 167, 0.35);
 }
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(214, 172, 84, 0.22);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 999px;
-  border: 2px solid rgba(7, 8, 23, 0.9);
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(214, 172, 84, 0.32); }
-::-webkit-scrollbar-track { background: rgba(214, 172, 84, 0.06); }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+::-webkit-scrollbar-track { background: transparent; }
 
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
@@ -72,406 +54,13 @@ select option {
   }
 }
 
-/* =============================================
-   BASE LAYER
-   ============================================= */
-@layer base {
-  .maniar-watch {
-    background:
-      radial-gradient(circle at 50% -10%, rgba(214, 172, 84, 0.14), rgba(7, 8, 23, 0) 58%),
-      radial-gradient(circle at 40% 120%, rgba(228, 201, 124, 0.10), rgba(7, 8, 23, 0) 55%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(7, 8, 23, 0.35));
-    background-color: var(--maniar-bg);
-  }
-
-  .watch-stage {
-    position: relative;
-    isolation: isolate;
-    filter:
-      brightness(var(--maniar-exposure))
-      contrast(calc(1 + var(--maniar-cinema) * 0.22))
-      saturate(calc(1 - var(--maniar-cinema) * 0.12));
-  }
-
-  .watch-stage > * {
-    position: relative;
-    z-index: 1;
-  }
-}
-
-/* =============================================
-   COMPONENTS LAYER
-   ============================================= */
-@layer components {
-
-  /* ── Elevation: Base (outer panels) ── */
-  .elevation-base {
-    transform: translateY(0) translateZ(0);
-    box-shadow:
-      0 12px 0 -3px rgba(5, 6, 14, 0.98),
-      0 18px 0 -4px rgba(3, 4, 10, 0.95),
-      0 30px 60px -10px var(--elevation-color),
-      0 45px 80px -15px var(--elevation-ambient),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(244, 229, 167, 0.12),
-      0 0 80px -20px var(--elevation-gold-glow);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-  .elevation-base:hover {
-    box-shadow:
-      0 10px 0 -2px rgba(5, 6, 14, 0.95),
-      0 14px 0 -2px rgba(3, 4, 10, 0.9),
-      0 24px 50px -8px var(--elevation-color),
-      0 36px 70px -12px var(--elevation-ambient),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(244, 229, 167, 0.15),
-      0 0 100px -20px rgba(214, 172, 84, 0.12);
-  }
-
-  /* ── Elevation: Small ── */
-  .elevation-sm {
-    box-shadow:
-      0 4px 0 -1px rgba(5, 6, 14, 0.9),
-      0 6px 0 -1px rgba(3, 4, 10, 0.85),
-      0 12px 24px -6px var(--elevation-color),
-      0 18px 36px -8px var(--elevation-ambient),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(244, 229, 167, 0.10);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .elevation-sm:hover {
-    transform: translateY(-1px);
-  }
-
-  /* ── Elevation: Image ── */
-  .elevation-image {
-    box-shadow:
-      0 8px 0 -1px rgba(5, 6, 14, 0.98),
-      0 10px 0 -2px rgba(3, 4, 10, 0.9),
-      0 16px 32px -8px var(--elevation-color),
-      0 24px 48px -12px var(--elevation-ambient);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  /* ── Elevation: Header ── */
-  .elevation-header {
-    box-shadow:
-      0 8px 0 -2px rgba(5, 6, 14, 0.98),
-      0 12px 0 -2px rgba(3, 4, 10, 0.95),
-      0 20px 50px -10px rgba(0, 0, 0, 0.7),
-      0 35px 80px -15px rgba(0, 0, 0, 0.5),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(244, 229, 167, 0.10),
-      0 0 120px -30px rgba(214, 172, 84, 0.1);
-  }
-
-  /* ── Elevation: Button ── */
-  .elevation-btn {
-    box-shadow:
-      0 3px 0 -1px rgba(5, 6, 14, 0.9),
-      0 5px 0 -1px rgba(3, 4, 10, 0.85),
-      0 8px 16px -4px var(--elevation-color),
-      0 12px 24px -6px var(--elevation-ambient),
-      inset 0 1px 0 rgba(244, 229, 167, 0.12);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .elevation-btn:hover {
-    transform: translateY(-2px);
-    box-shadow:
-      0 5px 0 -1px rgba(5, 6, 14, 0.9),
-      0 7px 0 -1px rgba(3, 4, 10, 0.85),
-      0 12px 24px -4px var(--elevation-color),
-      0 18px 36px -6px var(--elevation-ambient),
-      inset 0 1px 0 rgba(244, 229, 167, 0.15);
-  }
-  .elevation-btn:active {
-    transform: translateY(0);
-    box-shadow:
-      0 2px 0 -1px rgba(5, 6, 14, 0.9),
-      0 3px 0 -1px rgba(3, 4, 10, 0.85),
-      0 6px 12px -4px var(--elevation-color),
-      0 8px 16px -6px var(--elevation-ambient),
-      inset 0 1px 0 rgba(244, 229, 167, 0.10);
-  }
-
-  /* ── Elevation: Modal ── */
-  .elevation-modal {
-    box-shadow:
-      0 12px 0 -2px rgba(5, 6, 14, 0.98),
-      0 18px 0 -3px rgba(3, 4, 10, 0.95),
-      0 30px 80px -15px rgba(0, 0, 0, 0.8),
-      0 50px 120px -20px rgba(0, 0, 0, 0.6),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.35),
-      inset 0 1px 0 rgba(244, 229, 167, 0.08);
-  }
-
-  /* ── Elevation: Card ── */
-  .elevation-card {
-    box-shadow:
-      0 8px 0 -1px rgba(5, 6, 14, 0.98),
-      0 12px 0 -2px rgba(3, 4, 10, 0.95),
-      0 14px 28px -6px var(--elevation-color),
-      0 20px 40px -10px var(--elevation-ambient),
-      inset 0 1px 0 rgba(244, 229, 167, 0.08);
-    border-bottom: 4px solid rgba(3, 4, 10, 0.9) !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .elevation-card:hover {
-    transform: translateY(-2px);
-  }
-
-  /* ── Dock Panel (outer sections) ── */
-  .dock-panel {
-    background:
-      linear-gradient(180deg, rgba(10, 14, 33, 0.95), rgba(7, 8, 23, 0.98));
-    border: 1px solid rgba(214, 172, 84, 0.14);
-    border-bottom: 6px solid rgba(0, 0, 0, 0.95);
-    border-top: 2px solid rgba(244, 229, 167, 0.18);
-  }
-  .dock-panel:hover {
-    transform: translateY(-2px) translateZ(0);
-  }
-
-  .dock-panel-glass {
-    background:
-      radial-gradient(circle at 25% 20%, rgba(244, 229, 167, 0.10), transparent 45%),
-      radial-gradient(circle at 80% 85%, rgba(214, 172, 84, 0.10), transparent 55%);
-    mix-blend-mode: screen;
-    opacity: 0.85;
-  }
-
-  .dock-panel-engrave {
-    background:
-      repeating-linear-gradient(45deg,
-        rgba(214, 172, 84, 0.06),
-        rgba(214, 172, 84, 0.06) 1px,
-        transparent 1px,
-        transparent 12px
-      );
-    opacity: 0.18;
-    mix-blend-mode: multiply;
-  }
-
-  /* Inner panels (compact WatchPanel variant) */
-  .dock-panel-inner {
-    background: linear-gradient(180deg, rgba(14, 18, 38, 0.95), rgba(10, 13, 28, 0.98)) !important;
-    border: 1px solid rgba(214, 172, 84, 0.12) !important;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.6) !important;
-    border-top: 1px solid rgba(244, 229, 167, 0.08) !important;
-  }
-
-  /* ── Dock Typography ── */
-  .dock-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(214, 172, 84, 0.35), transparent);
-  }
-
-  .dock-kicker {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    font-size: 10px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: rgba(244, 229, 167, 0.70);
-  }
-
-  .dock-title {
-    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    font-size: 26px;
-    line-height: 1.1;
-    font-weight: 400;
-    margin-top: 6px;
-    color: rgba(244, 229, 167, 0.95);
-  }
-
-  .dock-muted {
-    color: rgba(244, 229, 167, 0.70);
-  }
-
-  /* ── Dock Buttons ── */
-  .dock-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border-radius: 14px;
-    padding: 12px 16px;
-    border: 1px solid rgba(214, 172, 84, 0.18);
-    border-bottom: 4px solid rgba(3, 4, 10, 0.8);
-    background: rgba(10, 14, 33, 0.70);
-    transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
-    color: rgba(244, 229, 167, 0.92);
-    font-size: 14px;
-    white-space: nowrap;
-  }
-  .dock-btn:hover {
-    background: rgba(22, 26, 49, 0.80);
-  }
-
-  .dock-btn-primary {
-    background: rgba(214, 172, 84, 0.16);
-    border-color: rgba(228, 201, 124, 0.40);
-    border-bottom: 4px solid rgba(150, 110, 30, 0.6);
-  }
-  .dock-btn-primary:hover {
-    background: rgba(214, 172, 84, 0.25);
-  }
-
-  /* ── Watch Surface (chat/cart items) ── */
-  .watch-surface {
-    background: linear-gradient(180deg, rgba(10, 14, 33, 0.88), rgba(7, 8, 23, 0.92));
-    border: 1px solid rgba(214, 172, 84, 0.12);
-    border-bottom: 4px solid rgba(3, 4, 10, 0.9);
-    border-radius: 16px;
-  }
-
-  /* ── Watch Buttons ── */
-  .watch-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border-radius: 12px;
-    padding: 0 16px;
-    border: 1px solid rgba(214, 172, 84, 0.18);
-    border-bottom: 4px solid rgba(3, 4, 10, 0.8);
-    background: rgba(10, 14, 33, 0.70);
-    color: rgba(244, 229, 167, 0.90);
-    font-size: 13px;
-    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-  }
-  .watch-btn:hover {
-    background: rgba(22, 26, 49, 0.80);
-    transform: translateY(-1px);
-  }
-  .watch-btn:active {
-    transform: translateY(1px);
-    border-bottom-width: 1px;
-  }
-
-  .watch-btn-primary {
-    background: rgba(214, 172, 84, 0.18);
-    border-color: rgba(228, 201, 124, 0.45);
-    border-bottom: 4px solid rgba(150, 110, 30, 0.6);
-  }
-  .watch-btn-primary:hover {
-    background: rgba(214, 172, 84, 0.25);
-  }
-
-  /* ── Watch Chip/Badge ── */
-  .watch-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 12px;
-    border-radius: 8px;
-    background: rgba(10, 14, 33, 0.75);
-    border: 1px solid rgba(214, 172, 84, 0.16);
-    border-bottom: 4px solid rgba(3, 4, 10, 0.85);
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    color: rgba(244, 229, 167, 0.75);
-  }
-
-  /* ── Watch Crown Buttons ── */
-  .watch-crown-btn {
-    height: 42px;
-    width: 42px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(30, 35, 60, 0.95), rgba(10, 14, 30, 1));
-    border: 2px solid rgba(214, 172, 84, 0.25);
-    box-shadow:
-      0 6px 0 rgba(5, 6, 14, 0.98),
-      0 10px 20px rgba(0, 0, 0, 0.8),
-      inset 0 2px 1px rgba(244, 229, 167, 0.15);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .watch-crown-btn:hover {
-    transform: translateY(-2px);
-    border-color: rgba(214, 172, 84, 0.45);
-  }
-  .watch-crown-btn:active {
-    transform: translateY(3px);
-  }
-
-  /* ── Category FX word animation ── */
-  .category-word-mask {
-    display: inline-block;
-    overflow: hidden;
-    vertical-align: top;
-  }
-  .category-word {
-    display: inline-block;
-  }
-
-  /* ── Custom property for animated glow ── */
-  @property --panel-glow-angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-  }
-}
-
-/* =============================================
-   MOBILE RESPONSIVE
-   ============================================= */
-
-/* Touch devices: no hover transforms */
+/* ── Mobile ── */
 @media (hover: none) {
-  .dock-panel:hover,
-  .elevation-sm:hover,
-  .elevation-image:hover,
-  .elevation-card:hover,
-  .elevation-btn:hover {
-    transform: none !important;
-  }
+  .elevation-sm:hover, .elevation-card:hover, .elevation-btn:hover { transform: none !important; }
 }
 
-/* Small screens */
 @media (max-width: 639px) {
-  .dock-title {
-    font-size: 20px;
-  }
-
-  .dock-btn {
-    padding: 10px 14px;
-    font-size: 13px;
-    gap: 6px;
-    border-radius: 12px;
-  }
-
-  .watch-crown-btn {
-    height: 36px;
-    width: 36px;
-  }
-
-  /* Lighter shadows on mobile for performance */
-  .elevation-base {
-    box-shadow:
-      0 6px 0 -2px rgba(5, 6, 14, 0.98),
-      0 10px 0 -3px rgba(3, 4, 10, 0.95),
-      0 16px 32px -8px var(--elevation-color),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(244, 229, 167, 0.10);
-  }
-
-  .dock-panel {
-    border-bottom-width: 4px;
-  }
-
-  .elevation-header {
-    box-shadow:
-      0 6px 0 -2px rgba(5, 6, 14, 0.98),
-      0 8px 0 -2px rgba(3, 4, 10, 0.95),
-      0 14px 30px -8px rgba(0, 0, 0, 0.7),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(244, 229, 167, 0.10);
-  }
-}
-
-/* Medium screens */
-@media (min-width: 640px) and (max-width: 1023px) {
-  .dock-title {
-    font-size: 24px;
-  }
+  .dock-title { font-size: 20px; }
+  .dock-btn { padding: 10px 14px; font-size: 13px; }
+  .watch-crown-btn { height: 36px; width: 36px; }
 }

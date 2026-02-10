@@ -2,13 +2,15 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, ArrowDown, MapPin, Sparkles, X, BookOpen, Truck, Heart } from "lucide-react";
 
-import PatternShader from "@/components/ui/pattern-shader";
 import ReactorKnob from "@/components/ui/control-knob";
 import IndustrialSwitch from "@/components/ui/toggle-switch";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
+import AnimatedCardStack from "@/components/ui/animate-card-stack";
+import { CardStack, CardStackItem } from "@/components/ui/card-stack";
+import { ContainedCategoryFX } from "@/components/ui/contained-category-fx";
 import WatchDock, { DockSection } from "@/components/watch/watch-dock";
 import WatchPanel from "@/components/watch/watch-panel";
-
+import { LandingSplash } from "@/components/landing-splash";
 import ProductModal from "@/components/shop/product-modal";
 import CartDrawer, { CartLine } from "@/components/shop/cart-drawer";
 import ChatDrawer from "@/components/chat/chat-drawer";
@@ -56,6 +58,12 @@ const PAGE_MENU_ITEMS: Array<{ id: PageType; label: string; icon: React.ReactNod
   { id: "journal", label: "Style Guides", icon: <BookOpen size={16} /> },
 ];
 
+const heroCards: CardStackItem[] = [
+  { id: 1, title: "Heritage Craftsmanship", description: "Traditional Moroccan tailoring meets modern luxury", imageSrc: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800" },
+  { id: 2, title: "Premium Materials", description: "Sourced from the finest textile houses across Morocco", imageSrc: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800" },
+  { id: 3, title: "Timeless Design", description: "Classic silhouettes with contemporary precision", imageSrc: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800" },
+];
+
 function clamp01(n: number) {
   return Math.max(0, Math.min(1, n));
 }
@@ -66,6 +74,7 @@ function cssNumber(n: number) {
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageType>("home");
+  const [showLanding, setShowLanding] = useState(true);
   const [section, setSection] = useState<DockSection>("hero");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -250,7 +259,7 @@ export default function App() {
 
   const renderHomePage = () => (
     <main className="watch-stage">
-      <div className="pt-[112px] px-4 md:px-8">
+      <div className="pt-[88px] sm:pt-[100px] md:pt-[112px] px-3 sm:px-4 md:px-8">
         <div className="mx-auto max-w-7xl flex flex-col gap-4 md:gap-5">
           <div>
             <WatchPanel
@@ -261,81 +270,68 @@ export default function App() {
               kicker="Morocco • Est. 2026"
               title="Maniar"
               rightSlot={
-                <div className="flex items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={() => navigateToPage("men")}
-                    className={"px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 border border-[rgba(214,172,84,0.25)] border-t-2 border-t-[rgba(244,229,167,0.12)] border-b-[4px] border-b-[rgba(0,0,0,0.9)] elevation-btn " + (currentPage === "men" ? "bg-[rgba(20,25,50,0.95)] text-[#F4E5A7] border-t-[rgba(244,229,167,0.15)]" : "bg-[rgba(20,25,50,0.9)] text-[rgba(244,229,167,0.7)] hover:bg-[rgba(30,35,60,0.95)] border-t-[rgba(244,229,167,0.1)]")}
-                  >
-                    Men
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigateToPage("women")}
-                    className={"px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200 border border-[rgba(214,172,84,0.25)] border-t-2 border-t-[rgba(244,229,167,0.12)] border-b-[4px] border-b-[rgba(0,0,0,0.9)] elevation-btn " + (currentPage === "women" ? "bg-[rgba(20,25,50,0.95)] text-[#F4E5A7] border-t-[rgba(244,229,167,0.15)]" : "bg-[rgba(20,25,50,0.9)] text-[rgba(244,229,167,0.7)] hover:bg-[rgba(30,35,60,0.95)] border-t-[rgba(244,229,167,0.1)]")}
-                  >
-                    Women
-                  </button>
-                  <div className="w-px h-6 bg-[rgba(214,172,84,0.2)]" />
-                  <ReactorKnob
-                    label="Dial"
-                    size="md"
-                    initial={Math.round(craft * 100)}
-                    onChange={setCraft}
-                  />
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4">
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => navigateToPage("men")}
+                      className={"px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "men" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
+                    >
+                      Men
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigateToPage("women")}
+                      className={"px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "women" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
+                    >
+                      Women
+                    </button>
+                  </div>
+                  <div className="hidden md:flex items-center gap-4">
+                    <div className="w-px h-6 bg-[rgba(214,172,84,0.2)]" />
+                    <ReactorKnob
+                      label="Dial"
+                      size="md"
+                      initial={Math.round(craft * 100)}
+                      onChange={setCraft}
+                    />
+                  </div>
                 </div>
               }
             >
-              <div className="grid lg:grid-cols-2 gap-4 md:gap-5 items-stretch">
-                <WatchPanel as="div" variant="compact" kicker="Status" title="Instrument Mode">
-                  <div className="flex items-center gap-2 text-xs dock-muted">
-                    <MapPin size={14} />
-                    Dial-driven exposure and contrast. Dark luxury always.
-                  </div>
-
-                  <p className="mt-4 text-sm md:text-base dock-muted leading-relaxed">
-                    Old-timer luxury, modern discipline. The dial changes the ambience like a mechanical complication.
-                  </p>
-
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={() => scrollToSection("collection")}
-                      className="dock-btn dock-btn-primary elevation-btn"
-                    >
-                      Enter Collection <ArrowRight size={16} />
-                    </button>
-
-                    <button type="button" onClick={() => setChatOpen(true)} className="dock-btn elevation-btn">
-                      Ask Concierge
-                    </button>
-                  </div>
-                </WatchPanel>
-
-                <WatchPanel as="div" variant="compact" kicker="Preview" title="Signature Frame">
-                  <div className="relative rounded-2xl overflow-hidden border border-[rgba(214,172,84,0.16)] border-b-[4px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(7,8,23,0.55)] elevation-card elevation-card">
-                    <img
-                      src={CATALOG[0]?.image}
-                      alt="Signature preview"
-                      className="w-full h-[320px] md:h-[360px] object-cover opacity-[0.92]"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(250,245,230,0.85),transparent_45%)]" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="dock-divider mb-3" />
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="text-sm">
-                          <div className="font-serif text-lg">Crafted like a mechanism</div>
-                          <div className="dock-muted text-xs mt-1">Materials, balance, and durability.</div>
-                        </div>
-                        <ArrowDown size={18} className="dock-muted" />
-                      </div>
-                    </div>
-                  </div>
-                </WatchPanel>
+              <div className="py-4 sm:py-8 overflow-hidden">
+                <CardStack
+                  items={heroCards}
+                  initialIndex={0}
+                  autoAdvance
+                  intervalMs={3000}
+                  pauseOnHover
+                  showDots
+                  cardWidth={340}
+                  cardHeight={220}
+                />
               </div>
             </WatchPanel>
           </div>
+
+          {/* Category Showcase */}
+          <WatchPanel
+            kicker="Materials & Heritage"
+            title="Our Categories"
+          >
+            <ContainedCategoryFX
+              sections={[
+                { id: "heritage", background: "/images/category/category1.jpg", leftLabel: "Est. 2024", title: "Heritage Textiles", rightLabel: "Marrakech" },
+                { id: "materials", background: "/images/category/category2.jpg", leftLabel: "Premium", title: "Atlas Materials", rightLabel: "Mountains" },
+                { id: "mens", background: "/images/category/category3.jpg", leftLabel: "Collection", title: "Men's Couture", rightLabel: "Timeless" },
+                { id: "womens", background: "/images/category/category4.jpg", leftLabel: "Collection", title: "Women's Elegance", rightLabel: "Graceful" },
+                { id: "craft", background: "/images/category/category5.png", leftLabel: "Handmade", title: "Craftsmanship", rightLabel: "47 Steps" },
+                { id: "story", background: "/images/category/category6.jpg", leftLabel: "Heritage", title: "Our Story", rightLabel: "Discover" },
+              ]}
+              autoAdvance={true}
+              intervalMs={4000}
+            />
+          </WatchPanel>
 
           <WatchPanel
             id="collection"
@@ -345,38 +341,52 @@ export default function App() {
             kicker="New Season"
             title="The Collection"
           >
+            <div className="mb-6 sm:mb-8 -mt-8 sm:-mt-12 md:-mt-20 overflow-hidden">
+              <AnimatedCardStack />
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
               {CATALOG.slice(0, 4).map((product) => (
-                <WatchPanel key={product.id} as="article" variant="flush" className="p-0">
-                  <button type="button" onClick={() => openProduct(product)} className="w-full text-left">
-                    <div className="relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.16)] border-b-[4px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(7,8,23,0.55)] elevation-card elevation-card">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full aspect-[3/4] object-cover opacity-[0.95] transition-transform duration-700 hover:scale-[1.02]"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_25%_18%,rgba(244,229,167,0.10),transparent_45%)]" />
+                <button
+                  key={product.id}
+                  type="button"
+                  onClick={() => openProduct(product)}
+                  className="text-left w-full block"
+                >
+                  <div className="group relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.25)] bg-gradient-to-br from-[rgba(10,14,33,0.95)] via-[rgba(20,25,45,0.90)] to-[rgba(10,14,33,0.95)] shadow-2xl backdrop-blur-xl hover:border-[rgba(214,172,84,0.45)] hover:shadow-[0_0_40px_rgba(214,172,84,0.2)] transform transition-all duration-500 hover:scale-105 hover:-rotate-1 elevation-card">
+                    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-[rgba(214,172,84,0.05)] to-[rgba(244,229,167,0.10)] opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
+                      <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-gradient-to-tr from-[rgba(214,172,84,0.15)] to-transparent blur-3xl opacity-30 group-hover:opacity-50 transform group-hover:scale-110 transition-all duration-700"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(244,229,167,0.08)] to-transparent transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
+                    </div>
+                    <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-[rgba(214,172,84,0.15)] to-transparent rounded-br-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-[rgba(214,172,84,0.15)] to-transparent rounded-tl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full aspect-[3/4] object-cover opacity-[0.95] transition-transform duration-700 hover:scale-[1.02]"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_25%_18%,rgba(244,229,167,0.10),transparent_45%)]" />
 
-                      {product.badge ? (
-                        <div className="absolute top-4 left-4 rounded-full px-3 py-1 bg-[rgba(10,14,33,0.85)] border border-[rgba(214,172,84,0.22)] border-b-[2px] border-b-[rgba(3,4,10,0.9)] elevation-sm text-[10px] font-mono tracking-[0.22em] uppercase elevation-card">
-                          {product.badge}
-                        </div>
-                      ) : null}
+                    {product.badge ? (
+                      <div className="absolute top-4 left-4 rounded-full px-3 py-1 bg-[rgba(10,14,33,0.85)] border border-[rgba(214,172,84,0.22)] border-b-[2px] border-b-[rgba(3,4,10,0.9)] elevation-sm text-[10px] font-mono tracking-[0.22em] uppercase elevation-card">
+                        {product.badge}
+                      </div>
+                    ) : null}
 
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <div className="dock-divider mb-3" />
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <div className="font-serif text-lg leading-tight">{product.name}</div>
-                            <div className="dock-muted text-sm mt-1">{formatEUR(product.priceEUR)}</div>
-                          </div>
-                          <ArrowRight size={18} className="dock-muted shrink-0 mt-1" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <div className="dock-divider mb-3" />
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="font-serif text-lg leading-tight">{product.name}</div>
+                          <div className="dock-muted text-sm mt-1">{formatEUR(product.priceEUR)}</div>
                         </div>
+                        <ArrowRight size={18} className="dock-muted shrink-0 mt-1" />
                       </div>
                     </div>
-                  </button>
-                </WatchPanel>
+                  </div>
+                </button>
               ))}
             </div>
 
@@ -585,7 +595,9 @@ export default function App() {
       : "text-[rgba(244,229,167,0.6)] hover:text-[#F4E5A7] hover:bg-[rgba(214,172,84,0.08)]");
 
   return (
-    <div
+    <>
+      {showLanding && <LandingSplash onEnter={() => setShowLanding(false)} />}
+      <div
       className="min-h-screen maniar-watch"
       style={
         {
@@ -597,8 +609,6 @@ export default function App() {
           "--maniar-exposure": cssNumber(exposure),
         } as React.CSSProperties
       }>
-
-      {/* Watch Glass Overlay */}
 
       <WatchDock
         section={section}
@@ -613,14 +623,7 @@ export default function App() {
         setCinematic={setCinematic}
       />
 
-
       <InstagramStoriesFloat />
-
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 watch-veil" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(214,172,84,0.10),transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(228,201,124,0.08),transparent_60%)]" />
-      </div>
 
       {/* Menu Modal */}
       <motion.div
@@ -638,14 +641,14 @@ export default function App() {
         />
 
         <motion.div
-          className="relative w-[min(920px,calc(100vw-24px))] max-h-[90vh] overflow-y-auto rounded-[28px] border border-[rgba(214,172,84,0.18)] border-b-[3px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(10,14,33,0.92)] elevation-modal"
+          className="relative w-[min(920px,calc(100vw-16px))] sm:w-[min(920px,calc(100vw-24px))] max-h-[90vh] overflow-y-auto rounded-[20px] sm:rounded-[28px] border border-[rgba(214,172,84,0.18)] border-b-[3px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(10,14,33,0.96)] backdrop-blur-xl elevation-modal"
           initial={false}
           animate={{ y: isMenuOpen ? 0 : 12, scale: isMenuOpen ? 1 : 0.98 }}
           transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
         >
           <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(45deg,rgba(214,172,84,0.10),rgba(214,172,84,0.10)_1px,transparent_1px,transparent_12px)]" />
 
-          <div className="relative p-6 md:p-10">
+          <div className="relative p-4 sm:p-6 md:p-10">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="dock-kicker">Maniar Navigation</div>
@@ -662,10 +665,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* Shop Navigation */}
-            <div className="mt-8">
-              <div className="dock-kicker mb-3">Shop</div>
-              <div className="grid sm:grid-cols-2 gap-3">
+            <div className="mt-8 flex flex-col gap-3">
                 <button
                   type="button"
                   onClick={() => navigateToPage("men")}
@@ -688,13 +688,6 @@ export default function App() {
                   </div>
                   <p className="dock-muted text-sm mt-2">Kaftans, skirts, sets & more</p>
                 </button>
-              </div>
-            </div>
-
-            {/* Section Navigation */}
-            <div className="mt-8">
-              <div className="dock-kicker mb-3">Sections</div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {MENU_ITEMS.map((item) => (
                   <button
                     key={item.id}
@@ -708,10 +701,8 @@ export default function App() {
                     </div>
                   </button>
                 ))}
-              </div>
             </div>
 
-            {/* Page Navigation */}
             <div className="mt-8">
               <div className="dock-kicker mb-3">Pages</div>
               <div className="grid sm:grid-cols-2 gap-3">
@@ -763,10 +754,9 @@ export default function App() {
 
       {renderPage()}
 
-      {/* Footer */}
-      <footer className="mt-16 mx-4 md:mx-8 mb-8 rounded-[22px] md:rounded-[26px] p-8 md:p-12 dock-panel elevation-base border border-[rgba(214,172,84,0.16)] border-b-[6px] border-b-[rgba(0,0,0,0.95)] border-t-2 border-t-[rgba(244,229,167,0.25)] bg-[linear-gradient(180deg,rgba(214,172,84,0.35),rgba(214,172,84,0.25))]">
+      <footer className="mt-12 sm:mt-16 mx-3 sm:mx-4 md:mx-8 mb-6 sm:mb-8 rounded-[18px] sm:rounded-[22px] md:rounded-[26px] p-5 sm:p-8 md:p-12 dock-panel elevation-base border border-[rgba(214,172,84,0.16)] border-b-[6px] border-b-[rgba(0,0,0,0.95)] border-t-2 border-t-[rgba(244,229,167,0.25)] bg-[linear-gradient(180deg,rgba(214,172,84,0.35),rgba(214,172,84,0.25))]">
         <div className="mx-auto max-w-7xl">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             <div>
               <h3 className="font-serif text-xl mb-4">Maniar</h3>
               <p className="text-sm text-[rgba(244,229,167,0.6)] leading-relaxed">Moroccan heritage, modern elegance. Handcrafted garments from the Atlas mountains.</p>
@@ -774,47 +764,48 @@ export default function App() {
             <div>
               <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Shop</h4>
               <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
-                <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-[#F4E5A7]">Men</button></li>
-                <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-[#F4E5A7]">Women</button></li>
-                <li><button type="button" onClick={() => scrollToSection("collection")} className="hover:text-[#F4E5A7]">Collection</button></li>
+                <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-[#F4E5A7] transition-colors">Men's Collection</button></li>
+                <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-[#F4E5A7] transition-colors">Women's Collection</button></li>
+                <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-[#F4E5A7] transition-colors">Our Story</button></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">About</h4>
+              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Support</h4>
               <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
-                <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-[#F4E5A7]">Brand Story</button></li>
-                <li><button type="button" onClick={() => navigateToPage("craft")} className="hover:text-[#F4E5A7]">Craft \& Origin</button></li>
-                <li><button type="button" onClick={() => navigateToPage("journal")} className="hover:text-[#F4E5A7]">Journal</button></li>
+                <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-[#F4E5A7] transition-colors">Shipping & Duties</button></li>
+                <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-[#F4E5A7] transition-colors">Contact Concierge</button></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Contact</h4>
-              <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
-                <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-[#F4E5A7]">Concierge</button></li>
-                <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-[#F4E5A7]">Shipping \& Returns</button></li>
-              </ul>
+              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Connect</h4>
+              <div className="flex gap-4">
+                <a href="#" className="hover:text-[#F4E5A7] transition-colors">Instagram</a>
+                <a href="#" className="hover:text-[#F4E5A7] transition-colors">WhatsApp</a>
+              </div>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-[rgba(214,172,84,0.1)] flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-[rgba(244,229,167,0.4)]">© 2026 Maniar Atelier. All rights reserved.</p>
-            <div className="flex items-center gap-6 text-xs text-[rgba(244,229,167,0.4)]">
-              <span>Privacy</span>
-              <span>Terms</span>
-              <span>Instagram</span>
+          <div className="mt-12 pt-8 border-t border-[rgba(214,172,84,0.1)] flex flex-col md:flex-row justify-between gap-4 text-xs dock-muted">
+            <p>© 2026 MANIAR. All rights reserved.</p>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-[#F4E5A7] transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-[#F4E5A7] transition-colors">Terms of Service</a>
             </div>
           </div>
         </div>
       </footer>
+    </div>
 
-
+      {/* ── Drawers & Modals (were missing from JSX!) ── */}
       <ProductModal
         open={productOpen}
         product={selectedProduct}
-        onClose={() => setProductOpen(false)}
-        onAdd={(product: Product, size: ProductSize) => {
-          addToCart(product, size, 1);
+        onClose={() => {
           setProductOpen(false);
-          setCartOpen(true);
+          setSelectedProduct(null);
+        }}
+        onAdd={(product, size) => {
+          addToCart(product, size);
+          setProductOpen(false);
         }}
       />
 
@@ -827,7 +818,11 @@ export default function App() {
         onRemove={removeLine}
       />
 
-      <ChatDrawer open={chatOpen} onClose={() => setChatOpen(false)} />
-    </div>
+      <ChatDrawer
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+      />
+      </>
   );
 }
+

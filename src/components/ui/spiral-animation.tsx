@@ -1,405 +1,398 @@
-'use client'
-import { useEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
+"use client";
 
-// Vector utility classes
-class Vector2D {
-    constructor(public x: number, public y: number) {}
-    
-    static random(min: number, max: number): number {
-        return min + Math.random() * (max - min)
-    }
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+type Mode = "sequence" | "text" | "logo";
+type Stage = "storm" | "formLogo" | "settle" | "done";
+
+type SpiralAnimationProps = {
+  mode?: Mode;
+  text?: string;
+  logoSrc?: string;
+  className?: string;
+  onStageChange?: (stage: Stage) => void;
+};
+
+type Pt = { x: number; y: number };
+
+function clamp(v: number, a: number, b: number) {
+  return Math.max(a, Math.min(b, v));
 }
 
-class Vector3D {
-    constructor(public x: number, public y: number, public z: number) {}
-    
-    static random(min: number, max: number): number {
-        return min + Math.random() * (max - min)
-    }
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
-// Animation controller
-class AnimationController {
-    private timeline: gsap.core.Timeline
-    private time = 0
-    private canvas: HTMLCanvasElement
-    private ctx: CanvasRenderingContext2D
-    private dpr: number
-    private size: number
-    private stars: Star[] = []
-    
-    private readonly changeEventTime = 0.32
-    private readonly cameraZ = -400
-    private readonly cameraTravelDistance = 3400
-    private readonly startDotYOffset = 28
-    private readonly viewZoom = 100
-    private readonly numberOfStars = 5000
-    private readonly trailLength = 80
-    
-    // Maniar branding colors
-    private readonly brandColor = 'rgba(214, 172, 84, 1)' // Gold
-    private readonly accentColor = 'rgba(244, 229, 167, 1)' // Cream
-    
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, dpr: number, size: number) {
-        this.canvas = canvas
-        this.ctx = ctx
-        this.dpr = dpr
-        this.size = size
-        this.timeline = gsap.timeline({ repeat: -1 })
-        
-        this.setupRandomGenerator()
-        this.createStars()
-        this.setupTimeline()
-    }
-    
-    private setupRandomGenerator() {
-        const originalRandom = Math.random
-        const customRandom = () => {
-            let seed = 1234
-            return () => {
-                seed = (seed * 9301 + 49297) % 233280
-                return seed / 233280
-            }
-        }
-        
-        Math.random = customRandom()
-        this.createStars()
-        Math.random = originalRandom
-    }
-    
-    private createStars() {
-        for (let i = 0; i < this.numberOfStars; i++) {
-            this.stars.push(new Star(this.cameraZ, this.cameraTravelDistance))
-        }
-    }
-    
-    private setupTimeline() {
-        this.timeline
-            .to(this, {
-                time: 1,
-                duration: 15,
-                repeat: -1,
-                ease: "none",
-                onUpdate: () => this.render()
-            })
-    }
-    
-    public ease(p: number, g: number): number {
-        if (p < 0.5) 
-            return 0.5 * Math.pow(2 * p, g)
-        else
-            return 1 - 0.5 * Math.pow(2 * (1 - p), g)
-    }
-    
-    public easeOutElastic(x: number): number {
-        const c4 = (2 * Math.PI) / 4.5
-        if (x <= 0) return 0
-        if (x >= 1) return 1
-        return Math.pow(2, -8 * x) * Math.sin((x * 8 - 0.75) * c4) + 1
-    }
-    
-    public map(value: number, start1: number, stop1: number, start2: number, stop2: number): number {
-        return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1))
-    }
-    
-    public constrain(value: number, min: number, max: number): number {
-        return Math.min(Math.max(value, min), max)
-    }
-    
-    public lerp(start: number, end: number, t: number): number {
-        return start * (1 - t) + end * t
-    }
-    
-    public spiralPath(p: number): Vector2D {
-        p = this.constrain(1.2 * p, 0, 1)
-        p = this.ease(p, 1.8)
-        const numberOfSpiralTurns = 6
-        const theta = 2 * Math.PI * numberOfSpiralTurns * Math.sqrt(p)
-        const r = 170 * Math.sqrt(p)
-        
-        return new Vector2D(
-            r * Math.cos(theta),
-            r * Math.sin(theta) + this.startDotYOffset
-        )
-    }
-    
-    public rotate(v1: Vector2D, v2: Vector2D, p: number, orientation: boolean): Vector2D {
-        const middle = new Vector2D(
-            (v1.x + v2.x) / 2,
-            (v1.y + v2.y) / 2
-        )
-        
-        const dx = v1.x - middle.x
-        const dy = v1.y - middle.y
-        const angle = Math.atan2(dy, dx)
-        const o = orientation ? -1 : 1
-        const r = Math.sqrt(dx * dx + dy * dy)
-        
-        const bounce = Math.sin(p * Math.PI) * 0.05 * (1 - p)
-        
-        return new Vector2D(
-            middle.x + r * (1 + bounce) * Math.cos(angle + o * Math.PI * this.easeOutElastic(p)),
-            middle.y + r * (1 + bounce) * Math.sin(angle + o * Math.PI * this.easeOutElastic(p))
-        )
-    }
-    
-    public showProjectedDot(position: Vector3D, sizeFactor: number) {
-        const t2 = this.constrain(this.map(this.time, this.changeEventTime, 1, 0, 1), 0, 1)
-        const newCameraZ = this.cameraZ + this.ease(Math.pow(t2, 1.2), 1.8) * this.cameraTravelDistance
-        
-        if (position.z > newCameraZ) {
-            const dotDepthFromCamera = position.z - newCameraZ
-            
-            const x = this.viewZoom * position.x / dotDepthFromCamera
-            const y = this.viewZoom * position.y / dotDepthFromCamera
-            const sw = 400 * sizeFactor / dotDepthFromCamera
-            
-            this.ctx.lineWidth = sw
-            this.ctx.beginPath()
-            this.ctx.arc(x, y, 0.5, 0, Math.PI * 2)
-            this.ctx.fill()
-        }
-    }
-    
-    private drawStartDot() {
-        if (this.time > this.changeEventTime) {
-            const dy = this.cameraZ * this.startDotYOffset / this.viewZoom
-            const position = new Vector3D(0, dy, this.cameraTravelDistance)
-            this.showProjectedDot(position, 2.5)
-        }
-    }
-    
-    public render() {
-        const ctx = this.ctx
-        if (!ctx) return
-        
-        // Background - dark Maniar color
-        ctx.fillStyle = '#070817'
-        ctx.fillRect(0, 0, this.size, this.size)
-        
-        ctx.save()
-        ctx.translate(this.size / 2, this.size / 2)
-        
-        const t1 = this.constrain(this.map(this.time, 0, this.changeEventTime + 0.25, 0, 1), 0, 1)
-        const t2 = this.constrain(this.map(this.time, this.changeEventTime, 1, 0, 1), 0, 1)
-        
-        ctx.rotate(-Math.PI * this.ease(t2, 2.7))
-        
-        this.drawTrail(t1)
-        
-        // Stars in gold color
-        ctx.fillStyle = this.brandColor
-        for (const star of this.stars) {
-            star.render(t1, this)
-        }
-        
-        this.drawStartDot()
-        
-        ctx.restore()
-    }
-    
-    private drawTrail(t1: number) {
-        for (let i = 0; i < this.trailLength; i++) {
-            const f = this.map(i, 0, this.trailLength, 1.1, 0.1)
-            const sw = (1.3 * (1 - t1) + 3.0 * Math.sin(Math.PI * t1)) * f
-            
-            // Gradient from gold to cream
-            const alpha = this.map(i, 0, this.trailLength, 1, 0.3)
-            this.ctx.fillStyle = `rgba(214, 172, 84, ${alpha})`
-            this.ctx.lineWidth = sw
-            
-            const pathTime = t1 - 0.00015 * i
-            const position = this.spiralPath(pathTime)
-            
-            const basePos = position
-            const offset = new Vector2D(position.x + 5, position.y + 5)
-            const rotated = this.rotate(
-                basePos, 
-                offset, 
-                Math.sin(this.time * Math.PI * 2) * 0.5 + 0.5, 
-                i % 2 === 0
-            )
-            
-            this.ctx.beginPath()
-            this.ctx.arc(rotated.x, rotated.y, sw / 2, 0, Math.PI * 2)
-            this.ctx.fill()
-        }
-    }
-    
-    public pause() {
-        this.timeline.pause()
-    }
-    
-    public resume() {
-        this.timeline.play()
-    }
-    
-    public destroy() {
-        this.timeline.kill()
-    }
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
 }
 
-class Star {
-    private dx: number
-    private dy: number
-    private spiralLocation: number
-    private strokeWeightFactor: number
-    private z: number
-    private angle: number
-    private distance: number
-    private rotationDirection: number
-    private expansionRate: number
-    private finalScale: number
-    
-    constructor(cameraZ: number, cameraTravelDistance: number) {
-        this.angle = Math.random() * Math.PI * 2
-        this.distance = 30 * Math.random() + 15
-        this.rotationDirection = Math.random() > 0.5 ? 1 : -1
-        this.expansionRate = 1.2 + Math.random() * 0.8
-        this.finalScale = 0.7 + Math.random() * 0.6
-        
-        this.dx = this.distance * Math.cos(this.angle)
-        this.dy = this.distance * Math.sin(this.angle)
-        
-        this.spiralLocation = (1 - Math.pow(1 - Math.random(), 3.0)) / 1.3
-        this.z = Vector2D.random(0.5 * cameraZ, cameraTravelDistance + cameraZ)
-        
-        const lerp = (start: number, end: number, t: number) => start * (1 - t) + end * t
-        this.z = lerp(this.z, cameraTravelDistance / 2, 0.3 * this.spiralLocation)
-        this.strokeWeightFactor = Math.pow(Math.random(), 2.0)
+function extractPointsFromImageData(
+  data: Uint8ClampedArray,
+  w: number,
+  h: number,
+  step: number,
+  alphaThreshold: number,
+  useBrightness = false
+): Pt[] {
+  const pts: Pt[] = [];
+  for (let y = 0; y < h; y += step) {
+    for (let x = 0; x < w; x += step) {
+      const i = (y * w + x) * 4;
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const a = data[i + 3];
+      if (useBrightness) {
+        if (a >= 30 && (r + g + b) > 100) pts.push({ x, y });
+      } else {
+        if (a >= alphaThreshold) pts.push({ x, y });
+      }
     }
-    
-    render(p: number, controller: AnimationController) {
-        const spiralPos = controller.spiralPath(this.spiralLocation)
-        const q = p - this.spiralLocation
-        
-        if (q > 0) {
-            const displacementProgress = controller.constrain(4 * q, 0, 1)
-            
-            const linearEasing = displacementProgress;
-            const elasticEasing = controller.easeOutElastic(displacementProgress);
-            const powerEasing = Math.pow(displacementProgress, 2);
-            
-            let easing;
-            if (displacementProgress < 0.3) {
-                easing = controller.lerp(linearEasing, powerEasing, displacementProgress / 0.3);
-            } else if (displacementProgress < 0.7) {
-                const t = (displacementProgress - 0.3) / 0.4;
-                easing = controller.lerp(powerEasing, elasticEasing, t);
-            } else {
-                easing = elasticEasing;
-            }
-            
-            let screenX, screenY;
-            
-            if (displacementProgress < 0.3) {
-                screenX = controller.lerp(spiralPos.x, spiralPos.x + this.dx * 0.3, easing / 0.3);
-                screenY = controller.lerp(spiralPos.y, spiralPos.y + this.dy * 0.3, easing / 0.3);
-            } else if (displacementProgress < 0.7) {
-                const midProgress = (displacementProgress - 0.3) / 0.4;
-                const curveStrength = Math.sin(midProgress * Math.PI) * this.rotationDirection * 1.5;
-                
-                const baseX = spiralPos.x + this.dx * 0.3;
-                const baseY = spiralPos.y + this.dy * 0.3;
-                
-                const targetX = spiralPos.x + this.dx * 0.7;
-                const targetY = spiralPos.y + this.dy * 0.7;
-                
-                const perpX = -this.dy * 0.4 * curveStrength;
-                const perpY = this.dx * 0.4 * curveStrength;
-                
-                screenX = controller.lerp(baseX, targetX, midProgress) + perpX * midProgress;
-                screenY = controller.lerp(baseY, targetY, midProgress) + perpY * midProgress;
-            } else {
-                const finalProgress = (displacementProgress - 0.7) / 0.3;
-                
-                const baseX = spiralPos.x + this.dx * 0.7;
-                const baseY = spiralPos.y + this.dy * 0.7;
-                
-                const targetDistance = this.distance * this.expansionRate * 1.5;
-                const spiralTurns = 1.2 * this.rotationDirection;
-                const spiralAngle = this.angle + spiralTurns * finalProgress * Math.PI;
-                
-                const targetX = spiralPos.x + targetDistance * Math.cos(spiralAngle);
-                const targetY = spiralPos.y + targetDistance * Math.sin(spiralAngle);
-                
-                screenX = controller.lerp(baseX, targetX, finalProgress);
-                screenY = controller.lerp(baseY, targetY, finalProgress);
-            }
-            
-            const vx = (this.z - controller['cameraZ']) * screenX / controller['viewZoom'];
-            const vy = (this.z - controller['cameraZ']) * screenY / controller['viewZoom'];
-            
-            const position = new Vector3D(vx, vy, this.z);
-            
-            let sizeMultiplier = 1.0;
-            if (displacementProgress < 0.6) {
-                sizeMultiplier = 1.0 + displacementProgress * 0.2;
-            } else {
-                const t = (displacementProgress - 0.6) / 0.4;
-                sizeMultiplier = 1.2 * (1.0 - t) + this.finalScale * t;
-            }
-            
-            const dotSize = 8.5 * this.strokeWeightFactor * sizeMultiplier;
-            
-            controller.showProjectedDot(position, dotSize);
-        }
-    }
+  }
+  return pts;
 }
 
-export function SpiralAnimation() {
-    const canvasRef = useRef<HTMLCanvasElement>(null)
-    const animationRef = useRef<AnimationController | null>(null)
-    const [dimensions, setDimensions] = useState({ width: typeof window !== 'undefined' ? window.innerWidth : 1920, height: typeof window !== 'undefined' ? window.innerHeight : 1080 })
-    
-    useEffect(() => {
-        const handleResize = () => {
-            setDimensions({
-                width: window.innerWidth,
-                height: window.innerHeight
-            })
+function drawCenteredContain(
+  ctx: CanvasRenderingContext2D,
+  img: HTMLImageElement,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+) {
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+  const s = Math.min(w / iw, h / ih);
+  const dw = iw * s;
+  const dh = ih * s;
+  const dx = x + (w - dw) / 2;
+  const dy = y + (h - dh) / 2;
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
+
+class Particle {
+  x = 0;
+  y = 0;
+  vx = 0;
+  vy = 0;
+  tx = 0;
+  ty = 0;
+  seed = Math.random() * 1000;
+  size = 1;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+    this.size = 0.3 + Math.random() * 0.6;
+  }
+
+  setTarget(p: Pt) {
+    this.tx = p.x;
+    this.ty = p.y;
+  }
+
+  step(dt: number, k: number, damping: number, swirl: number, cx: number, cy: number, t: number) {
+    const ax = (this.tx - this.x) * k;
+    const ay = (this.ty - this.y) * k;
+    const dx = this.x - cx;
+    const dy = this.y - cy;
+    const ang = Math.atan2(dy, dx) + 1.2 * Math.sin((t + this.seed) * 0.35);
+    const s = swirl / (1 + Math.sqrt(dx * dx + dy * dy) * 0.01);
+    this.vx += (ax + Math.cos(ang) * s) * dt;
+    this.vy += (ay + Math.sin(ang) * s) * dt;
+    this.vx *= damping;
+    this.vy *= damping;
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+  }
+}
+
+type PhaseName = "storm" | "formLogo" | "settle" | "done";
+
+type Phase = {
+  name: PhaseName;
+  duration: number;
+};
+
+export function SpiralAnimation({
+  mode = "sequence",
+  logoSrc = "/logo-transparent.png",
+  className,
+  onStageChange,
+}: SpiralAnimationProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const stageRef = useRef<Stage>("storm");
+  const callbackRef = useRef(onStageChange);
+  callbackRef.current = onStageChange;
+  const [ready, setReady] = useState(false);
+
+  const phases: Phase[] = useMemo(() => {
+    if (mode === "logo") return [{ name: "formLogo" as const, duration: 9999 }];
+    return [
+      { name: "storm" as const, duration: 0.8 },
+      { name: "formLogo" as const, duration: 0.7 },
+      { name: "settle" as const, duration: 0.5 },
+      { name: "done" as const, duration: 9999 },
+    ];
+  }, [mode]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    let mounted = true;
+    const reduce = prefersReducedMotion();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const resize = () => {
+      const parent = canvas.parentElement;
+      const w = parent?.clientWidth ?? window.innerWidth;
+      const h = parent?.clientHeight ?? window.innerHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    if (canvas.parentElement) ro.observe(canvas.parentElement);
+
+    const off = document.createElement("canvas");
+    const offCtx = off.getContext("2d", { willReadFrequently: true });
+    if (!offCtx) return;
+
+    let logoImg: HTMLImageElement | null = null;
+    let particles: Particle[] = [];
+    let ptsLogo: Pt[] = [];
+    let phaseIndex = 0;
+    let phaseT = 0;
+
+    const gold = "rgba(214, 172, 84, 1)";
+    const bg = "#0B1026";
+
+    function emitStage(name: PhaseName) {
+      if (stageRef.current !== name) {
+        stageRef.current = name;
+        callbackRef.current?.(name);
+      }
+    }
+
+    function buildLogoPoints(w: number, h: number) {
+      off.width = w;
+      off.height = h;
+      offCtx!.clearRect(0, 0, w, h);
+
+      const ornSize = Math.min(w * 0.4, h * 0.5);
+      const ox = (w - ornSize) / 2;
+      const oy = h * 0.08;
+
+      if (logoImg) {
+        drawCenteredContain(offCtx!, logoImg, ox, oy, ornSize, ornSize);
+      }
+
+      // "MANIAR"
+      const maniarY = oy + ornSize + h * 0.03;
+      const maniarSize = Math.floor(Math.min(w * 0.09, 64));
+      offCtx!.fillStyle = "white";
+      offCtx!.textBaseline = "top";
+      offCtx!.font = "600 " + maniarSize + "px ui-serif, Georgia, serif";
+
+      const mChars = "MANIAR".split("");
+      const mSpacing = maniarSize * 0.28;
+      let mTotal = 0;
+      for (const c of mChars) mTotal += offCtx!.measureText(c).width;
+      mTotal += mSpacing * (mChars.length - 1);
+      let mx = w / 2 - mTotal / 2;
+      for (const c of mChars) {
+        offCtx!.fillText(c, mx, maniarY);
+        mx += offCtx!.measureText(c).width + mSpacing;
+      }
+
+      // "ATELIER"
+      const atelierY = maniarY + maniarSize * 1.2;
+      const atelierSize = Math.floor(maniarSize * 0.38);
+      offCtx!.font = "300 " + atelierSize + "px ui-serif, Georgia, serif";
+
+      const aChars = "ATELIER".split("");
+      const aSpacing = atelierSize * 0.5;
+      let aTotal = 0;
+      for (const c of aChars) aTotal += offCtx!.measureText(c).width;
+      aTotal += aSpacing * (aChars.length - 1);
+      let ax = w / 2 - aTotal / 2;
+      for (const c of aChars) {
+        offCtx!.fillText(c, ax, atelierY);
+        ax += offCtx!.measureText(c).width + aSpacing;
+      }
+
+      // Decorative lines
+      const lineY = atelierY + atelierSize * 0.5;
+      offCtx!.strokeStyle = "white";
+      offCtx!.lineWidth = 1.5;
+      offCtx!.beginPath();
+      offCtx!.moveTo(w / 2 - aTotal / 2 - 12 - maniarSize, lineY);
+      offCtx!.lineTo(w / 2 - aTotal / 2 - 12, lineY);
+      offCtx!.moveTo(w / 2 + aTotal / 2 + 12, lineY);
+      offCtx!.lineTo(w / 2 + aTotal / 2 + 12 + maniarSize, lineY);
+      offCtx!.stroke();
+
+      const imgData = offCtx!.getImageData(0, 0, w, h);
+      const logoStep = w < 520 ? 2 : 1;
+      ptsLogo = extractPointsFromImageData(imgData.data, w, h, logoStep, 15, true);
+    }
+
+    function assignTargets(points: Pt[], w: number, h: number) {
+      if (!points.length) return;
+      const maxParticles = reduce ? 4500 : w < 520 ? 7800 : 22750;
+      const n = Math.min(points.length, maxParticles);
+      if (particles.length !== n) {
+        particles = [];
+        const cx = w / 2;
+        const cy = h / 2;
+        for (let i = 0; i < n; i++) {
+          const a = i * 0.18;
+          const r = 8 + (i / n) * Math.min(w, h) * 0.45;
+          const px = cx + Math.cos(a) * r + (Math.random() - 0.5) * 14;
+          const py = cy + Math.sin(a) * r + (Math.random() - 0.5) * 14;
+          particles.push(new Particle(px, py));
         }
-        
-        handleResize()
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
-    }, [])
-    
-    useEffect(() => {
-        const canvas = canvasRef.current
-        if (!canvas) return
-        
-        const ctx = canvas.getContext('2d')
-        if (!ctx) return
-        
-        const dpr = window.devicePixelRatio || 1
-        const size = Math.max(dimensions.width, dimensions.height)
-        
-        canvas.width = size * dpr
-        canvas.height = size * dpr
-        
-        canvas.style.width = `${dimensions.width}px`
-        canvas.style.height = `${dimensions.height}px`
-        
-        ctx.scale(dpr, dpr)
-        
-        animationRef.current = new AnimationController(canvas, ctx, dpr, size)
-        
-        return () => {
-            if (animationRef.current) {
-                animationRef.current.destroy()
-                animationRef.current = null
-            }
+      }
+      for (let i = 0; i < particles.length; i++) {
+        const p = points[(i * Math.floor(points.length / particles.length)) % points.length];
+        particles[i].setTarget(p);
+      }
+    }
+
+    function currentPhase(): Phase {
+      return phases[phaseIndex % phases.length];
+    }
+
+    function advancePhase() {
+      phaseIndex = Math.min(phaseIndex + 1, phases.length - 1);
+      phaseT = 0;
+      emitStage(currentPhase().name);
+    }
+
+    function phaseTargets(w: number, h: number) {
+      const ph = currentPhase().name;
+      if (ph === "storm") {
+        const storm: Pt[] = [];
+        const n = 4000;
+        for (let i = 0; i < n; i++) {
+          storm.push({ x: Math.random() * w, y: Math.random() * h });
         }
-    }, [dimensions])
-    
-    return (
-        <div className="relative w-full h-full">
-            <canvas
-                ref={canvasRef}
-                className="absolute inset-0 w-full h-full"
-            />
-        </div>
-    )
+        assignTargets(storm, w, h);
+      }
+      if (ph === "formLogo" || ph === "settle" || ph === "done") {
+        assignTargets(ptsLogo, w, h);
+      }
+    }
+
+    let last = performance.now();
+
+    function tick(now: number) {
+      if (!mounted) return;
+      const dt = clamp((now - last) / 16.6667, 0.5, 2.0);
+      last = now;
+
+      const w = canvas!.clientWidth || window.innerWidth;
+      const h = canvas!.clientHeight || window.innerHeight;
+
+      phaseT += 0.016 * dt;
+
+      const ph = currentPhase();
+      if (ph.duration < 9000 && phaseT >= ph.duration) {
+        advancePhase();
+        phaseTargets(w, h);
+      }
+
+      if (!particles.length) phaseTargets(w, h);
+
+      ctx!.globalCompositeOperation = "source-over";
+      ctx!.fillStyle = reduce ? bg : "rgba(11, 16, 38, 0.28)";
+      ctx!.fillRect(0, 0, w, h);
+
+      ctx!.save();
+      const grad = ctx!.createRadialGradient(w * 0.5, h * 0.35, 40, w * 0.5, h * 0.5, Math.max(w, h) * 0.7);
+      grad.addColorStop(0, "rgba(20,25,60,0.08)");
+      grad.addColorStop(1, "rgba(5,8,20,0.7)");
+      ctx!.fillStyle = grad;
+      ctx!.fillRect(0, 0, w, h);
+      ctx!.restore();
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const t = now / 1000;
+      const isStorm = ph.name === "storm";
+      const isResolve = ph.name === "formLogo" || ph.name === "settle" || ph.name === "done";
+
+      const k = reduce ? 0.020 : isStorm ? 0.008 : isResolve ? 0.026 : 0.018;
+      const damping = reduce ? 0.86 : isStorm ? 0.92 : isResolve ? 0.83 : 0.88;
+      const swirl = reduce ? 0 : isStorm ? 2.5 : isResolve ? 0.12 : 0.5;
+
+      ctx!.globalCompositeOperation = "source-over";
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.step(dt, k, damping, swirl, cx, cy, t);
+        const r = p.size * (isResolve ? 1.0 : 0.7);
+        ctx!.beginPath();
+        ctx!.fillStyle = gold;
+        ctx!.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx!.fill();
+        ctx!.beginPath();
+        ctx!.fillStyle = "rgba(244, 229, 167, 0.45)";
+        ctx!.arc(p.x, p.y, r * 0.55, 0, Math.PI * 2);
+        ctx!.fill();
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    }
+
+    async function init() {
+      try {
+        const w = canvas!.clientWidth || window.innerWidth;
+        const h = canvas!.clientHeight || window.innerHeight;
+        try { logoImg = await loadImage(logoSrc); } catch { logoImg = null; }
+        buildLogoPoints(w, h);
+        phaseIndex = 0;
+        phaseT = 0;
+        emitStage("storm");
+        phaseTargets(w, h);
+        if (!mounted) return;
+        setReady(true);
+        rafRef.current = requestAnimationFrame(tick);
+      } catch {
+        setReady(true);
+      }
+    }
+
+    init();
+
+    return () => {
+      mounted = false;
+      ro.disconnect();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    };
+  }, [mode, logoSrc, phases]);
+
+  return (
+    <div className={className ?? "relative w-full h-full"}>
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      {!ready && <div className="absolute inset-0 bg-[#0B1026]" />}
+    </div>
+  );
 }

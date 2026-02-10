@@ -1,9 +1,7 @@
 "use client";
-
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export type DrawerProps = {
   open: boolean;
@@ -14,26 +12,17 @@ export type DrawerProps = {
   footer?: React.ReactNode;
 };
 
-export default function Drawer({
-  open,
-  title,
-  onClose,
-  children,
-  widthClassName = "w-full sm:w-[420px]",
-  footer,
-}: DrawerProps) {
+function cn(...v: Array<string | false | undefined>) {
+  return v.filter(Boolean).join(" ");
+}
+
+export default function Drawer({ open, title, onClose, children, widthClassName = "w-full sm:w-[420px]", footer }: DrawerProps) {
   useEffect(() => {
     if (!open) return;
-
     document.body.style.overflow = "hidden";
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", onKey); };
   }, [open, onClose]);
 
   return (
@@ -42,8 +31,8 @@ export default function Drawer({
         <motion.div className="fixed inset-0 z-[120]">
           <motion.button
             type="button"
-            aria-label="Close drawer backdrop"
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            aria-label="Close drawer"
+            className="absolute inset-0 bg-black/60 backdrop-blur-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -53,39 +42,27 @@ export default function Drawer({
             className={cn(
               "absolute right-0 top-0 h-full flex flex-col",
               widthClassName,
-              "bg-[rgba(7,8,23,0.96)] backdrop-blur-xl",
-              "border-l border-[rgba(214,172,84,0.16)]",
-              "elevation-modal",
+              "bg-[#0B1026]/95 backdrop-blur-2xl",
+              "border-l border-white/10",
+              "shadow-[0_0_80px_rgba(0,0,0,0.6)]",
             )}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
           >
-            <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-[rgba(214,172,84,0.14)] flex items-start justify-between gap-3 shrink-0">
+            <div className="px-5 pt-5 pb-4 border-b border-white/[0.08] flex items-start justify-between gap-3 shrink-0">
               <div>
-                <div className="text-[10px] tracking-[0.22em] uppercase text-[rgba(244,229,167,0.60)] font-mono">
-                  Maniar Atelier
-                </div>
-                <h2 className="font-serif text-xl tracking-tight text-[#F4E5A7]">
-                  {title}
-                </h2>
+                <div className="text-[10px] tracking-[0.2em] uppercase text-white/40 font-mono">Maniar Atelier</div>
+                <h2 className="mt-1 font-semibold text-xl text-white/90">{title}</h2>
               </div>
-              <button
-                type="button"
-                onClick={onClose}
-                className="h-9 w-9 rounded-full border border-[rgba(214,172,84,0.18)] border-b-2 border-b-[rgba(3,4,10,0.9)] hover:bg-[rgba(22,26,49,0.65)] flex items-center justify-center text-[rgba(244,229,167,0.85)] elevation-btn"
-              >
-                <X size={18} />
+              <button type="button" onClick={onClose} className="h-8 w-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition" aria-label="Close">
+                <X size={16} />
               </button>
             </div>
-
-            <div className="px-4 sm:px-5 py-4 sm:py-5 overflow-y-auto flex-1 min-h-0">
-              {children}
-            </div>
-
+            <div className="px-5 py-5 overflow-y-auto flex-1 min-h-0">{children}</div>
             {footer && (
-              <div className="px-4 sm:px-5 py-3 sm:py-4 border-t border-[rgba(214,172,84,0.14)] bg-[rgba(10,14,33,0.70)] shrink-0 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+              <div className="px-5 py-4 border-t border-white/[0.08] bg-white/[0.02] shrink-0 pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
                 {footer}
               </div>
             )}

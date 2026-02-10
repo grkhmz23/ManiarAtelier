@@ -1,55 +1,26 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, ArrowDown, MapPin, Sparkles, X, BookOpen, Truck, Heart } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, X, BookOpen, Truck, Heart, Sparkles } from "lucide-react";
 
-import ReactorKnob from "@/components/ui/control-knob";
-import IndustrialSwitch from "@/components/ui/toggle-switch";
+import GlassNav, { NavSection } from "@/components/ui/glass-nav";
+import GlassCard from "@/components/ui/glass-card";
+import { AtelierHero } from "@/components/home/atelier-hero";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
-import AnimatedCardStack from "@/components/ui/animate-card-stack";
-import { CardStack, CardStackItem } from "@/components/ui/card-stack";
-import { ContainedCategoryFX } from "@/components/ui/contained-category-fx";
-import WatchDock, { DockSection } from "@/components/watch/watch-dock";
-import WatchPanel from "@/components/watch/watch-panel";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
 import { LandingSplash } from "@/components/landing-splash";
 import ProductModal from "@/components/shop/product-modal";
 import CartDrawer, { CartLine } from "@/components/shop/cart-drawer";
 import ChatDrawer from "@/components/chat/chat-drawer";
 
-// Pages
 import BrandStory from "@/pages/BrandStory";
 import CraftOrigin from "@/pages/CraftOrigin";
 import ShippingDuties from "@/pages/ShippingDuties";
 import Journal from "@/pages/Journal";
-import MenPage from "@/pages/MenPage";
-import WomenPage from "@/pages/WomenPage";
+import CollectionPage from "@/pages/CollectionPage";
 
 import { CATALOG, Product, ProductSize, formatEUR } from "@/lib/catalog";
 
 type PageType = "home" | "brand" | "craft" | "shipping" | "journal" | "men" | "women";
-
-const BRAND = {
-  bg: "#070817",
-  ink: "#F4E5A7",
-  gold: "#D6AC54",
-} as const;
-
-const BASE_SHADER = {
-  gridSpacing: 0.9,
-  animationSpeed: 0.65,
-  rotationSpeed: 0.016,
-  paletteA: [0.07, 0.08, 0.16] as [number, number, number],
-  paletteB: [0.10, 0.10, 0.20] as [number, number, number],
-  paletteC: [0.55, 0.45, 0.22] as [number, number, number],
-  paletteD: [0.08, 0.07, 0.16] as [number, number, number],
-} as const;
-
-const MENU_ITEMS: Array<{ id: DockSection; label: string }> = [
-  { id: "hero", label: "Dial" },
-  { id: "collection", label: "Collection" },
-  { id: "atelier", label: "Atelier" },
-  { id: "journal", label: "Journal" },
-  { id: "about", label: "About" },
-];
 
 const PAGE_MENU_ITEMS: Array<{ id: PageType; label: string; icon: React.ReactNode }> = [
   { id: "brand", label: "Brand Story", icon: <Heart size={16} /> },
@@ -58,34 +29,14 @@ const PAGE_MENU_ITEMS: Array<{ id: PageType; label: string; icon: React.ReactNod
   { id: "journal", label: "Style Guides", icon: <BookOpen size={16} /> },
 ];
 
-const heroCards: CardStackItem[] = [
-  { id: 1, title: "Heritage Craftsmanship", description: "Traditional Moroccan tailoring meets modern luxury", imageSrc: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800" },
-  { id: 2, title: "Premium Materials", description: "Sourced from the finest textile houses across Morocco", imageSrc: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800" },
-  { id: 3, title: "Timeless Design", description: "Classic silhouettes with contemporary precision", imageSrc: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800" },
-];
-
-function clamp01(n: number) {
-  return Math.max(0, Math.min(1, n));
-}
-
-function cssNumber(n: number) {
-  return String(n);
-}
-
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageType>("home");
   const [showLanding, setShowLanding] = useState(true);
-  const [section, setSection] = useState<DockSection>("hero");
+  const [section, setSection] = useState<NavSection>("hero");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [cartOpen, setCartOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-
-  const [nightMode, setNightMode] = useState(false);
-  const [cinematic, setCinematic] = useState(true);
-
-  const [atelierRevealed, setAtelierRevealed] = useState(false);
-  const [craft, setCraft] = useState(0.37);
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [productOpen, setProductOpen] = useState(false);
@@ -99,44 +50,15 @@ export default function App() {
     about: useRef<HTMLElement | null>(null),
   };
 
-  const { scrollYProgress } = useScroll();
-
   const cartCount = useMemo(
     () => cartLines.reduce((sum, l) => sum + l.qty, 0),
     [cartLines]
   );
 
-  const shader = useMemo(() => {
-    const c = clamp01(craft);
-    const anim = cinematic ? 0.48 + c * 1.1 : 0.34 + c * 0.55;
-    const rot = cinematic ? 0.010 + c * 0.028 : 0.006 + c * 0.012;
-    const grid = 0.95 - c * 0.40;
-
-    return {
-      gridSpacing: grid,
-      animationSpeed: anim,
-      rotationSpeed: rot,
-      paletteA: BASE_SHADER.paletteA,
-      paletteB: BASE_SHADER.paletteB,
-      paletteC: BASE_SHADER.paletteC,
-      paletteD: BASE_SHADER.paletteD,
-    };
-  }, [craft, cinematic]);
-
-  const cinemaBlend = useMemo(() => {
-    const v = clamp01(1 - craft);
-    return cinematic ? clamp01(v * 1.0) : clamp01(v * 0.45);
-  }, [craft, cinematic]);
-
-  const exposure = useMemo(() => {
-    const base = nightMode ? 0.92 : 1.0;
-    return clamp01(base - cinemaBlend * 0.10);
-  }, [cinemaBlend, nightMode]);
-
   useEffect(() => {
     if (currentPage !== "home") return;
-    
-    const targets: Array<[DockSection, HTMLElement | null]> = [
+
+    const targets: Array<[NavSection, HTMLElement | null]> = [
       ["hero", refs.hero.current],
       ["collection", refs.collection.current],
       ["atelier", refs.atelier.current],
@@ -164,22 +86,20 @@ export default function App() {
     return () => observer.disconnect();
   }, [currentPage]);
 
-  const scrollToSection = (s: DockSection) => {
+  const scrollToSection = (s: NavSection) => {
     if (currentPage !== "home") {
       setCurrentPage("home");
       setTimeout(() => {
         const el = refs[s].current;
         if (!el) return;
         const top = el.getBoundingClientRect().top + window.scrollY;
-        const offset = 112;
-        window.scrollTo({ top: Math.max(0, top - offset), behavior: "smooth" });
+        window.scrollTo({ top: Math.max(0, top - 80), behavior: "smooth" });
       }, 100);
     } else {
       const el = refs[s].current;
       if (!el) return;
       const top = el.getBoundingClientRect().top + window.scrollY;
-      const offset = 112;
-      window.scrollTo({ top: Math.max(0, top - offset), behavior: "smooth" });
+      window.scrollTo({ top: Math.max(0, top - 80), behavior: "smooth" });
     }
     setIsMenuOpen(false);
   };
@@ -208,181 +128,102 @@ export default function App() {
     });
   };
 
-  const incLine = (key: string) => {
-    setCartLines((lines) =>
-      lines.map((l) => (l.key === key ? { ...l, qty: l.qty + 1 } : l))
-    );
-  };
+  const incLine = (key: string) =>
+    setCartLines((lines) => lines.map((l) => (l.key === key ? { ...l, qty: l.qty + 1 } : l)));
 
-  const decLine = (key: string) => {
+  const decLine = (key: string) =>
     setCartLines((lines) =>
-      lines
-        .map((l) => (l.key === key ? { ...l, qty: Math.max(1, l.qty - 1) } : l))
-        .filter((l) => l.qty > 0)
+      lines.map((l) => (l.key === key ? { ...l, qty: Math.max(1, l.qty - 1) } : l)).filter((l) => l.qty > 0)
     );
-  };
 
-  const removeLine = (key: string) => {
+  const removeLine = (key: string) =>
     setCartLines((lines) => lines.filter((l) => l.key !== key));
-  };
 
   const renderPage = () => {
     switch (currentPage) {
       case "brand":
-        return <BrandStory onBack={() => navigateToPage("home")} onNavigate={(page) => navigateToPage(page as PageType)} />;
+        return <BrandStory onBack={() => navigateToPage("home")} onNavigate={(p) => navigateToPage(p as PageType)} />;
       case "craft":
-        return <CraftOrigin onBack={() => navigateToPage("home")} onNavigate={(page) => navigateToPage(page as PageType)} />;
+        return <CraftOrigin onBack={() => navigateToPage("home")} onNavigate={(p) => navigateToPage(p as PageType)} />;
       case "shipping":
-        return <ShippingDuties onBack={() => navigateToPage("home")} onNavigate={(page) => navigateToPage(page as PageType)} />;
+        return <ShippingDuties onBack={() => navigateToPage("home")} onNavigate={(p) => navigateToPage(p as PageType)} />;
       case "journal":
-        return <Journal onBack={() => navigateToPage("home")} onNavigate={(page) => navigateToPage(page as PageType)} />;
+        return <Journal onBack={() => navigateToPage("home")} onNavigate={(p) => navigateToPage(p as PageType)} />;
       case "men":
-        return (
-          <MenPage
-            onBack={() => navigateToPage("home")}
-            onOpenProduct={openProduct}
-            onOpenChat={() => setChatOpen(true)}
-          />
-        );
+        return <CollectionPage gender="men" onBack={() => navigateToPage("home")} onOpenProduct={openProduct} onOpenChat={() => setChatOpen(true)} />;
       case "women":
-        return (
-          <WomenPage
-            onBack={() => navigateToPage("home")}
-            onOpenProduct={openProduct}
-            onOpenChat={() => setChatOpen(true)}
-          />
-        );
+        return <CollectionPage gender="women" onBack={() => navigateToPage("home")} onOpenProduct={openProduct} onOpenChat={() => setChatOpen(true)} />;
       default:
         return renderHomePage();
     }
   };
 
   const renderHomePage = () => (
-    <main className="watch-stage">
-      <div className="pt-[88px] sm:pt-[100px] md:pt-[112px] px-3 sm:px-4 md:px-8">
-        <div className="mx-auto max-w-7xl flex flex-col gap-4 md:gap-5">
-          <div>
-            <WatchPanel
-              id="hero"
-              ref={(n) => {
-                refs.hero.current = n;
-              }}
-              kicker="Morocco • Est. 2026"
-              title="Maniar"
-              rightSlot={
-                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4">
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => navigateToPage("men")}
-                      className={"px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "men" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
-                    >
-                      Men
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => navigateToPage("women")}
-                      className={"px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium tracking-wide transition-all duration-200 border-2 shadow-lg " + (currentPage === "women" ? "bg-[#D6AC54] text-[#070817] border-[#F4E5A7] shadow-[#D6AC54]/50" : "bg-[rgba(214,172,84,0.15)] text-[#F4E5A7] border-[#D6AC54] hover:bg-[rgba(214,172,84,0.25)] hover:border-[#F4E5A7] hover:shadow-[#D6AC54]/30")}
-                    >
-                      Women
-                    </button>
-                  </div>
-                  <div className="hidden md:flex items-center gap-4">
-                    <div className="w-px h-6 bg-[rgba(214,172,84,0.2)]" />
-                    <ReactorKnob
-                      label="Dial"
-                      size="md"
-                      initial={Math.round(craft * 100)}
-                      onChange={setCraft}
-                    />
-                  </div>
-                </div>
-              }
-            >
-              <div className="py-4 sm:py-8 overflow-hidden">
-                <CardStack
-                  items={heroCards}
-                  initialIndex={0}
-                  autoAdvance
-                  intervalMs={3000}
-                  pauseOnHover
-                  showDots
-                  cardWidth={340}
-                  cardHeight={220}
-                />
-              </div>
-            </WatchPanel>
+    <main className="relative">
+      <div className="pt-[76px] md:pt-[84px] px-3 sm:px-4 md:px-8">
+        <div className="mx-auto max-w-7xl flex flex-col gap-5 md:gap-6">
+
+          {/* ── Hero ── */}
+          <div id="hero" ref={(n) => { refs.hero.current = n; }}>
+            <AtelierHero
+              onShopNow={() => scrollToSection("collection")}
+              onOpenMen={() => navigateToPage("men")}
+              onOpenWomen={() => navigateToPage("women")}
+            />
           </div>
 
-          {/* Category Showcase */}
-          <WatchPanel
-            kicker="Materials & Heritage"
-            title="Our Categories"
-          >
-            <ContainedCategoryFX
-              sections={[
-                { id: "heritage", background: "/images/category/category1.jpg", leftLabel: "Est. 2024", title: "Heritage Textiles", rightLabel: "Marrakech" },
-                { id: "materials", background: "/images/category/category2.jpg", leftLabel: "Premium", title: "Atlas Materials", rightLabel: "Mountains" },
-                { id: "mens", background: "/images/category/category3.jpg", leftLabel: "Collection", title: "Men's Couture", rightLabel: "Timeless" },
-                { id: "womens", background: "/images/category/category4.jpg", leftLabel: "Collection", title: "Women's Elegance", rightLabel: "Graceful" },
-                { id: "craft", background: "/images/category/category5.png", leftLabel: "Handmade", title: "Craftsmanship", rightLabel: "47 Steps" },
-                { id: "story", background: "/images/category/category6.jpg", leftLabel: "Heritage", title: "Our Story", rightLabel: "Discover" },
+          {/* ── Category Showcase ── */}
+          <GlassCard kicker="Materials & Heritage" title="Our Categories">
+            <PhotoGallery
+              items={[
+                { id: "heritage", src: "/images/category/category1.jpg", label: "Est. 2024", title: "Heritage Textiles" },
+                { id: "materials", src: "/images/category/category2.jpg", label: "Premium", title: "Atlas Materials" },
+                { id: "mens", src: "/images/category/category3.jpg", label: "Collection", title: "Men's Couture" },
+                { id: "womens", src: "/images/category/category4.jpg", label: "Collection", title: "Women's Elegance" },
+                { id: "craft", src: "/images/category/category5.png", label: "Handmade", title: "Craftsmanship" },
+                { id: "story", src: "/images/category/category6.jpg", label: "Heritage", title: "Our Story" },
               ]}
-              autoAdvance={true}
-              intervalMs={4000}
             />
-          </WatchPanel>
+          </GlassCard>
 
-          <WatchPanel
+          {/* ── Collection ── */}
+          <GlassCard
             id="collection"
-            ref={(n) => {
-              refs.collection.current = n;
-            }}
+            ref={(n) => { refs.collection.current = n; }}
             kicker="New Season"
             title="The Collection"
           >
-            <div className="mb-6 sm:mb-8 -mt-8 sm:-mt-12 md:-mt-20 overflow-hidden">
-              <AnimatedCardStack />
-            </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
               {CATALOG.slice(0, 4).map((product) => (
                 <button
                   key={product.id}
                   type="button"
                   onClick={() => openProduct(product)}
-                  className="text-left w-full block"
+                  className="text-left w-full group"
                 >
-                  <div className="group relative rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.25)] bg-gradient-to-br from-[rgba(10,14,33,0.95)] via-[rgba(20,25,45,0.90)] to-[rgba(10,14,33,0.95)] shadow-2xl backdrop-blur-xl hover:border-[rgba(214,172,84,0.45)] hover:shadow-[0_0_40px_rgba(214,172,84,0.2)] transform transition-all duration-500 hover:scale-105 hover:-rotate-1 elevation-card">
-                    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-[rgba(214,172,84,0.05)] to-[rgba(244,229,167,0.10)] opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
-                      <div className="absolute -bottom-20 -left-20 w-48 h-48 rounded-full bg-gradient-to-tr from-[rgba(214,172,84,0.15)] to-transparent blur-3xl opacity-30 group-hover:opacity-50 transform group-hover:scale-110 transition-all duration-700"></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(244,229,167,0.08)] to-transparent transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-1000"></div>
-                    </div>
-                    <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-[rgba(214,172,84,0.15)] to-transparent rounded-br-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                    <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-[rgba(214,172,84,0.15)] to-transparent rounded-tl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                  <div className="relative rounded-[20px] overflow-hidden border border-white/10 bg-white/[0.03] backdrop-blur transition-all duration-300 hover:border-white/20 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] hover:-translate-y-1">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full aspect-[3/4] object-cover opacity-[0.95] transition-transform duration-700 hover:scale-[1.02]"
+                      className="w-full aspect-[3/4] object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_25%_18%,rgba(244,229,167,0.10),transparent_45%)]" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                    {product.badge ? (
-                      <div className="absolute top-4 left-4 rounded-full px-3 py-1 bg-[rgba(10,14,33,0.85)] border border-[rgba(214,172,84,0.22)] border-b-[2px] border-b-[rgba(3,4,10,0.9)] elevation-sm text-[10px] font-mono tracking-[0.22em] uppercase elevation-card">
+                    {product.badge && (
+                      <div className="absolute top-3 left-3 rounded-full px-2.5 py-1 bg-black/40 border border-white/15 backdrop-blur text-[10px] font-semibold tracking-wider uppercase text-white/80">
                         {product.badge}
                       </div>
-                    ) : null}
+                    )}
 
                     <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="dock-divider mb-3" />
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="font-serif text-lg leading-tight">{product.name}</div>
-                          <div className="dock-muted text-sm mt-1">{formatEUR(product.priceEUR)}</div>
+                      <div className="h-px bg-gradient-to-r from-transparent via-[#D6AC54]/30 to-transparent mb-3" />
+                      <div className="flex items-end justify-between gap-3">
+                        <div>
+                          <div className="font-semibold text-[15px] text-white/90">{product.name}</div>
+                          <div className="text-sm text-white/55 mt-0.5">{formatEUR(product.priceEUR)}</div>
                         </div>
-                        <ArrowRight size={18} className="dock-muted shrink-0 mt-1" />
+                        <ArrowRight size={16} className="text-white/40 shrink-0 mb-0.5 group-hover:text-white/70 transition-colors" />
                       </div>
                     </div>
                   </div>
@@ -390,423 +231,291 @@ export default function App() {
               ))}
             </div>
 
-            <div className="mt-5 flex items-center justify-between gap-4">
-              <div className="dock-muted text-sm">Want sizing help? Use concierge.</div>
-              <button type="button" onClick={() => setChatOpen(true)} className="dock-btn elevation-btn">
-                Size recommendation <ArrowRight size={16} />
+            <div className="mt-6 flex items-center justify-between gap-4">
+              <p className="text-sm text-white/50">Need sizing help? Try the concierge.</p>
+              <button type="button" onClick={() => setChatOpen(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
+                Size recommendation <ArrowRight size={14} />
               </button>
             </div>
-          </WatchPanel>
+          </GlassCard>
 
-          <WatchPanel
+          {/* ── Atelier ── */}
+          <GlassCard
             id="atelier"
-            ref={(n) => {
-              refs.atelier.current = n;
-            }}
-            kicker="Behind the dial"
+            ref={(n) => { refs.atelier.current = n; }}
+            kicker="Behind the scenes"
             title="The Atelier"
-            rightSlot={
-              <div className="flex flex-col items-end gap-2">
-                <div className="dock-kicker">Reveal</div>
-                <IndustrialSwitch
-                  initialValue={atelierRevealed}
-                  onToggle={setAtelierRevealed}
-                  labelOff="HIDDEN"
-                  labelOn="REVEALED"
-                  size="sm"
-                />
-              </div>
-            }
           >
-            <div className="grid lg:grid-cols-3 gap-4 md:gap-5">
-              <WatchPanel as="div" variant="compact" kicker="Material" title="Selection">
-                <p className="dock-muted text-sm leading-relaxed">
-                  Wool and textiles are selected as if they were movement parts: consistency, density, longevity.
-                </p>
-              </WatchPanel>
-
-              <WatchPanel as="div" variant="compact" kicker="Assembly" title="Hands">
-                <p className="dock-muted text-sm leading-relaxed">
-                  Each piece passes through multiple artisan steps with a strict finish standard.
-                </p>
-              </WatchPanel>
-
-              <WatchPanel as="div" variant="compact" kicker="Finish" title="Detail">
-                <p className="dock-muted text-sm leading-relaxed">
-                  Edge work, stitching, and fit are treated like polishing and regulation.
-                </p>
-              </WatchPanel>
+            <div className="grid md:grid-cols-3 gap-4">
+              {[
+                { k: "Material", t: "Selection", d: "Wool and textiles are selected for consistency, density, and longevity — not just appearance." },
+                { k: "Assembly", t: "Hands", d: "Each piece passes through multiple artisan steps with a strict finish standard." },
+                { k: "Finish", t: "Detail", d: "Edge work, stitching, and fit are treated like polishing and regulation." },
+              ].map((c) => (
+                <GlassCard key={c.t} as="div" variant="compact" kicker={c.k} title={c.t}>
+                  <p className="text-sm text-white/55 leading-relaxed">{c.d}</p>
+                </GlassCard>
+              ))}
             </div>
 
-            <AnimatePresence>
-              {atelierRevealed ? (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.35 }}
-                  className="overflow-hidden mt-4 md:mt-5"
-                >
-                  <div className="grid md:grid-cols-3 gap-4 md:gap-5">
-                    {CATALOG.slice(0, 3).map((p) => (
-                      <WatchPanel key={p.id} as="div" variant="flush" className="p-0">
-                        <div className="rounded-[22px] overflow-hidden border border-[rgba(214,172,84,0.16)] border-b-[4px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(7,8,23,0.55)] elevation-card elevation-card">
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            className="w-full h-[260px] object-cover opacity-[0.92]"
-                            loading="lazy"
-                          />
-                          <div className="p-4">
-                            <div className="dock-divider mb-3" />
-                            <div className="font-serif text-lg">{p.name}</div>
-                            <div className="dock-muted text-sm mt-1">Atelier detail view</div>
-                          </div>
-                        </div>
-                      </WatchPanel>
-                    ))}
+            <div className="mt-5 grid md:grid-cols-3 gap-4">
+              {CATALOG.slice(0, 3).map((p) => (
+                <div key={p.id} className="rounded-[20px] overflow-hidden border border-white/10 bg-white/[0.02]">
+                  <img src={p.image} alt={p.name} className="w-full h-[260px] object-cover" loading="lazy" />
+                  <div className="p-4">
+                    <div className="h-px bg-gradient-to-r from-transparent via-[#D6AC54]/25 to-transparent mb-3" />
+                    <div className="font-semibold text-white/85">{p.name}</div>
+                    <div className="text-sm text-white/50 mt-1">Atelier detail view</div>
                   </div>
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
+                </div>
+              ))}
+            </div>
 
-            <div className="mt-5 dock-divider" />
-            <div className="mt-5 flex items-center justify-between gap-4">
-              <div className="dock-muted text-sm">Want the full story behind our craft?</div>
-              <button type="button" onClick={() => navigateToPage("craft")} className="dock-btn elevation-btn">
-                Craft & Origin <ArrowRight size={16} />
+            <div className="mt-6 flex items-center justify-between gap-4">
+              <p className="text-sm text-white/50">Want the full story behind our craft?</p>
+              <button type="button" onClick={() => navigateToPage("craft")} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
+                Craft & Origin <ArrowRight size={14} />
               </button>
             </div>
-          </WatchPanel>
+          </GlassCard>
 
-          <WatchPanel
+          {/* ── Journal ── */}
+          <GlassCard
             id="journal"
-            ref={(n) => {
-              refs.journal.current = n;
-            }}
+            ref={(n) => { refs.journal.current = n; }}
             kicker="Editorial"
             title="Journal"
           >
-            <div className="grid md:grid-cols-2 gap-4 md:gap-5">
-              <WatchPanel as="div" variant="compact" kicker="Statement" title="Heritage">
-                <Sparkles className="text-[rgba(228,201,124,0.92)]" size={22} />
-                <p className="mt-4 font-serif text-2xl leading-tight">
+            <div className="grid md:grid-cols-2 gap-4">
+              <GlassCard as="div" variant="compact" kicker="Statement" title="Heritage">
+                <Sparkles className="text-white/50" size={20} />
+                <p className="mt-4 font-semibold text-2xl leading-tight text-white/85">
                   "We don't sell clothes. We sell heritage."
                 </p>
-                <p className="mt-4 dock-muted text-sm leading-relaxed">
+                <p className="mt-3 text-sm text-white/55 leading-relaxed">
                   Each thread should feel inevitable. Not trendy. Not disposable.
                 </p>
-                <button type="button" onClick={() => navigateToPage("brand")} className="dock-btn mt-5 elevation-btn">
-                  Read our story <ArrowRight size={16} />
+                <button type="button" onClick={() => navigateToPage("brand")} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
+                  Read our story <ArrowRight size={14} />
                 </button>
-              </WatchPanel>
+              </GlassCard>
 
-              <WatchPanel as="div" variant="compact" kicker="Image" title="Craft Frame">
-                <div className="rounded-2xl overflow-hidden border border-[rgba(214,172,84,0.16)] border-b-[4px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(7,8,23,0.55)] elevation-card elevation-card">
-                  <img
-                    src={CATALOG[1]?.image}
-                    alt="Journal visual"
-                    className="w-full h-[320px] object-cover opacity-[0.94]"
-                    loading="lazy"
-                  />
+              <GlassCard as="div" variant="compact" kicker="Image" title="Craft Frame">
+                <div className="rounded-[16px] overflow-hidden border border-white/10 bg-white/[0.02]">
+                  <img src={CATALOG[1]?.image} alt="Journal visual" className="w-full h-[320px] object-cover" loading="lazy" />
                   <div className="p-4">
-                    <div className="dock-divider mb-3" />
-                    <div className="dock-muted text-sm">
-                      Notes from the atelier: materials, finishing, and fit.
-                    </div>
+                    <div className="h-px bg-gradient-to-r from-transparent via-[#D6AC54]/25 to-transparent mb-3" />
+                    <p className="text-sm text-white/55">Notes from the atelier: materials, finishing, and fit.</p>
                   </div>
                 </div>
-              </WatchPanel>
+              </GlassCard>
             </div>
 
-            <div className="mt-5 flex items-center justify-between gap-4">
-              <div className="dock-muted text-sm">Explore our style guides and care instructions.</div>
-              <button type="button" onClick={() => navigateToPage("journal")} className="dock-btn elevation-btn">
-                View All Guides <ArrowRight size={16} />
+            <div className="mt-6 flex items-center justify-between gap-4">
+              <p className="text-sm text-white/50">Explore our style guides and care instructions.</p>
+              <button type="button" onClick={() => navigateToPage("journal")} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
+                View All Guides <ArrowRight size={14} />
               </button>
             </div>
-          </WatchPanel>
+          </GlassCard>
 
-          <WatchPanel
+          {/* ── About ── */}
+          <GlassCard
             id="about"
-            ref={(n) => {
-              refs.about.current = n;
-            }}
+            ref={(n) => { refs.about.current = n; }}
             kicker="Brand"
             title="About Maniar"
           >
-            <div className="grid md:grid-cols-3 gap-4 md:gap-5">
-              <WatchPanel as="div" variant="compact" kicker="Design" title="Discipline">
-                <p className="dock-muted text-sm leading-relaxed">
-                  Shapes, seams, and silhouettes are treated like engineered geometry.
-                </p>
-              </WatchPanel>
-              <WatchPanel as="div" variant="compact" kicker="Material" title="Longevity">
-                <p className="dock-muted text-sm leading-relaxed">
-                  We prioritize fabrics that age well, not fabrics that photograph well once.
-                </p>
-              </WatchPanel>
-              <WatchPanel as="div" variant="compact" kicker="Service" title="Concierge">
-                <p className="dock-muted text-sm leading-relaxed">
-                  Sizing, styling, and care. A human-first approach.
-                </p>
-              </WatchPanel>
+            <div className="grid md:grid-cols-3 gap-4">
+              {[
+                { k: "Design", t: "Discipline", d: "Shapes, seams, and silhouettes are treated like engineered geometry." },
+                { k: "Material", t: "Longevity", d: "We prioritize fabrics that age well, not fabrics that photograph well once." },
+                { k: "Service", t: "Concierge", d: "Sizing, styling, and care. A human-first approach." },
+              ].map((c) => (
+                <GlassCard key={c.t} as="div" variant="compact" kicker={c.k} title={c.t}>
+                  <p className="text-sm text-white/55 leading-relaxed">{c.d}</p>
+                </GlassCard>
+              ))}
             </div>
 
-            <div className="mt-5 dock-divider" />
+            <div className="mt-5 h-px bg-gradient-to-r from-transparent via-[#D6AC54]/20 to-transparent" />
 
             <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {PAGE_MENU_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => navigateToPage(item.id)}
-                  className="text-left p-4 rounded-xl border border-[rgba(214,172,84,0.16)] border-b-[3px] border-b-[rgba(3,4,10,0.9)] bg-[rgba(214,172,84,0.08)] elevation-sm hover:bg-[rgba(7,8,23,0.62)] transition-all elevation-sm"
-                >
-                  <div className="flex items-center gap-2 text-[#D6AC54] mb-2">
+                <button key={item.id} type="button" onClick={() => navigateToPage(item.id)} className="text-left p-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all">
+                  <div className="flex items-center gap-2 text-white/50 mb-2">
                     {item.icon}
-                    <span className="text-[10px] tracking-[0.22em] uppercase font-mono">Page</span>
+                    <span className="text-[10px] tracking-[0.2em] uppercase font-mono">Page</span>
                   </div>
-                  <div className="font-serif text-lg">{item.label}</div>
+                  <div className="font-semibold text-white/85">{item.label}</div>
                 </button>
               ))}
             </div>
 
-            <div className="mt-5 dock-divider" />
+            <div className="mt-5 h-px bg-gradient-to-r from-transparent via-[#D6AC54]/20 to-transparent" />
 
             <div className="mt-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="dock-muted text-sm">Maniar Atelier • Dark luxury dial interface</div>
-              <div className="flex items-center gap-3">
-                <button type="button" onClick={() => setChatOpen(true)} className="dock-btn elevation-btn">
-                  Contact <ArrowRight size={16} />
-                </button>
-              </div>
+              <p className="text-sm text-white/50">Maniar Atelier • Moroccan heritage, modern elegance</p>
+              <button type="button" onClick={() => setChatOpen(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
+                Contact <ArrowRight size={14} />
+              </button>
             </div>
-          </WatchPanel>
+          </GlassCard>
+
         </div>
       </div>
     </main>
   );
 
-  const genderBtnClass = (active: boolean) =>
-    "relative px-4 md:px-5 py-2 rounded-full text-xs md:text-sm font-medium tracking-wide transition-all duration-200 " +
-    (active
-      ? "bg-[rgba(214,172,84,0.2)] text-[#F4E5A7] shadow-[inset_0_1px_0_rgba(214,172,84,0.3)]"
-      : "text-[rgba(244,229,167,0.6)] hover:text-[#F4E5A7] hover:bg-[rgba(214,172,84,0.08)]");
-
   return (
     <>
       {showLanding && <LandingSplash onEnter={() => setShowLanding(false)} />}
-      <div
-      className="min-h-screen maniar-watch"
-      style={
-        {
-          backgroundColor: BRAND.bg,
-          color: BRAND.ink,
-          "--maniar-craft": cssNumber(clamp01(craft)),
-          "--maniar-cinema": cssNumber(cinemaBlend),
-          "--maniar-night": cssNumber(nightMode ? 1 : 0),
-          "--maniar-exposure": cssNumber(exposure),
-        } as React.CSSProperties
-      }>
 
-      <WatchDock
-        section={section}
-        onNavigate={scrollToSection}
-        cartCount={cartCount}
-        onOpenCart={() => setCartOpen(true)}
-        onOpenChat={() => setChatOpen(true)}
-        onOpenMenu={() => setIsMenuOpen(true)}
-        nightMode={nightMode}
-        setNightMode={setNightMode}
-        cinematic={cinematic}
-        setCinematic={setCinematic}
-      />
+      <div className="min-h-screen bg-[#0B1026] text-white">
+        {!showLanding && <GlassNav
+          section={section}
+          onNavigate={scrollToSection}
+          cartCount={cartCount}
+          onOpenCart={() => setCartOpen(true)}
+          onOpenChat={() => setChatOpen(true)}
+          onOpenMenu={() => setIsMenuOpen(true)}
+        />}
 
-      <InstagramStoriesFloat />
+        <InstagramStoriesFloat />
 
-      {/* Menu Modal */}
-      <motion.div
-        className="fixed inset-0 z-[75] flex items-center justify-center"
-        style={{ pointerEvents: isMenuOpen ? "auto" : "none" }}
-        initial={false}
-        animate={{ opacity: isMenuOpen ? 1 : 0 }}
-        transition={{ duration: 0.25 }}
-      >
-        <motion.div
-          className="absolute inset-0 bg-black/70 backdrop-blur-xl"
-          initial={false}
-          animate={{ opacity: isMenuOpen ? 1 : 0 }}
-          onClick={() => setIsMenuOpen(false)}
-        />
+        {/* ── Menu Modal ── */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              className="fixed inset-0 z-[300] flex items-center justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div className="absolute inset-0 bg-black/60 backdrop-blur-xl" onClick={() => setIsMenuOpen(false)} />
 
-        <motion.div
-          className="relative w-[min(920px,calc(100vw-16px))] sm:w-[min(920px,calc(100vw-24px))] max-h-[90vh] overflow-y-auto rounded-[20px] sm:rounded-[28px] border border-[rgba(214,172,84,0.18)] border-b-[3px] border-b-[rgba(3,4,10,0.95)] bg-[rgba(10,14,33,0.96)] backdrop-blur-xl elevation-modal"
-          initial={false}
-          animate={{ y: isMenuOpen ? 0 : 12, scale: isMenuOpen ? 1 : 0.98 }}
-          transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
-        >
-          <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(45deg,rgba(214,172,84,0.10),rgba(214,172,84,0.10)_1px,transparent_1px,transparent_12px)]" />
+              <motion.div
+                className="relative w-[min(800px,calc(100vw-24px))] max-h-[85vh] overflow-y-auto rounded-[24px] border border-white/10 bg-[#0B1026]/95 backdrop-blur-2xl shadow-[0_40px_120px_rgba(0,0,0,0.7)]"
+                initial={{ y: 16, scale: 0.97, opacity: 0 }}
+                animate={{ y: 0, scale: 1, opacity: 1 }}
+                exit={{ y: 16, scale: 0.97, opacity: 0 }}
+                transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
+              >
+                <div className="p-6 md:p-8">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">Navigation</div>
+                      <div className="mt-1 font-semibold text-2xl text-white/90">Menu</div>
+                    </div>
+                    <button type="button" onClick={() => setIsMenuOpen(false)} className="h-9 w-9 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition" aria-label="Close menu">
+                      <X size={18} />
+                    </button>
+                  </div>
 
-          <div className="relative p-4 sm:p-6 md:p-10">
-            <div className="flex items-start justify-between gap-4">
+                  <div className="mt-6 flex flex-col gap-2">
+                    {[
+                      { label: "Men's Collection", desc: "Coats, djellabas, gilets & more", action: () => navigateToPage("men") },
+                      { label: "Women's Collection", desc: "Kaftans, skirts, sets & more", action: () => navigateToPage("women") },
+                    ].map((item) => (
+                      <button key={item.label} type="button" onClick={item.action} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="font-semibold text-lg text-white/85">{item.label}</div>
+                          <ArrowRight size={16} className="text-white/40" />
+                        </div>
+                        <p className="text-sm text-white/45 mt-1">{item.desc}</p>
+                      </button>
+                    ))}
+
+                    <div className="h-px bg-gradient-to-r from-transparent via-[#D6AC54]/20 to-transparent my-2" />
+
+                    {(["hero","collection","atelier","journal","about"] as NavSection[]).map((id) => (
+                      <button key={id} type="button" onClick={() => scrollToSection(id)} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="font-semibold text-lg text-white/85 capitalize">{id === "hero" ? "Home" : id}</div>
+                          <ArrowRight size={16} className="text-white/40" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-6">
+                    <div className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Pages</div>
+                    <div className="grid sm:grid-cols-2 gap-2">
+                      {PAGE_MENU_ITEMS.map((item) => (
+                        <button key={item.id} type="button" onClick={() => navigateToPage(item.id)} className="text-left rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all p-4">
+                          <div className="flex items-center gap-2">
+                            <span className="text-white/40">{item.icon}</span>
+                            <div className="font-semibold text-white/85">{item.label}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <button type="button" onClick={() => { setIsMenuOpen(false); setChatOpen(true); }} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
+                      Open Concierge
+                    </button>
+                    <button type="button" onClick={() => { setIsMenuOpen(false); setCartOpen(true); }} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
+                      View Cart ({cartCount})
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {renderPage()}
+
+        {/* ── Footer ── */}
+        <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
               <div>
-                <div className="dock-kicker">Maniar Navigation</div>
-                <div className="dock-title mt-2">Choose a module</div>
+                <h3 className="font-semibold text-xl text-white/90 mb-3">Maniar</h3>
+                <p className="text-sm text-white/50 leading-relaxed">Moroccan heritage, modern elegance. Handcrafted garments from the Atlas mountains.</p>
               </div>
-
-              <button
-                type="button"
-                onClick={() => setIsMenuOpen(false)}
-                className="h-11 w-11 rounded-full border border-[rgba(214,172,84,0.18)] border-b-2 border-b-[rgba(3,4,10,0.9)] hover:bg-white/5 flex items-center justify-center elevation-btn"
-                aria-label="Close menu"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="mt-8 flex flex-col gap-3">
-                <button
-                  type="button"
-                  onClick={() => navigateToPage("men")}
-                  className="text-left rounded-2xl border border-[rgba(214,172,84,0.16)] border-b-2 border-b-[rgba(3,4,10,0.9)] bg-[rgba(214,172,84,0.08)] hover:bg-[rgba(7,8,23,0.62)] transition-all p-4 elevation-sm"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="font-serif text-xl">Men's Collection</div>
-                    <ArrowRight size={16} className="text-[rgba(228,201,124,0.92)]" />
-                  </div>
-                  <p className="dock-muted text-sm mt-2">Coats, djellabas, gilets & more</p>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateToPage("women")}
-                  className="text-left rounded-2xl border border-[rgba(214,172,84,0.16)] border-b-2 border-b-[rgba(3,4,10,0.9)] bg-[rgba(214,172,84,0.08)] hover:bg-[rgba(7,8,23,0.62)] transition-all p-4 elevation-sm"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="font-serif text-xl">Women's Collection</div>
-                    <ArrowRight size={16} className="text-[rgba(228,201,124,0.92)]" />
-                  </div>
-                  <p className="dock-muted text-sm mt-2">Kaftans, skirts, sets & more</p>
-                </button>
-                {MENU_ITEMS.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => scrollToSection(item.id)}
-                    className="text-left rounded-2xl border border-[rgba(214,172,84,0.16)] border-b-2 border-b-[rgba(3,4,10,0.9)] bg-[rgba(214,172,84,0.08)] hover:bg-[rgba(7,8,23,0.62)] transition-all p-4 elevation-sm"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="font-serif text-xl">{item.label}</div>
-                      <ArrowRight size={16} className="text-[rgba(228,201,124,0.92)]" />
-                    </div>
-                  </button>
-                ))}
-            </div>
-
-            <div className="mt-8">
-              <div className="dock-kicker mb-3">Pages</div>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {PAGE_MENU_ITEMS.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => navigateToPage(item.id)}
-                    className="text-left rounded-2xl border border-[rgba(214,172,84,0.16)] border-b-2 border-b-[rgba(3,4,10,0.9)] bg-[rgba(214,172,84,0.08)] hover:bg-[rgba(7,8,23,0.62)] transition-all p-4 elevation-sm"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="text-[#D6AC54]">{item.icon}</span>
-                        <div className="font-serif text-xl">{item.label}</div>
-                      </div>
-                      <ArrowRight size={16} className="text-[rgba(228,201,124,0.92)]" />
-                    </div>
-                  </button>
-                ))}
+              <div>
+                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Shop</h4>
+                <ul className="space-y-2 text-sm text-white/50">
+                  <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-white transition-colors">Men's Collection</button></li>
+                  <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-white transition-colors">Women's Collection</button></li>
+                  <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-white transition-colors">Our Story</button></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Support</h4>
+                <ul className="space-y-2 text-sm text-white/50">
+                  <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-white transition-colors">Shipping & Duties</button></li>
+                  <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-white transition-colors">Contact Concierge</button></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Connect</h4>
+                <div className="flex gap-4 text-sm text-white/50">
+                  <a href="#" className="hover:text-white transition-colors">Instagram</a>
+                  <a href="#" className="hover:text-white transition-colors">WhatsApp</a>
+                </div>
               </div>
             </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-4 text-sm dock-muted">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setChatOpen(true);
-                }}
-                className="dock-btn elevation-btn"
-              >
-                Open Concierge Chat
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setCartOpen(true);
-                }}
-                className="dock-btn elevation-btn"
-              >
-                View Cart ({cartCount})
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {renderPage()}
-
-      <footer className="mt-12 sm:mt-16 mx-3 sm:mx-4 md:mx-8 mb-6 sm:mb-8 rounded-[18px] sm:rounded-[22px] md:rounded-[26px] p-5 sm:p-8 md:p-12 dock-panel elevation-base border border-[rgba(214,172,84,0.16)] border-b-[6px] border-b-[rgba(0,0,0,0.95)] border-t-2 border-t-[rgba(244,229,167,0.25)] bg-[linear-gradient(180deg,rgba(214,172,84,0.35),rgba(214,172,84,0.25))]">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-            <div>
-              <h3 className="font-serif text-xl mb-4">Maniar</h3>
-              <p className="text-sm text-[rgba(244,229,167,0.6)] leading-relaxed">Moroccan heritage, modern elegance. Handcrafted garments from the Atlas mountains.</p>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Shop</h4>
-              <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
-                <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-[#F4E5A7] transition-colors">Men's Collection</button></li>
-                <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-[#F4E5A7] transition-colors">Women's Collection</button></li>
-                <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-[#F4E5A7] transition-colors">Our Story</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Support</h4>
-              <ul className="space-y-2 text-sm text-[rgba(244,229,167,0.6)]">
-                <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-[#F4E5A7] transition-colors">Shipping & Duties</button></li>
-                <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-[#F4E5A7] transition-colors">Contact Concierge</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium tracking-wide uppercase mb-4">Connect</h4>
-              <div className="flex gap-4">
-                <a href="#" className="hover:text-[#F4E5A7] transition-colors">Instagram</a>
-                <a href="#" className="hover:text-[#F4E5A7] transition-colors">WhatsApp</a>
+            <div className="mt-10 pt-6 border-t border-white/[0.06] flex flex-col md:flex-row justify-between gap-4 text-xs text-white/35">
+              <p>© 2026 MANIAR. All rights reserved.</p>
+              <div className="flex gap-6">
+                <a href="#" className="hover:text-white/60 transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-white/60 transition-colors">Terms of Service</a>
               </div>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-[rgba(214,172,84,0.1)] flex flex-col md:flex-row justify-between gap-4 text-xs dock-muted">
-            <p>© 2026 MANIAR. All rights reserved.</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-[#F4E5A7] transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-[#F4E5A7] transition-colors">Terms of Service</a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
 
-      {/* ── Drawers & Modals (were missing from JSX!) ── */}
       <ProductModal
         open={productOpen}
         product={selectedProduct}
-        onClose={() => {
-          setProductOpen(false);
-          setSelectedProduct(null);
-        }}
-        onAdd={(product, size) => {
-          addToCart(product, size);
-          setProductOpen(false);
-        }}
+        onClose={() => { setProductOpen(false); setSelectedProduct(null); }}
+        onAdd={(product, size) => { addToCart(product, size); setProductOpen(false); }}
       />
 
       <CartDrawer
@@ -818,11 +527,7 @@ export default function App() {
         onRemove={removeLine}
       />
 
-      <ChatDrawer
-        open={chatOpen}
-        onClose={() => setChatOpen(false)}
-      />
-      </>
+      <ChatDrawer open={chatOpen} onClose={() => setChatOpen(false)} />
+    </>
   );
 }
-
