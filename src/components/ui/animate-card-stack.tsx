@@ -82,8 +82,9 @@ function AnimatedCard({ card, index, isAnimating }: { card: Card; index: number;
       animate={{ y, scale }}
       exit={exitAnim}
       transition={{ type: "spring", duration: 1, bounce: 0 }}
+      // FIX: Changed fixed w-[420px] to w-full max-w-[420px] and constrained left/x
       style={{ zIndex, left: "50%", x: "-50%", bottom: 0 }}
-      className="absolute flex h-[364px] w-[420px] items-center justify-center overflow-hidden rounded-t-xl border-x border-t border-[rgba(214,172,84,0.25)] bg-[rgba(10,14,33,0.85)] p-1 shadow-lg backdrop-blur will-change-transform sm:w-[666px]"
+      className="absolute flex h-[364px] w-full max-w-[420px] items-center justify-center overflow-hidden rounded-t-xl border-x border-t border-[rgba(214,172,84,0.25)] bg-[rgba(10,14,33,0.95)] p-1 shadow-lg backdrop-blur will-change-transform sm:w-[666px] sm:max-w-none"
     >
       <CardContent contentType={card.contentType} />
     </motion.div>
@@ -104,8 +105,9 @@ export default function AnimatedCardStack() {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center pt-2">
-      <div className="relative h-[494px] w-full overflow-hidden sm:w-[837px]">
+    <div className="flex w-full flex-col items-center justify-center pt-2 px-4">
+      {/* FIX: Container width set to w-full max-w-[420px] for mobile */}
+      <div className="relative h-[494px] w-full max-w-[420px] overflow-hidden sm:w-[837px] sm:max-w-none">
         <AnimatePresence initial={false}>
           {cards.slice(0, 3).map((card, index) => (
             <AnimatedCard key={card.id} card={card} index={index} isAnimating={isAnimating} />
@@ -115,7 +117,7 @@ export default function AnimatedCardStack() {
       <div className="relative z-10 -mt-px flex w-full items-center justify-center border-t border-[rgba(214,172,84,0.2)] py-4">
         <button
           onClick={handleAnimate}
-          className="flex h-10 items-center justify-center gap-2 rounded-full border border-[rgba(214,172,84,0.25)] bg-[rgba(214,172,84,0.12)] px-6 font-medium text-[#F4E5A7] transition-all hover:bg-[rgba(214,172,84,0.18)] active:scale-[0.98)] elevation-btn"
+          className="flex h-10 items-center justify-center gap-2 rounded-full border border-[rgba(214,172,84,0.25)] bg-[rgba(214,172,84,0.12)] px-6 font-medium text-[#F4E5A7] transition-all hover:bg-[rgba(214,172,84,0.18)] active:scale-[0.98] elevation-btn"
         >
           Next Piece
         </button>
