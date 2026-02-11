@@ -35,10 +35,11 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
         />
       </div>
 
-      {/* LAYOUT FIX: Changed top-[60%] to top-[48%]
-        This moves the entire text block up, closer to the logo.
+      {/* LAYOUT FIX: Responsive Positioning
+          - Mobile: top-[48%] (Close to logo)
+          - Desktop: md:top-[60%] (Original safe distance)
       */}
-      <div className="absolute inset-x-0 top-[48%] z-10 flex flex-col items-center pointer-events-none">
+      <div className="absolute inset-x-0 top-[48%] md:top-[60%] z-10 flex flex-col items-center pointer-events-none transition-all duration-500">
         <AnimatePresence>
           {showWordmark && (
             <motion.div

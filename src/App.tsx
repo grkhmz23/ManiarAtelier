@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, BookOpen, Truck, Heart, Sparkles } from "lucide-react";
 
@@ -160,9 +162,9 @@ export default function App() {
   };
 
   const renderHomePage = () => (
-    <main className="relative">
+    <main className="relative w-full overflow-x-hidden">
       <div className="pt-[76px] md:pt-[84px] px-3 sm:px-4 md:px-8">
-        <div className="mx-auto max-w-7xl flex flex-col gap-5 md:gap-6">
+        <div className="mx-auto max-w-7xl flex flex-col gap-6 md:gap-8">
 
           {/* ── Hero ── */}
           <div id="hero" ref={(n) => { refs.hero.current = n; }}>
@@ -175,16 +177,56 @@ export default function App() {
 
           {/* ── Category Showcase ── */}
           <GlassCard kicker="Materials & Heritage" title="Our Categories">
-            <PhotoGallery
-              items={[
-                { id: "heritage", src: "/images/category/category1.jpg", label: "Est. 2024", title: "Heritage Textiles" },
-                { id: "materials", src: "/images/category/category2.jpg", label: "Premium", title: "Atlas Materials" },
-                { id: "mens", src: "/images/category/category3.jpg", label: "Collection", title: "Men's Couture" },
-                { id: "womens", src: "/images/category/category4.jpg", label: "Collection", title: "Women's Elegance" },
-                { id: "craft", src: "/images/category/category5.png", label: "Handmade", title: "Craftsmanship" },
-                { id: "story", src: "/images/category/category6.jpg", label: "Heritage", title: "Our Story" },
-              ]}
-            />
+            {/* MOBILE FIX: Stack categories vertically on mobile (grid-cols-1)
+               and split to 2 columns on larger screens (sm:grid-cols-2).
+            */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+              {/* Men's Card */}
+              <div 
+                onClick={() => navigateToPage("men")}
+                className="group relative h-[360px] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl"
+              >
+                <div className="absolute inset-0">
+                   <img 
+                     src="/images/uomo-gilet.png" 
+                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90" 
+                     alt="Men" 
+                     loading="lazy"
+                   />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                </div>
+                <div className="absolute bottom-0 p-6">
+                   <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6AC54] mb-2">Collection</div>
+                   <div className="font-serif text-3xl text-white">Men's Couture</div>
+                   <p className="mt-2 text-sm text-white/60 line-clamp-2">
+                     Structured shoulders and heritage embroidery.
+                   </p>
+                </div>
+              </div>
+
+              {/* Women's Card */}
+              <div 
+                onClick={() => navigateToPage("women")}
+                className="group relative h-[360px] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl"
+              >
+                <div className="absolute inset-0">
+                   <img 
+                     src="/images/black-dress.png" 
+                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90" 
+                     alt="Women" 
+                     loading="lazy"
+                   />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                </div>
+                <div className="absolute bottom-0 p-6">
+                   <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6AC54] mb-2">Collection</div>
+                   <div className="font-serif text-3xl text-white">Women's Elegance</div>
+                   <p className="mt-2 text-sm text-white/60 line-clamp-2">
+                     Flowing silhouettes and modern cuts.
+                   </p>
+                </div>
+              </div>
+            </div>
           </GlassCard>
 
           {/* ── Collection ── */}
@@ -194,6 +236,7 @@ export default function App() {
             kicker="New Season"
             title="The Collection"
           >
+            {/* MOBILE FIX: Use grid-cols-1 for full width cards on mobile */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
               {CATALOG.slice(0, 4).map((product) => (
                 <button
@@ -232,7 +275,7 @@ export default function App() {
               ))}
             </div>
 
-            <div className="mt-6 flex items-center justify-between gap-4">
+            <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <p className="text-sm text-white/50">Need sizing help? Try the concierge.</p>
               <button type="button" onClick={() => setChatOpen(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
                 Size recommendation <ArrowRight size={14} />
@@ -247,7 +290,7 @@ export default function App() {
             kicker="Behind the scenes"
             title="The Atelier"
           >
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { k: "Material", t: "Selection", d: "Wool and textiles are selected for consistency, density, and longevity — not just appearance." },
                 { k: "Assembly", t: "Hands", d: "Each piece passes through multiple artisan steps with a strict finish standard." },
@@ -259,7 +302,7 @@ export default function App() {
               ))}
             </div>
 
-            <div className="mt-5 grid md:grid-cols-3 gap-4">
+            <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
               {CATALOG.slice(0, 3).map((p) => (
                 <div key={p.id} className="rounded-[20px] overflow-hidden border border-white/10 bg-white/[0.02]">
                   <img src={p.image} alt={p.name} className="w-full h-[260px] object-cover" loading="lazy" />
@@ -272,7 +315,7 @@ export default function App() {
               ))}
             </div>
 
-            <div className="mt-6 flex items-center justify-between gap-4">
+            <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <p className="text-sm text-white/50">Want the full story behind our craft?</p>
               <button type="button" onClick={() => navigateToPage("craft")} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
                 Craft & Origin <ArrowRight size={14} />
@@ -287,7 +330,7 @@ export default function App() {
             kicker="Editorial"
             title="Journal"
           >
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <GlassCard as="div" variant="compact" kicker="Statement" title="Heritage">
                 <Sparkles className="text-white/50" size={20} />
                 <p className="mt-4 font-semibold text-2xl leading-tight text-white/85">
@@ -312,7 +355,7 @@ export default function App() {
               </GlassCard>
             </div>
 
-            <div className="mt-6 flex items-center justify-between gap-4">
+            <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <p className="text-sm text-white/50">Explore our style guides and care instructions.</p>
               <button type="button" onClick={() => navigateToPage("journal")} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
                 View All Guides <ArrowRight size={14} />
@@ -327,7 +370,7 @@ export default function App() {
             kicker="Brand"
             title="About Maniar"
           >
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { k: "Design", t: "Discipline", d: "Shapes, seams, and silhouettes are treated like engineered geometry." },
                 { k: "Material", t: "Longevity", d: "We prioritize fabrics that age well, not fabrics that photograph well once." },
@@ -341,7 +384,8 @@ export default function App() {
 
             <div className="mt-5 h-px bg-gradient-to-r from-transparent via-[#D6AC54]/20 to-transparent" />
 
-            <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* MOBILE FIX: Use sm:grid-cols-2 instead of 1 to allow side-by-side on larger phones */}
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {PAGE_MENU_ITEMS.map((item) => (
                 <button key={item.id} type="button" onClick={() => navigateToPage(item.id)} className="text-left p-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all">
                   <div className="flex items-center gap-2 text-white/50 mb-2">
@@ -370,21 +414,25 @@ export default function App() {
 
   return (
     <>
-      {showLanding && <LandingSplash onEnter={() => setShowLanding(false)} />}
+      <div className="relative z-[200]">
+        {showLanding && <LandingSplash onEnter={() => setShowLanding(false)} />}
+      </div>
 
-      <div className="min-h-screen bg-[#0B1026] text-white">
-        {!showLanding && <GlassNav
-          section={section}
-          onNavigate={scrollToSection}
-          cartCount={cartCount}
-          onOpenCart={() => setCartOpen(true)}
-          onOpenChat={() => setChatOpen(true)}
-          onOpenMenu={() => setIsMenuOpen(true)}
-        />}
+      <div className="min-h-screen bg-[#0B1026] text-white overflow-x-hidden selection:bg-[#D6AC54]/30 selection:text-white">
+        {!showLanding && (
+          <GlassNav
+            section={section}
+            onNavigate={scrollToSection}
+            cartCount={cartCount}
+            onOpenCart={() => setCartOpen(true)}
+            onOpenChat={() => setChatOpen(true)}
+            onOpenMenu={() => setIsMenuOpen(true)}
+          />
+        )}
 
         <InstagramStoriesFloat />
 
-        {/* ── Kinetic Menu (GSAP slide-in) ── */}
+        {/* ── Kinetic Menu ── */}
         <KineticMenu
           open={isMenuOpen}
           onClose={() => setIsMenuOpen(false)}
@@ -398,8 +446,9 @@ export default function App() {
         {renderPage()}
 
         {/* ── Footer ── */}
-        <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12">
+        <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12 overflow-hidden">
           <div className="mx-auto max-w-7xl">
+            {/* MOBILE FIX: Stacking columns (grid-cols-1) for readable links on small screens */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
               <div>
                 <h3 className="font-semibold text-xl text-white/90 mb-3">Maniar</h3>
@@ -423,7 +472,7 @@ export default function App() {
               <div>
                 <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Connect</h4>
                 <div className="flex gap-4 text-sm text-white/50">
-                  <a href="https://www.instagram.com/maniaratelier/" target="_blank" className="hover:text-white transition-colors">Instagram</a>
+                  <a href="https://www.instagram.com/maniaratelier/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a>
                 </div>
               </div>
             </div>
