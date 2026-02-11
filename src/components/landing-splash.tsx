@@ -35,7 +35,10 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
         />
       </div>
 
-      <div className="absolute inset-x-0 top-[60%] z-10 flex flex-col items-center pointer-events-none">
+      {/* LAYOUT FIX: Changed top-[60%] to top-[48%]
+        This moves the entire text block up, closer to the logo.
+      */}
+      <div className="absolute inset-x-0 top-[48%] z-10 flex flex-col items-center pointer-events-none">
         <AnimatePresence>
           {showWordmark && (
             <motion.div
@@ -44,10 +47,7 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               className="text-center flex flex-col items-center"
             >
-              {/* GOLD GRADIENT TEXT:
-                 Using bg-clip-text with a linear gradient from pale gold to rich bronze 
-                 to simulate the metallic shine of the reference logo.
-              */}
+              {/* GOLD GRADIENT TEXT */}
               <div className="font-serif tracking-[0.2em] text-4xl sm:text-5xl md:text-6xl font-semibold text-transparent bg-clip-text bg-gradient-to-b from-[#F9F1D0] via-[#D4AF37] to-[#B5922F] drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
                 MANIAR
               </div>
