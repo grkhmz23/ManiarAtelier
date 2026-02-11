@@ -19,8 +19,8 @@ export default function InstagramStoriesFloat() {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const igUrl =
-    (import.meta as any)?.env?.VITE_INSTAGRAM_URL || "https://instagram.com";
+  // FIXED: Real Instagram URL
+  const igUrl = "https://www.instagram.com/maniaratelier/";
 
   const stories = useMemo<Story[]>(
     () => [

@@ -423,8 +423,7 @@ export default function App() {
               <div>
                 <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Connect</h4>
                 <div className="flex gap-4 text-sm text-white/50">
-                  <a href="#" className="hover:text-white transition-colors">Instagram</a>
-                  <a href="#" className="hover:text-white transition-colors">WhatsApp</a>
+                  <a href="https://www.instagram.com/maniaratelier/" target="_blank" className="hover:text-white transition-colors">Instagram</a>
                 </div>
               </div>
             </div>
