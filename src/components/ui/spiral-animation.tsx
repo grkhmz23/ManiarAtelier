@@ -7,7 +7,6 @@ type Stage = "storm" | "formLogo" | "settle" | "done";
 
 type SpiralAnimationProps = {
   mode?: Mode;
-  text?: string;
   logoSrc?: string;
   className?: string;
   onStageChange?: (stage: Stage) => void;
@@ -39,21 +38,15 @@ function extractPointsFromImageData(
   w: number,
   h: number,
   step: number,
-  alphaThreshold: number,
-  useBrightness = false
+  alphaThreshold: number
 ): Pt[] {
   const pts: Pt[] = [];
   for (let y = 0; y < h; y += step) {
     for (let x = 0; x < w; x += step) {
       const i = (y * w + x) * 4;
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
       const a = data[i + 3];
-      if (useBrightness) {
-        if (a >= 30 && (r + g + b) > 100) pts.push({ x, y });
-      } else {
-        if (a >= alphaThreshold) pts.push({ x, y });
+      if (a >= alphaThreshold) {
+        pts.push({ x, y });
       }
     }
   }
@@ -91,7 +84,7 @@ class Particle {
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
-    this.size = 0.3 + Math.random() * 0.6;
+    this.size = 0.6 + Math.random() * 0.8; 
   }
 
   setTarget(p: Pt) {
@@ -116,11 +109,7 @@ class Particle {
 }
 
 type PhaseName = "storm" | "formLogo" | "settle" | "done";
-
-type Phase = {
-  name: PhaseName;
-  duration: number;
-};
+type Phase = { name: PhaseName; duration: number };
 
 export function SpiralAnimation({
   mode = "sequence",
@@ -138,9 +127,9 @@ export function SpiralAnimation({
   const phases: Phase[] = useMemo(() => {
     if (mode === "logo") return [{ name: "formLogo" as const, duration: 9999 }];
     return [
-      { name: "storm" as const, duration: 0.8 },
-      { name: "formLogo" as const, duration: 0.7 },
-      { name: "settle" as const, duration: 0.5 },
+      { name: "storm" as const, duration: 1.0 },
+      { name: "formLogo" as const, duration: 1.5 },
+      { name: "settle" as const, duration: 1.0 },
       { name: "done" as const, duration: 9999 },
     ];
   }, [mode]);
@@ -155,21 +144,6 @@ export function SpiralAnimation({
     const reduce = prefersReducedMotion();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    const resize = () => {
-      const parent = canvas.parentElement;
-      const w = parent?.clientWidth ?? window.innerWidth;
-      const h = parent?.clientHeight ?? window.innerHeight;
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-
-    resize();
-    const ro = new ResizeObserver(resize);
-    if (canvas.parentElement) ro.observe(canvas.parentElement);
-
     const off = document.createElement("canvas");
     const offCtx = off.getContext("2d", { willReadFrequently: true });
     if (!offCtx) return;
@@ -180,8 +154,9 @@ export function SpiralAnimation({
     let phaseIndex = 0;
     let phaseT = 0;
 
-    const gold = "rgba(214, 172, 84, 1)";
-    const bg = "#0B1026";
+    // --- COLOR UPDATE: RICH METALLIC GOLD & DEEP NAVY ---
+    const gold = "rgba(235, 196, 94, 1)"; // Brighter, more metallic gold
+    const bg = "#040615"; // Deepest Midnight Blue (matches reference background)
 
     function emitStage(name: PhaseName) {
       if (stageRef.current !== name) {
@@ -195,68 +170,32 @@ export function SpiralAnimation({
       off.height = h;
       offCtx!.clearRect(0, 0, w, h);
 
-      const ornSize = Math.min(w * 0.4, h * 0.5);
-      const ox = (w - ornSize) / 2;
-      const oy = h * 0.08;
+      // Safe Zone Layout
+      const boxSize = Math.min(w * 0.40, h * 0.40); 
+      const boxX = (w - boxSize) / 2;
+      const boxY = (h * 0.34) - (boxSize / 2);
+
+      // Internal padding
+      const padding = boxSize * 0.05;
+      const drawW = boxSize - (padding * 2);
+      const drawH = boxSize - (padding * 2);
+      const drawX = boxX + padding;
+      const drawY = boxY + padding;
 
       if (logoImg) {
-        drawCenteredContain(offCtx!, logoImg, ox, oy, ornSize, ornSize);
+        drawCenteredContain(offCtx!, logoImg, drawX, drawY, drawW, drawH);
       }
-
-      // "MANIAR"
-      const maniarY = oy + ornSize + h * 0.03;
-      const maniarSize = Math.floor(Math.min(w * 0.09, 64));
-      offCtx!.fillStyle = "white";
-      offCtx!.textBaseline = "top";
-      offCtx!.font = "600 " + maniarSize + "px ui-serif, Georgia, serif";
-
-      const mChars = "MANIAR".split("");
-      const mSpacing = maniarSize * 0.28;
-      let mTotal = 0;
-      for (const c of mChars) mTotal += offCtx!.measureText(c).width;
-      mTotal += mSpacing * (mChars.length - 1);
-      let mx = w / 2 - mTotal / 2;
-      for (const c of mChars) {
-        offCtx!.fillText(c, mx, maniarY);
-        mx += offCtx!.measureText(c).width + mSpacing;
-      }
-
-      // "ATELIER"
-      const atelierY = maniarY + maniarSize * 1.2;
-      const atelierSize = Math.floor(maniarSize * 0.38);
-      offCtx!.font = "300 " + atelierSize + "px ui-serif, Georgia, serif";
-
-      const aChars = "ATELIER".split("");
-      const aSpacing = atelierSize * 0.5;
-      let aTotal = 0;
-      for (const c of aChars) aTotal += offCtx!.measureText(c).width;
-      aTotal += aSpacing * (aChars.length - 1);
-      let ax = w / 2 - aTotal / 2;
-      for (const c of aChars) {
-        offCtx!.fillText(c, ax, atelierY);
-        ax += offCtx!.measureText(c).width + aSpacing;
-      }
-
-      // Decorative lines
-      const lineY = atelierY + atelierSize * 0.5;
-      offCtx!.strokeStyle = "white";
-      offCtx!.lineWidth = 1.5;
-      offCtx!.beginPath();
-      offCtx!.moveTo(w / 2 - aTotal / 2 - 12 - maniarSize, lineY);
-      offCtx!.lineTo(w / 2 - aTotal / 2 - 12, lineY);
-      offCtx!.moveTo(w / 2 + aTotal / 2 + 12, lineY);
-      offCtx!.lineTo(w / 2 + aTotal / 2 + 12 + maniarSize, lineY);
-      offCtx!.stroke();
 
       const imgData = offCtx!.getImageData(0, 0, w, h);
-      const logoStep = w < 520 ? 2 : 1;
-      ptsLogo = extractPointsFromImageData(imgData.data, w, h, logoStep, 15, true);
+      const logoStep = 1; 
+      ptsLogo = extractPointsFromImageData(imgData.data, w, h, logoStep, 5);
     }
 
     function assignTargets(points: Pt[], w: number, h: number) {
       if (!points.length) return;
-      const maxParticles = reduce ? 4500 : w < 520 ? 7800 : 22750;
+      const maxParticles = reduce ? 4500 : w < 600 ? 10000 : 30000;
       const n = Math.min(points.length, maxParticles);
+
       if (particles.length !== n) {
         particles = [];
         const cx = w / 2;
@@ -318,16 +257,18 @@ export function SpiralAnimation({
         phaseTargets(w, h);
       }
 
-      if (!particles.length) phaseTargets(w, h);
+      if (!particles.length && ptsLogo.length > 0) phaseTargets(w, h);
 
       ctx!.globalCompositeOperation = "source-over";
-      ctx!.fillStyle = reduce ? bg : "rgba(11, 16, 38, 0.28)";
+      // --- BACKGROUND UPDATE: Use the deep midnight blue ---
+      ctx!.fillStyle = reduce ? bg : "rgba(4, 6, 21, 0.25)"; 
       ctx!.fillRect(0, 0, w, h);
 
       ctx!.save();
-      const grad = ctx!.createRadialGradient(w * 0.5, h * 0.35, 40, w * 0.5, h * 0.5, Math.max(w, h) * 0.7);
-      grad.addColorStop(0, "rgba(20,25,60,0.08)");
-      grad.addColorStop(1, "rgba(5,8,20,0.7)");
+      // --- GRADIENT UPDATE: Richer Royal Blue Glow ---
+      const grad = ctx!.createRadialGradient(w * 0.5, h * 0.4, 40, w * 0.5, h * 0.5, Math.max(w, h) * 0.85);
+      grad.addColorStop(0, "rgba(22, 33, 62, 0.15)"); // Subtle glow in center
+      grad.addColorStop(1, "rgba(2, 2, 8, 0.85)"); // Dark vignette at edges
       ctx!.fillStyle = grad;
       ctx!.fillRect(0, 0, w, h);
       ctx!.restore();
@@ -338,11 +279,11 @@ export function SpiralAnimation({
       const isStorm = ph.name === "storm";
       const isResolve = ph.name === "formLogo" || ph.name === "settle" || ph.name === "done";
 
-      const k = reduce ? 0.020 : isStorm ? 0.008 : isResolve ? 0.026 : 0.018;
-      const damping = reduce ? 0.86 : isStorm ? 0.92 : isResolve ? 0.83 : 0.88;
-      const swirl = reduce ? 0 : isStorm ? 2.5 : isResolve ? 0.12 : 0.5;
+      const k = reduce ? 0.020 : isStorm ? 0.008 : isResolve ? 0.035 : 0.018;
+      const damping = reduce ? 0.86 : isStorm ? 0.92 : isResolve ? 0.82 : 0.88;
+      const swirl = reduce ? 0 : isStorm ? 2.5 : isResolve ? 0.05 : 0.5;
 
-      ctx!.globalCompositeOperation = "source-over";
+      ctx!.globalCompositeOperation = "source-over"; // 'lighter' creates a nice glow effect for gold
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
@@ -352,25 +293,41 @@ export function SpiralAnimation({
         ctx!.fillStyle = gold;
         ctx!.arc(p.x, p.y, r, 0, Math.PI * 2);
         ctx!.fill();
-        ctx!.beginPath();
-        ctx!.fillStyle = "rgba(244, 229, 167, 0.45)";
-        ctx!.arc(p.x, p.y, r * 0.55, 0, Math.PI * 2);
-        ctx!.fill();
       }
 
       rafRef.current = requestAnimationFrame(tick);
     }
+
+    const resize = () => {
+      if (!canvas || !canvas.parentElement) return;
+      const parent = canvas.parentElement;
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      if (logoImg) {
+        buildLogoPoints(w, h);
+        phaseTargets(w, h);
+      }
+    };
 
     async function init() {
       try {
         const w = canvas!.clientWidth || window.innerWidth;
         const h = canvas!.clientHeight || window.innerHeight;
         try { logoImg = await loadImage(logoSrc); } catch { logoImg = null; }
+
         buildLogoPoints(w, h);
+
         phaseIndex = 0;
         phaseT = 0;
         emitStage("storm");
         phaseTargets(w, h);
+
         if (!mounted) return;
         setReady(true);
         rafRef.current = requestAnimationFrame(tick);
@@ -380,6 +337,9 @@ export function SpiralAnimation({
     }
 
     init();
+
+    const ro = new ResizeObserver(resize);
+    if (canvas.parentElement) ro.observe(canvas.parentElement);
 
     return () => {
       mounted = false;
@@ -392,7 +352,8 @@ export function SpiralAnimation({
   return (
     <div className={className ?? "relative w-full h-full"}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-      {!ready && <div className="absolute inset-0 bg-[#0B1026]" />}
+      {/* Fallback bg matches new deep navy */}
+      {!ready && <div className="absolute inset-0 bg-[#040615]" />}
     </div>
   );
 }
