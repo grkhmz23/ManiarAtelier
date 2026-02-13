@@ -12,7 +12,6 @@ type SpiralAnimationProps = {
   onStageChange?: (stage: Stage) => void;
 };
 
-// Update: Point now stores its own specific color
 type Pt = { x: number; y: number; color: string };
 
 function clamp(v: number, a: number, b: number) {
@@ -28,11 +27,44 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.decoding = "async";
-    img.crossOrigin = "anonymous"; // Important for reading pixel data
+    img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
     img.onerror = reject;
     img.src = src;
   });
+}
+
+// --- RESTORED: 3D Metallic Gradient Logic ---
+function lerpColor(color1: string, color2: string, factor: number) {
+  const c1 = parseInt(color1.slice(1), 16);
+  const c2 = parseInt(color2.slice(1), 16);
+
+  const r1 = (c1 >> 16) & 255, g1 = (c1 >> 8) & 255, b1 = c1 & 255;
+  const r2 = (c2 >> 16) & 255, g2 = (c2 >> 8) & 255, b2 = c2 & 255;
+
+  const r = Math.round(r1 + (r2 - r1) * factor);
+  const g = Math.round(g1 + (g2 - g1) * factor);
+  const b = Math.round(b1 + (b2 - b1) * factor);
+
+  return `rgba(${r},${g},${b},1)`;
+}
+
+function getMetallicColor(y: number, height: number) {
+  // Calculates gradient based on vertical position (Y)
+  const progress = Math.max(0, Math.min(1, y / height));
+
+  // Exact colors picked from your "Real Logo" reference
+  const highlight = "#FFFACD"; // Lemon Chiffon (Top tips highlight)
+  const midGold = "#D4AF37";   // Classic Gold (Middle body)
+  const shadow = "#785C1F";    // Dark Bronze (Bottom shadows)
+
+  if (progress < 0.3) {
+    // Top 30%: Highlight -> Mid
+    return lerpColor(highlight, midGold, progress / 0.3);
+  } else {
+    // Bottom 70%: Mid -> Shadow
+    return lerpColor(midGold, shadow, (progress - 0.3) / 0.7);
+  }
 }
 
 function extractPointsFromImageData(
@@ -46,18 +78,12 @@ function extractPointsFromImageData(
   for (let y = 0; y < h; y += step) {
     for (let x = 0; x < w; x += step) {
       const i = (y * w + x) * 4;
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
       const a = data[i + 3];
 
       if (a >= alphaThreshold) {
-        // We capture the EXACT color of the pixel
-        pts.push({ 
-          x, 
-          y, 
-          color: `rgba(${r},${g},${b},${(a / 255).toFixed(2)})` 
-        });
+        // FIX: Force the metallic gradient instead of reading the flat image color
+        const color = getMetallicColor(y, h);
+        pts.push({ x, y, color });
       }
     }
   }
@@ -91,19 +117,19 @@ class Particle {
   ty = 0;
   seed = Math.random() * 1000;
   size = 1;
-  color = "rgba(235, 196, 94, 1)"; // Default gold
+  color = "rgba(235, 196, 94, 1)"; 
 
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
-    // Finer particles for "dust" look
-    this.size = 0.6 + Math.random() * 0.9; 
+    // Slightly finer particles for sharper resolution
+    this.size = 0.5 + Math.random() * 0.8; 
   }
 
   setTarget(p: Pt) {
     this.tx = p.x;
     this.ty = p.y;
-    this.color = p.color; // Adopt the target color
+    this.color = p.color; 
   }
 
   step(dt: number, k: number, damping: number, swirl: number, cx: number, cy: number, t: number) {
@@ -112,9 +138,9 @@ class Particle {
     const dx = this.x - cx;
     const dy = this.y - cy;
 
-    // Wind Physics
-    const breezeX = Math.sin(t * 0.5 + this.seed) * 0.05;
-    const breezeY = Math.cos(t * 0.4 + this.seed) * 0.05;
+    // Wind Physics (Reduced for sharpness)
+    const breezeX = Math.sin(t * 0.5 + this.seed) * 0.02;
+    const breezeY = Math.cos(t * 0.4 + this.seed) * 0.02;
 
     const ang = Math.atan2(dy, dx) + 1.2 * Math.sin((t + this.seed) * 0.35);
     const s = swirl / (1 + Math.sqrt(dx * dx + dy * dy) * 0.01);
@@ -148,8 +174,8 @@ export function SpiralAnimation({
   const phases: Phase[] = useMemo(() => {
     if (mode === "logo") return [{ name: "formLogo" as const, duration: 9999 }];
     return [
-      { name: "storm" as const, duration: 1.2 }, 
-      { name: "formLogo" as const, duration: 2.2 }, 
+      { name: "storm" as const, duration: 1.0 }, 
+      { name: "formLogo" as const, duration: 2.0 }, 
       { name: "settle" as const, duration: 1.0 },
       { name: "done" as const, duration: 9999 },
     ];
@@ -189,7 +215,7 @@ export function SpiralAnimation({
       off.height = h;
       offCtx!.clearRect(0, 0, w, h);
 
-      // Same safe layout as before
+      // Safe Zone Layout
       const boxSize = Math.min(w * 0.40, h * 0.40); 
       const boxX = (w - boxSize) / 2;
       const boxY = (h * 0.34) - (boxSize / 2);
@@ -205,17 +231,16 @@ export function SpiralAnimation({
 
       const imgData = offCtx!.getImageData(0, 0, w, h);
 
-      // STEP = 2: Good balance between detail and performance
-      const logoStep = w < 800 ? 2 : 2; 
+      // FIX: Force Step 1 (Every Pixel) for maximum sharpness
+      // Previous was 2, which caused the "mixed/fuzzy" look
+      const logoStep = 1; 
       ptsLogo = extractPointsFromImageData(imgData.data, w, h, logoStep, 10);
     }
 
     function assignTargets(points: Pt[], w: number, h: number) {
       if (!points.length) return;
-
-      // Increased particle count slightly to ensure logo looks solid enough
-      const maxParticles = reduce ? 3000 : w < 600 ? 5000 : 12000;
-
+      // High particle count for solid look
+      const maxParticles = reduce ? 3000 : w < 600 ? 6000 : 15000;
       const n = Math.min(points.length, maxParticles);
 
       if (particles.length !== n) {
@@ -231,12 +256,8 @@ export function SpiralAnimation({
         }
       }
 
-      // Assign targets (and colors!)
-      // We shuffle slightly so the build-up looks organic
       const shuffledPoints = [...points].sort(() => Math.random() - 0.5);
-
       for (let i = 0; i < particles.length; i++) {
-        // Wrap around if we have fewer particles than points
         const p = shuffledPoints[i % shuffledPoints.length];
         particles[i].setTarget(p);
       }
@@ -257,8 +278,7 @@ export function SpiralAnimation({
       if (ph === "storm") {
         const storm: Pt[] = [];
         const n = 4000;
-        // Storm particles default to a generic gold since they have no image reference yet
-        const stormColor = "rgba(235, 196, 94, 0.8)"; 
+        const stormColor = "rgba(212, 175, 55, 0.8)"; // Generic gold for storm
         for (let i = 0; i < n; i++) {
           storm.push({ 
             x: Math.random() * w, 
@@ -294,7 +314,6 @@ export function SpiralAnimation({
       if (!particles.length && ptsLogo.length > 0) phaseTargets(w, h);
 
       ctx!.globalCompositeOperation = "source-over";
-      // Clear with trail
       ctx!.fillStyle = reduce ? bg : "rgba(4, 6, 21, 0.25)"; 
       ctx!.fillRect(0, 0, w, h);
 
@@ -322,23 +341,19 @@ export function SpiralAnimation({
       } else if (isStorm) {
          k = 0.008; damping = 0.92; swirl = 2.5;
       } else if (isForming) {
-         k = 0.030; damping = 0.87; swirl = 1.0;
+         k = 0.035; damping = 0.85; swirl = 1.0;
       } else if (isSettled) {
-         // Tighter hold for clarity
-         k = 0.012; damping = 0.92; swirl = 0.1;
+         // FIX: Tighter hold (k=0.025) and almost zero swirl to ensure SHARPNESS
+         k = 0.025; damping = 0.90; swirl = 0.02;
       }
 
-      // No 'lighter' composite mode here because we want accurate colors
       ctx!.globalCompositeOperation = "source-over"; 
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.step(dt, k, damping, swirl, cx, cy, t);
-
         const r = p.size;
-
         ctx!.beginPath();
-        // HERE IS THE MAGIC: Use the pixel color!
         ctx!.fillStyle = p.color; 
         ctx!.arc(p.x, p.y, r, 0, Math.PI * 2);
         ctx!.fill();
@@ -369,14 +384,11 @@ export function SpiralAnimation({
         const w = canvas!.clientWidth || window.innerWidth;
         const h = canvas!.clientHeight || window.innerHeight;
         try { logoImg = await loadImage(logoSrc); } catch { logoImg = null; }
-
         buildLogoPoints(w, h);
-
         phaseIndex = 0;
         phaseT = 0;
         emitStage("storm");
         phaseTargets(w, h);
-
         if (!mounted) return;
         setReady(true);
         rafRef.current = requestAnimationFrame(tick);
