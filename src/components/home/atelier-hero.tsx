@@ -2,7 +2,8 @@
 
 import React, { useMemo, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Sparkles, ShieldCheck, Truck, RotateCcw } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { useTranslation, useLanguage } from "@/i18n";
 
 function cn(...v: Array<string | false | null | undefined>) {
   return v.filter(Boolean).join(" ");
@@ -15,6 +16,8 @@ type AtelierHeroProps = {
 };
 
 export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroProps) {
+  const t = useTranslation();
+  const { isRTL } = useLanguage();
   const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -52,6 +55,7 @@ export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroPr
       className="relative overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/10 bg-[#0B1026] shadow-[0_40px_140px_rgba(0,0,0,0.65)] mx-4 sm:mx-0"
       style={{ "--mx": "50%", "--my": "35%" } as React.CSSProperties}
       aria-label="Maniar Atelier hero"
+      dir={isRTL ? "rtl" : "ltr"}
     >
       {/* Backdrop */}
       <div className="pointer-events-none absolute inset-0">
@@ -72,8 +76,7 @@ export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroPr
         <div className="md:col-span-7">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#D6AC54]/15 bg-[#D6AC54]/5 px-3 py-1 text-[10px] sm:text-[12px] text-white/80 backdrop-blur">
-              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-              Limited drops • Atelier-grade
+              {t.hero.kicker}
             </span>
           </div>
 
@@ -83,8 +86,8 @@ export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroPr
             transition={{ duration: 0.55 }}
             className="mt-5 text-balance text-3xl sm:text-4xl font-semibold leading-[1.05] tracking-[-0.03em] text-white md:text-6xl"
           >
-            Maniar Atelier
-            <span className="block text-white/80">tailoring that moves like light.</span>
+            {t.hero.title}
+            <span className="block text-white/80">{t.hero.subtitle}</span>
           </motion.h1>
 
           <motion.p
@@ -93,8 +96,7 @@ export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroPr
             transition={{ duration: 0.55, delay: 0.08 }}
             className="mt-5 max-w-xl text-pretty text-sm sm:text-base leading-relaxed text-white/70 md:text-lg"
           >
-            A minimal wardrobe with presence — sharp silhouettes, clean finishes, and seasonal pieces
-            designed to feel expensive.
+            {t.hero.description}
           </motion.p>
 
           <motion.div
@@ -108,7 +110,7 @@ export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroPr
               onClick={onShopNow}
               className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-black shadow-[0_20px_60px_rgba(255,255,255,0.15)] transition hover:translate-y-[-1px] flex-1 sm:flex-none"
             >
-              Shop New In
+              {t.hero.shopNewIn}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </button>
 
@@ -117,7 +119,7 @@ export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroPr
               onClick={onOpenWomen}
               className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white/90 backdrop-blur transition hover:bg-white/10 flex-1 sm:flex-none"
             >
-              Women
+              {t.hero.women}
             </button>
 
             <button
@@ -125,18 +127,17 @@ export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroPr
               onClick={onOpenMen}
               className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white/90 backdrop-blur transition hover:bg-white/10 flex-1 sm:flex-none"
             >
-              Men
+              {t.hero.men}
             </button>
           </motion.div>
 
           <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-sm text-white/75 backdrop-blur flex items-center gap-3 sm:block">
               <div className="flex items-center gap-2 font-semibold text-white/90">
-                <Truck className="h-4 w-4" /> Fast shipping
+                <span className="text-[#D6AC54]">✦</span> {t.hero.fastShipping}
               </div>
-              <div className="text-xs text-white/60 sm:mt-1">Tracked delivery</div>
+              <div className="text-xs text-white/60 sm:mt-1">{t.hero.trackedDelivery}</div>
             </div>
-            {/* Hidden on mobile to save space if needed, or keep as stacked */}
           </div>
         </div>
 
@@ -144,7 +145,6 @@ export function AtelierHero({ onShopNow, onOpenMen, onOpenWomen }: AtelierHeroPr
         <div className="md:col-span-5 min-h-[350px]">
           <div className="relative h-[350px] w-full md:h-[520px]">
             {images.map((img, i) => {
-              // FIX: Reduced translation distance on mobile so cards stay in view
               const base =
                 i === 0
                   ? "translate-x-0 translate-y-4 sm:translate-y-6 rotate-[-2deg]"

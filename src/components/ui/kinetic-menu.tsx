@@ -2,7 +2,9 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { ShoppingBag, MessageCircle, X } from "lucide-react";
+import { LanguageSelector } from "@/components/language/LanguageSelector";
 import type { NavSection } from "@/components/ui/glass-nav";
+import { useTranslation, useLanguage } from "@/i18n";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(CustomEase);
@@ -20,24 +22,6 @@ interface KineticMenuProps {
   cartCount: number;
 }
 
-const MENU_LINKS: Array<{ label: string; action: "page" | "section"; target: string }> = [
-  { label: "Men's Collection", action: "page", target: "men" },
-  { label: "Women's Collection", action: "page", target: "women" },
-  { label: "The Atelier", action: "section", target: "atelier" },
-  { label: "Our Story", action: "page", target: "brand" },
-  { label: "Craft & Origin", action: "page", target: "craft" },
-  { label: "Journal", action: "page", target: "journal" },
-  { label: "Shipping & Returns", action: "page", target: "shipping" },
-];
-
-const SECTION_PILLS: Array<{ label: string; section: NavSection }> = [
-  { label: "Home", section: "hero" },
-  { label: "Collection", section: "collection" },
-  { label: "Atelier", section: "atelier" },
-  { label: "Journal", section: "journal" },
-  { label: "About", section: "about" },
-];
-
 export function KineticMenu({
   open,
   onClose,
@@ -47,8 +31,28 @@ export function KineticMenu({
   onOpenChat,
   cartCount,
 }: KineticMenuProps) {
+  const t = useTranslation();
+  const { isRTL } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const hasRegisteredEase = useRef(false);
+
+  const MENU_LINKS: Array<{ label: string; action: "page" | "section"; target: string }> = [
+    { label: t.nav.mensCollection, action: "page", target: "men" },
+    { label: t.nav.womensCollection, action: "page", target: "women" },
+    { label: t.nav.atelier, action: "section", target: "atelier" },
+    { label: t.nav.ourStory, action: "page", target: "brand" },
+    { label: t.nav.craftOrigin, action: "page", target: "craft" },
+    { label: t.nav.journal, action: "page", target: "journal" },
+    { label: t.nav.shippingReturns, action: "page", target: "shipping" },
+  ];
+
+  const SECTION_PILLS: Array<{ label: string; section: NavSection }> = [
+    { label: t.nav.home, section: "hero" },
+    { label: t.nav.collection, section: "collection" },
+    { label: t.nav.atelier, section: "atelier" },
+    { label: t.nav.journal, section: "journal" },
+    { label: t.nav.about, section: "about" },
+  ];
 
   /* ── Register custom ease once ── */
   useEffect(() => {
@@ -273,14 +277,17 @@ export function KineticMenu({
           <div className="km-content">
             {/* Header row */}
             <div className="km-header">
-              <div className="km-brand-tag">Maniar Atelier</div>
-              <button
-                className="km-close"
-                onClick={onClose}
-                aria-label="Close menu"
-              >
-                <X size={18} />
-              </button>
+              <div className="km-brand-tag">{t.menu.brandTag}</div>
+              <div className="flex items-center gap-2">
+                <LanguageSelector variant="minimal" />
+                <button
+                  className="km-close"
+                  onClick={onClose}
+                  aria-label={t.common.close}
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             {/* Main navigation links */}
@@ -301,7 +308,7 @@ export function KineticMenu({
 
             {/* Section shortcut pills */}
             <div className="km-section-pills" data-km-fade>
-              <div className="km-pills-label">Sections</div>
+              <div className="km-pills-label">{t.menu.sections}</div>
               <div className="km-pills-row">
                 {SECTION_PILLS.map((pill) => (
                   <button
@@ -328,7 +335,7 @@ export function KineticMenu({
                 }}
               >
                 <MessageCircle size={16} />
-                <span>Concierge</span>
+                <span>{t.common.concierge}</span>
               </button>
               <button
                 className="km-action-btn"
@@ -338,13 +345,13 @@ export function KineticMenu({
                 }}
               >
                 <ShoppingBag size={16} />
-                <span>Cart{cartCount > 0 ? ` (${cartCount})` : ""}</span>
+                <span>{t.common.cart}{cartCount > 0 ? ` (${cartCount})` : ""}</span>
               </button>
             </div>
 
             {/* Footer tagline */}
             <div className="km-footer" data-km-fade>
-              <p>Moroccan heritage, modern elegance</p>
+              <p>{t.menu.footer}</p>
             </div>
           </div>
         </nav>

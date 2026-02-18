@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Product, ProductSize, formatEUR } from "@/lib/catalog";
+import { useTranslation, useLanguage } from "@/i18n";
 
 export default function ProductModal({
   open, product, onClose, onAdd,
@@ -13,6 +14,9 @@ export default function ProductModal({
   onClose: () => void;
   onAdd: (product: Product, size: ProductSize) => void;
 }) {
+  const t = useTranslation();
+  const { isRTL } = useLanguage();
+  
   const [size, setSize] = useState<ProductSize>("M");
   const [imgIdx, setImgIdx] = useState(0);
   const [added, setAdded] = useState(false);
@@ -39,8 +43,8 @@ export default function ProductModal({
   return (
     <AnimatePresence>
       {open && product && (
-        <motion.div className="fixed inset-0 z-[130] flex items-end sm:items-center justify-center">
-          <motion.button type="button" aria-label="Close" className="absolute inset-0 bg-black/60 backdrop-blur-xl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+        <motion.div className="fixed inset-0 z-[130] flex items-end sm:items-center justify-center" dir={isRTL ? "rtl" : "ltr"}>
+          <motion.button type="button" aria-label={t.common.close} className="absolute inset-0 bg-black/60 backdrop-blur-xl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
 
           <motion.div
             className="relative w-full sm:w-[min(960px,calc(100vw-24px))] max-h-[95vh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-t-[24px] sm:rounded-[28px] border border-white/10 bg-[#0B1026]/95 backdrop-blur-2xl shadow-[0_40px_120px_rgba(0,0,0,0.7)]"
@@ -49,7 +53,7 @@ export default function ProductModal({
             exit={{ opacity: 0, y: 30, scale: 0.98 }}
             transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
           >
-            <button type="button" onClick={onClose} className="absolute top-3 right-3 sm:top-4 sm:right-4 h-9 w-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center z-20 transition" aria-label="Close">
+            <button type="button" onClick={onClose} className="absolute top-3 right-3 sm:top-4 sm:right-4 h-9 w-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center z-20 transition" aria-label={t.common.close}>
               <X size={18} />
             </button>
 
@@ -64,10 +68,10 @@ export default function ProductModal({
 
                   {images.length > 1 && (
                     <>
-                      <button type="button" onClick={() => setImgIdx((i) => (i - 1 + images.length) % images.length)} className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/40 backdrop-blur border border-white/15 text-white/70 flex items-center justify-center z-10 hover:bg-black/60 transition" aria-label="Previous">
+                      <button type="button" onClick={() => setImgIdx((i) => (i - 1 + images.length) % images.length)} className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/40 backdrop-blur border border-white/15 text-white/70 flex items-center justify-center z-10 hover:bg-black/60 transition" aria-label={t.common.decrease}>
                         <ChevronLeft size={20} />
                       </button>
-                      <button type="button" onClick={() => setImgIdx((i) => (i + 1) % images.length)} className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/40 backdrop-blur border border-white/15 text-white/70 flex items-center justify-center z-10 hover:bg-black/60 transition" aria-label="Next">
+                      <button type="button" onClick={() => setImgIdx((i) => (i + 1) % images.length)} className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/40 backdrop-blur border border-white/15 text-white/70 flex items-center justify-center z-10 hover:bg-black/60 transition" aria-label={t.common.increase}>
                         <ChevronRight size={20} />
                       </button>
                     </>
@@ -104,7 +108,7 @@ export default function ProductModal({
                 <p className="mt-5 text-white/55 leading-relaxed text-sm sm:text-base">{product.description}</p>
 
                 <div className="mt-5">
-                  <div className="text-[10px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">Materials</div>
+                  <div className="text-[10px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">{t.common.materials}</div>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {product.materials.map((m) => (
                       <span key={m} className="px-3 py-1 rounded-full text-xs bg-white/[0.04] border border-white/10 text-white/60">{m}</span>
@@ -113,7 +117,7 @@ export default function ProductModal({
                 </div>
 
                 <div className="mt-6">
-                  <div className="text-[10px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">Select size</div>
+                  <div className="text-[10px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">{t.common.selectSize}</div>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {product.sizes.map((s) => (
                       <button key={s} type="button" onClick={() => setSize(s)} className={`px-4 h-10 rounded-full text-[12px] font-mono transition-all ${s === size ? "bg-white/12 text-white border border-white/25" : "bg-white/[0.04] text-white/60 border border-white/10 hover:bg-white/[0.08]"}`}>{s}</button>
@@ -123,21 +127,21 @@ export default function ProductModal({
 
                 <div className="mt-7 flex flex-col sm:flex-row gap-3">
                   <button type="button" onClick={handleAdd} className="inline-flex items-center justify-center h-12 px-6 rounded-2xl bg-white text-sm font-semibold text-black transition hover:-translate-y-px flex-1 sm:flex-none">
-                    {added ? "✓ Added!" : "Add to cart"}
+                    {added ? t.common.added : t.common.addToCart}
                   </button>
                   <button type="button" onClick={onClose} className="inline-flex items-center justify-center h-12 px-6 rounded-2xl border border-white/15 bg-white/5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                    Continue browsing
+                    {t.common.continueBrowsing}
                   </button>
                 </div>
 
                 <div className="mt-7 grid grid-cols-2 gap-3">
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="text-[10px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">Category</div>
+                    <div className="text-[10px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">{t.common.category}</div>
                     <div className="mt-2 font-semibold text-white/80 capitalize">{product.category}</div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="text-[10px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">Finish</div>
-                    <div className="mt-2 font-semibold text-white/80">Hand-sewn</div>
+                    <div className="text-[10px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">{t.common.finish}</div>
+                    <div className="mt-2 font-semibold text-white/80">{t.productModal.handSewn}</div>
                   </div>
                 </div>
               </div>

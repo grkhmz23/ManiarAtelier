@@ -8,13 +8,13 @@ import {
   ProductSize,
   PriceRangeId,
   ProductGender,
-  CATEGORY_LABELS,
   PRICE_RANGES,
   SIZE_ORDER,
   formatEUR,
   getProductsByGender,
   getCategoriesForGender,
 } from "@/lib/catalog";
+import { useTranslation, useLanguage } from "@/i18n";
 
 interface CollectionPageProps {
   gender: ProductGender;
@@ -23,33 +23,29 @@ interface CollectionPageProps {
   onOpenChat: () => void;
 }
 
-const GENDER_CONFIG: Record<ProductGender, {
-  title: string;
-  kicker: string;
-  heroTitle: string;
-  heroDesc: string;
-  heroDesc2: string;
-  images: string[];
-}> = {
-  men: {
-    title: "Men",
-    kicker: "The Gentleman's Edit",
-    heroTitle: "Refined Presence",
-    heroDesc: "Structured silhouettes meet Moroccan heritage. Each piece is built for presence — not trends. Coats that command rooms, gilets that layer with intention.",
-    heroDesc2: "From Atlas wool to hand-finished seams, every detail is a considered choice.",
-    images: ["/images/model-blue-long.png", "/images/nero-oro.png", "/images/uomo-gilet.png"],
-  },
-  women: {
-    title: "Women",
-    kicker: "The Feminine Edit",
-    heroTitle: "Graceful Power",
-    heroDesc: "Fluid silhouettes that move with intention. Kaftans that catch light like polished brass, skirts with structure and softness in balance.",
-    heroDesc2: "From satin weaves to hand-finished edges, each piece is designed for presence without performance.",
-    images: ["/images/verde-acqua.png", "/images/gonna-bianca.png", "/images/elegant.png"],
-  },
-};
-
 export default function CollectionPage({ gender, onBack, onOpenProduct, onOpenChat }: CollectionPageProps) {
+  const t = useTranslation();
+  const { isRTL } = useLanguage();
+  
+  const GENDER_CONFIG = {
+    men: {
+      title: t.collectionPage.men.title,
+      kicker: t.collectionPage.men.kicker,
+      heroTitle: t.collectionPage.men.heroTitle,
+      heroDesc: t.collectionPage.men.heroDesc,
+      heroDesc2: t.collectionPage.men.heroDesc2,
+      images: ["/images/model-blue-long.png", "/images/nero-oro.png", "/images/uomo-gilet.png"],
+    },
+    women: {
+      title: t.collectionPage.women.title,
+      kicker: t.collectionPage.women.kicker,
+      heroTitle: t.collectionPage.women.heroTitle,
+      heroDesc: t.collectionPage.women.heroDesc,
+      heroDesc2: t.collectionPage.women.heroDesc2,
+      images: ["/images/verde-acqua.png", "/images/gonna-bianca.png", "/images/elegant.png"],
+    },
+  };
+
   const config = GENDER_CONFIG[gender];
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | "all">("all");
   const [selectedSize, setSelectedSize] = useState<ProductSize | "all">("all");
@@ -59,6 +55,23 @@ export default function CollectionPage({ gender, onBack, onOpenProduct, onOpenCh
 
   const products = useMemo(() => getProductsByGender(gender), [gender]);
   const categories = useMemo(() => getCategoriesForGender(gender), [gender]);
+
+  // Get translated category labels
+  const getCategoryLabel = (cat: ProductCategory | "all") => {
+    if (cat === "all") return t.common.all;
+    return t.productCategories[cat];
+  };
+
+  // Get translated price range labels - map price range IDs to translation keys
+  const getPriceRangeLabel = (id: PriceRangeId) => {
+    const keyMap: Record<PriceRangeId, keyof typeof t.priceRanges> = {
+      "all": "all",
+      "under-250": "under250",
+      "250-350": "range250to350",
+      "over-350": "over350",
+    };
+    return t.priceRanges[keyMap[id]];
+  };
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
@@ -95,25 +108,25 @@ export default function CollectionPage({ gender, onBack, onOpenProduct, onOpenCh
       : "bg-white/[0.04] text-white/50 hover:bg-white/[0.08]");
 
   return (
-    <main className="relative">
+    <main className="relative" dir={isRTL ? "rtl" : "ltr"}>
       <div className="pt-[76px] md:pt-[84px] px-3 sm:px-4 md:px-8 pb-12">
         <div className="mx-auto max-w-7xl flex flex-col gap-5 md:gap-6">
 
-          <motion.button type="button" onClick={onBack} className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors self-start rounded-xl border border-white/10 bg-white/5 px-4 py-2" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-            <ArrowLeft size={16} /> Back to Home
+          <motion.button type="button" onClick={onBack} className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors self-start rounded-xl border border-white/10 bg-white/5 px-4 py-2" initial={{ opacity: 0, x: isRTL ? 10 : -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+            <ArrowLeft size={16} /> {t.common.backToHome}
           </motion.button>
 
-          <GlassCard kicker="Collection" title={config.title}>
+          <GlassCard kicker={t.collectionPage.categories} title={config.title}>
             <div className="grid lg:grid-cols-2 gap-5 items-stretch">
               <GlassCard as="div" variant="compact" kicker={config.kicker} title={config.heroTitle}>
                 <p className="text-sm md:text-base text-white/55 leading-relaxed">{config.heroDesc}</p>
                 <p className="text-sm text-white/55 leading-relaxed mt-3">{config.heroDesc2}</p>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <button type="button" onClick={() => document.getElementById(gender + "-products")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-black transition hover:-translate-y-px">
-                    Shop Collection <ArrowRight size={16} />
+                    {t.common.shopCollection} <ArrowRight size={16} />
                   </button>
                   <button type="button" onClick={onOpenChat} className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                    Styling Help
+                    {t.common.stylingHelp}
                   </button>
                 </div>
               </GlassCard>
@@ -130,16 +143,16 @@ export default function CollectionPage({ gender, onBack, onOpenProduct, onOpenCh
 
           <GlassCard as="div" variant="flush" className="p-4 md:p-5">
             <div className="flex items-center justify-between gap-4 mb-4">
-              <div className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">Categories</div>
+              <div className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70">{t.collectionPage.categories}</div>
               <button type="button" onClick={() => setShowFilters(!showFilters)} className={"inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition " + (activeFiltersCount > 0 ? "border-white/25 bg-white/10 text-white" : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10")}>
-                <Filter size={14} /> Filters
+                <Filter size={14} /> {t.common.filters}
                 {activeFiltersCount > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full bg-[#D6AC54] text-[#070817] text-[10px] font-bold">{activeFiltersCount}</span>}
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => setSelectedCategory("all")} className={pillClass(selectedCategory === "all")}>All</button>
+              <button type="button" onClick={() => setSelectedCategory("all")} className={pillClass(selectedCategory === "all")}>{getCategoryLabel("all")}</button>
               {categories.map((cat) => (
-                <button key={cat} type="button" onClick={() => setSelectedCategory(cat)} className={pillClass(selectedCategory === cat)}>{CATEGORY_LABELS[cat]}</button>
+                <button key={cat} type="button" onClick={() => setSelectedCategory(cat)} className={pillClass(selectedCategory === cat)}>{getCategoryLabel(cat)}</button>
               ))}
             </div>
             <AnimatePresence>
@@ -148,32 +161,32 @@ export default function CollectionPage({ gender, onBack, onOpenProduct, onOpenCh
                   <div className="mt-4 pt-4 border-t border-white/[0.08]">
                     <div className="grid sm:grid-cols-3 gap-4">
                       <div>
-                        <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">Size</div>
+                        <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">{t.common.size}</div>
                         <div className="flex flex-wrap gap-2">
-                          <button type="button" onClick={() => setSelectedSize("all")} className={chipClass(selectedSize === "all")}>All</button>
+                          <button type="button" onClick={() => setSelectedSize("all")} className={chipClass(selectedSize === "all")}>{t.common.all}</button>
                           {SIZE_ORDER.map((s) => <button key={s} type="button" onClick={() => setSelectedSize(s)} className={chipClass(selectedSize === s)}>{s}</button>)}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">Price</div>
+                        <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">{t.common.price}</div>
                         <div className="flex flex-wrap gap-2">
-                          {PRICE_RANGES.map((r) => <button key={r.id} type="button" onClick={() => setSelectedPriceRange(r.id)} className={chipClass(selectedPriceRange === r.id)}>{r.label}</button>)}
+                          {PRICE_RANGES.map((r) => <button key={r.id} type="button" onClick={() => setSelectedPriceRange(r.id as PriceRangeId)} className={chipClass(selectedPriceRange === r.id)}>{getPriceRangeLabel(r.id as PriceRangeId)}</button>)}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">Sort By</div>
+                        <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">{t.common.sortBy}</div>
                         <div className="relative">
                           <select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} className="w-full px-3 py-2 rounded-lg text-sm bg-white/[0.04] text-white/80 border border-white/10 appearance-none cursor-pointer focus:outline-none focus:border-white/25">
-                            <option value="default">Default</option>
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="price-desc">Price: High to Low</option>
+                            <option value="default">{t.common.default}</option>
+                            <option value="price-asc">{t.common.priceLowToHigh}</option>
+                            <option value="price-desc">{t.common.priceHighToLow}</option>
                           </select>
                           <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/40" />
                         </div>
                       </div>
                     </div>
                     {activeFiltersCount > 0 && (
-                      <button type="button" onClick={clearFilters} className="mt-4 text-sm text-white/60 hover:text-white transition-colors flex items-center gap-1"><X size={14} /> Clear all filters</button>
+                      <button type="button" onClick={clearFilters} className="mt-4 text-sm text-white/60 hover:text-white transition-colors flex items-center gap-1"><X size={14} /> {t.common.clearFilters}</button>
                     )}
                   </div>
                 </motion.div>
@@ -181,11 +194,11 @@ export default function CollectionPage({ gender, onBack, onOpenProduct, onOpenCh
             </AnimatePresence>
           </GlassCard>
 
-          <GlassCard id={gender + "-products"} kicker={filteredProducts.length + " Items"} title="Shop">
+          <GlassCard id={gender + "-products"} kicker={filteredProducts.length + " " + t.common.items} title={t.common.shop}>
             {filteredProducts.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-white/50 text-lg">No products match your filters.</p>
-                <button type="button" onClick={clearFilters} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 transition">Clear Filters</button>
+                <p className="text-white/50 text-lg">{t.common.noProductsMatch}</p>
+                <button type="button" onClick={clearFilters} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 transition">{t.common.clearFilters}</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
@@ -216,8 +229,8 @@ export default function CollectionPage({ gender, onBack, onOpenProduct, onOpenCh
             )}
             <div className="mt-6 h-px bg-gradient-to-r from-transparent via-[#D6AC54]/20 to-transparent" />
             <div className="mt-5 flex items-center justify-between gap-4">
-              <p className="text-sm text-white/50">Need help finding the right fit?</p>
-              <button type="button" onClick={onOpenChat} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">Ask Concierge <ArrowRight size={14} /></button>
+              <p className="text-sm text-white/50">{t.common.needHelp}</p>
+              <button type="button" onClick={onOpenChat} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">{t.common.askConcierge} <ArrowRight size={14} /></button>
             </div>
           </GlassCard>
         </div>

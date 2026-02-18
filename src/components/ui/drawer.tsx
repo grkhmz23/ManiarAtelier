@@ -10,13 +10,16 @@ export type DrawerProps = {
   children: React.ReactNode;
   widthClassName?: string;
   footer?: React.ReactNode;
+  dir?: "ltr" | "rtl";
 };
 
 function cn(...v: Array<string | false | undefined>) {
   return v.filter(Boolean).join(" ");
 }
 
-export default function Drawer({ open, title, onClose, children, widthClassName = "w-full sm:w-[420px]", footer }: DrawerProps) {
+export default function Drawer({ open, title, onClose, children, widthClassName = "w-full sm:w-[420px]", footer, dir = "ltr" }: DrawerProps) {
+  const isRTL = dir === "rtl";
+  
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
@@ -28,7 +31,7 @@ export default function Drawer({ open, title, onClose, children, widthClassName 
   return (
     <AnimatePresence>
       {open && (
-        <motion.div className="fixed inset-0 z-[120]">
+        <motion.div className="fixed inset-0 z-[120]" dir={dir}>
           <motion.button
             type="button"
             aria-label="Close drawer"
@@ -40,15 +43,16 @@ export default function Drawer({ open, title, onClose, children, widthClassName 
           />
           <motion.div
             className={cn(
-              "absolute right-0 top-0 h-full flex flex-col",
+              "absolute top-0 h-full flex flex-col",
+              isRTL ? "left-0" : "right-0",
               widthClassName,
               "bg-[#0B1026]/95 backdrop-blur-2xl",
-              "border-l border-white/10",
+              isRTL ? "border-r border-white/10" : "border-l border-white/10",
               "shadow-[0_0_80px_rgba(0,0,0,0.6)]",
             )}
-            initial={{ x: "100%" }}
+            initial={{ x: isRTL ? "-100%" : "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            exit={{ x: isRTL ? "-100%" : "100%" }}
             transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
           >
             <div className="px-5 pt-5 pb-4 border-b border-white/[0.08] flex items-start justify-between gap-3 shrink-0">

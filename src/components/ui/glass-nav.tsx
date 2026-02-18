@@ -3,6 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { MessageCircle, ShoppingBag, Menu } from "lucide-react";
+import { LanguageSelector } from "@/components/language/LanguageSelector";
+import { useTranslation, useLanguage } from "@/i18n";
 
 export type NavSection = "hero" | "collection" | "atelier" | "journal" | "about";
 
@@ -14,14 +16,6 @@ export type GlassNavProps = {
   onOpenChat: () => void;
   onOpenMenu: () => void;
 };
-
-const NAV: { id: NavSection; label: string }[] = [
-  { id: "hero", label: "Home" },
-  { id: "collection", label: "Collection" },
-  { id: "atelier", label: "Atelier" },
-  { id: "journal", label: "Journal" },
-  { id: "about", label: "About" },
-];
 
 function cn(...v: Array<string | false | undefined>) {
   return v.filter(Boolean).join(" ");
@@ -35,6 +29,17 @@ export default function GlassNav({
   onOpenChat,
   onOpenMenu,
 }: GlassNavProps) {
+  const t = useTranslation();
+  const { isRTL } = useLanguage();
+
+  const NAV: { id: NavSection; label: string }[] = [
+    { id: "hero", label: t.nav.home },
+    { id: "collection", label: t.nav.collection },
+    { id: "atelier", label: t.nav.atelier },
+    { id: "journal", label: t.nav.journal },
+    { id: "about", label: t.nav.about },
+  ];
+
   return (
     <div className="fixed top-0 left-0 right-0 z-[200]">
       <div className="mx-auto w-full px-3 sm:px-4 md:px-8 pt-3">
@@ -48,6 +53,7 @@ export default function GlassNav({
           initial={{ y: -12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
+          dir={isRTL ? "rtl" : "ltr"}
         >
           {/* Subtle top highlight */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D6AC54]/30 to-transparent" />
@@ -58,7 +64,7 @@ export default function GlassNav({
               type="button"
               onClick={() => onNavigate("hero")}
               className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-              aria-label="Home"
+              aria-label={t.nav.home}
             >
               <div className="h-8 w-8 rounded-full overflow-hidden border border-white/15 bg-white/5">
                 <img src="/logoManiar.jpeg" alt="Maniar" className="h-full w-full object-cover" />
@@ -89,11 +95,13 @@ export default function GlassNav({
 
             {/* Right: Actions */}
             <div className="flex items-center gap-1.5">
+              <LanguageSelector variant="compact" />
+              
               <button
                 type="button"
                 onClick={onOpenChat}
                 className="h-8 w-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all"
-                aria-label="Open concierge"
+                aria-label={t.common.concierge}
               >
                 <MessageCircle size={15} />
               </button>
@@ -116,7 +124,7 @@ export default function GlassNav({
                 type="button"
                 onClick={onOpenMenu}
                 className="h-8 w-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all"
-                aria-label="Menu"
+                aria-label={t.common.menu}
               >
                 <Menu size={15} />
               </button>

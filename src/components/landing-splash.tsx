@@ -3,12 +3,15 @@
 import { SpiralAnimation } from "@/components/ui/spiral-animation";
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation, useLanguage } from "@/i18n";
 
 type LandingSplashProps = {
   onEnter: () => void;
 };
 
 export function LandingSplash({ onEnter }: LandingSplashProps) {
+  const t = useTranslation();
+  const { isRTL } = useLanguage();
   const [stage, setStage] = useState<"storm" | "formLogo" | "settle" | "done">("storm");
 
   const showWordmark = stage === "settle" || stage === "done";
@@ -26,7 +29,7 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
   );
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden bg-[#040615] z-[100]">
+    <div className="fixed inset-0 w-full h-full overflow-hidden bg-[#040615] z-[100]" dir={isRTL ? "rtl" : "ltr"}>
       {/* Animation Background */}
       <div className="absolute inset-0 z-0">
         <SpiralAnimation
@@ -56,7 +59,7 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
               <div className="mt-4 flex items-center justify-center gap-4 text-[#D4AF37]">
                 <span className="h-px w-8 sm:w-16 bg-gradient-to-r from-transparent via-[#D4AF37]/60 to-transparent" />
                 <div className="text-[10px] sm:text-[12px] tracking-[0.6em] font-light uppercase text-[#E6C25F]">
-                  Atelier
+                  {t.hero.atelier}
                 </div>
                 <span className="h-px w-8 sm:w-16 bg-gradient-to-r from-transparent via-[#D4AF37]/60 to-transparent" />
               </div>
@@ -86,7 +89,7 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
                 <div className="absolute inset-0 bg-[#D4AF37]/5 blur-xl group-hover:bg-[#D4AF37]/15 transition-all duration-700" />
                 <div className="absolute inset-0 rounded-full border border-[#D4AF37]/30 group-hover:border-[#F9F1D0]/80 transition-all duration-500" />
                 <span className="relative text-[#F9F1D0] text-sm sm:text-base tracking-[0.3em] uppercase font-light group-hover:text-white transition-colors duration-500">
-                  Enter
+                  {t.common.enter}
                 </span>
                 <motion.div
                   className="absolute inset-0 rounded-full border border-[#D4AF37]/20"
@@ -101,7 +104,7 @@ export function LandingSplash({ onEnter }: LandingSplashProps) {
                  transition={{ delay: 1.0, duration: 1 }}
                  className="mt-6 text-[#D4AF37]/40 text-[10px] tracking-[0.2em] uppercase"
               >
-                Moroccan Heritage · Modern Elegance
+                {t.hero.tagline}
               </motion.p>
             </motion.div>
           )}

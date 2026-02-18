@@ -14,6 +14,7 @@ import { LandingSplash } from "@/components/landing-splash";
 import ProductModal from "@/components/shop/product-modal";
 import CartDrawer, { CartLine } from "@/components/shop/cart-drawer";
 import ChatDrawer from "@/components/chat/chat-drawer";
+import { LanguageSelector } from "@/components/language/LanguageSelector";
 
 import BrandStory from "@/pages/BrandStory";
 import CraftOrigin from "@/pages/CraftOrigin";
@@ -22,17 +23,14 @@ import Journal from "@/pages/Journal";
 import CollectionPage from "@/pages/CollectionPage";
 
 import { CATALOG, Product, ProductSize, formatEUR } from "@/lib/catalog";
+import { useTranslation, useLanguage } from "@/i18n";
 
 type PageType = "home" | "brand" | "craft" | "shipping" | "journal" | "men" | "women";
 
-const PAGE_MENU_ITEMS: Array<{ id: PageType; label: string; icon: React.ReactNode }> = [
-  { id: "brand", label: "Brand Story", icon: <Heart size={16} /> },
-  { id: "craft", label: "Craft & Origin", icon: <Sparkles size={16} /> },
-  { id: "shipping", label: "Shipping & Returns", icon: <Truck size={16} /> },
-  { id: "journal", label: "Style Guides", icon: <BookOpen size={16} /> },
-];
-
 export default function App() {
+  const t = useTranslation();
+  const { isRTL } = useLanguage();
+  
   const [currentPage, setCurrentPage] = useState<PageType>("home");
   const [showLanding, setShowLanding] = useState(true);
   const [section, setSection] = useState<NavSection>("hero");
@@ -57,6 +55,13 @@ export default function App() {
     () => cartLines.reduce((sum, l) => sum + l.qty, 0),
     [cartLines]
   );
+
+  const PAGE_MENU_ITEMS = useMemo(() => [
+    { id: "brand" as const, label: t.nav.brandStory, icon: <Heart size={16} /> },
+    { id: "craft" as const, label: t.nav.craftOrigin, icon: <Sparkles size={16} /> },
+    { id: "shipping" as const, label: t.nav.shippingReturns, icon: <Truck size={16} /> },
+    { id: "journal" as const, label: t.nav.styleGuides, icon: <BookOpen size={16} /> },
+  ], [t]);
 
   useEffect(() => {
     if (currentPage !== "home") return;
@@ -162,7 +167,7 @@ export default function App() {
   };
 
   const renderHomePage = () => (
-    <main className="relative w-full overflow-x-hidden">
+    <main className="relative w-full overflow-x-hidden" dir={isRTL ? "rtl" : "ltr"}>
       <div className="pt-[76px] md:pt-[84px] px-3 sm:px-4 md:px-8">
         <div className="mx-auto max-w-7xl flex flex-col gap-6 md:gap-8">
 
@@ -176,10 +181,7 @@ export default function App() {
           </div>
 
           {/* ── Category Showcase ── */}
-          <GlassCard kicker="Materials & Heritage" title="Our Categories">
-            {/* MOBILE FIX: Stack categories vertically on mobile (grid-cols-1)
-               and split to 2 columns on larger screens (sm:grid-cols-2).
-            */}
+          <GlassCard kicker={t.categories.kicker} title={t.categories.title}>
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
               {/* Men's Card */}
               <div 
@@ -190,16 +192,16 @@ export default function App() {
                    <img 
                      src="/images/uomo-gilet.png" 
                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90" 
-                     alt="Men" 
+                     alt={t.categories.mensCouture} 
                      loading="lazy"
                    />
                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                 </div>
                 <div className="absolute bottom-0 p-6">
-                   <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6AC54] mb-2">Collection</div>
-                   <div className="font-serif text-3xl text-white">Men's Couture</div>
+                   <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6AC54] mb-2">{t.categories.collection}</div>
+                   <div className="font-serif text-3xl text-white">{t.categories.mensCouture}</div>
                    <p className="mt-2 text-sm text-white/60 line-clamp-2">
-                     Structured shoulders and heritage embroidery.
+                     {t.categories.mensCoutureDesc}
                    </p>
                 </div>
               </div>
@@ -213,16 +215,16 @@ export default function App() {
                    <img 
                      src="/images/black-dress.png" 
                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90" 
-                     alt="Women" 
+                     alt={t.categories.womensElegance} 
                      loading="lazy"
                    />
                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                 </div>
                 <div className="absolute bottom-0 p-6">
-                   <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6AC54] mb-2">Collection</div>
-                   <div className="font-serif text-3xl text-white">Women's Elegance</div>
+                   <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6AC54] mb-2">{t.categories.collection}</div>
+                   <div className="font-serif text-3xl text-white">{t.categories.womensElegance}</div>
                    <p className="mt-2 text-sm text-white/60 line-clamp-2">
-                     Flowing silhouettes and modern cuts.
+                     {t.categories.womensEleganceDesc}
                    </p>
                 </div>
               </div>
@@ -233,10 +235,9 @@ export default function App() {
           <GlassCard
             id="collection"
             ref={(n) => { refs.collection.current = n; }}
-            kicker="New Season"
-            title="The Collection"
+            kicker={t.collection.kicker}
+            title={t.collection.title}
           >
-            {/* MOBILE FIX: Use grid-cols-1 for full width cards on mobile */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
               {CATALOG.slice(0, 4).map((product) => (
                 <button
@@ -276,9 +277,9 @@ export default function App() {
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <p className="text-sm text-white/50">Need sizing help? Try the concierge.</p>
+              <p className="text-sm text-white/50">{t.collection.sizingHelp}</p>
               <button type="button" onClick={() => setChatOpen(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                Size recommendation <ArrowRight size={14} />
+                {t.common.sizeRecommendation} <ArrowRight size={14} />
               </button>
             </div>
           </GlassCard>
@@ -287,14 +288,14 @@ export default function App() {
           <GlassCard
             id="atelier"
             ref={(n) => { refs.atelier.current = n; }}
-            kicker="Behind the scenes"
-            title="The Atelier"
+            kicker={t.atelierSection.kicker}
+            title={t.atelierSection.title}
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { k: "Material", t: "Selection", d: "Wool and textiles are selected for consistency, density, and longevity — not just appearance." },
-                { k: "Assembly", t: "Hands", d: "Each piece passes through multiple artisan steps with a strict finish standard." },
-                { k: "Finish", t: "Detail", d: "Edge work, stitching, and fit are treated like polishing and regulation." },
+                { k: t.atelierSection.material, t: t.atelierSection.selection, d: t.atelierSection.selectionDesc },
+                { k: t.atelierSection.assembly, t: t.atelierSection.hands, d: t.atelierSection.handsDesc },
+                { k: t.atelierSection.finish, t: t.atelierSection.detail, d: t.atelierSection.detailDesc },
               ].map((c) => (
                 <GlassCard key={c.t} as="div" variant="compact" kicker={c.k} title={c.t}>
                   <p className="text-sm text-white/55 leading-relaxed">{c.d}</p>
@@ -309,16 +310,16 @@ export default function App() {
                   <div className="p-4">
                     <div className="h-px bg-gradient-to-r from-transparent via-[#D6AC54]/25 to-transparent mb-3" />
                     <div className="font-semibold text-white/85">{p.name}</div>
-                    <div className="text-sm text-white/50 mt-1">Atelier detail view</div>
+                    <div className="text-sm text-white/50 mt-1">{t.collection.atelierDetail}</div>
                   </div>
                 </div>
               ))}
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <p className="text-sm text-white/50">Want the full story behind our craft?</p>
+              <p className="text-sm text-white/50">{t.atelierSection.fullStory}</p>
               <button type="button" onClick={() => navigateToPage("craft")} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                Craft & Origin <ArrowRight size={14} />
+                {t.atelierSection.craftOrigin} <ArrowRight size={14} />
               </button>
             </div>
           </GlassCard>
@@ -327,38 +328,38 @@ export default function App() {
           <GlassCard
             id="journal"
             ref={(n) => { refs.journal.current = n; }}
-            kicker="Editorial"
-            title="Journal"
+            kicker={t.journalSection.kicker}
+            title={t.journalSection.title}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <GlassCard as="div" variant="compact" kicker="Statement" title="Heritage">
+              <GlassCard as="div" variant="compact" kicker={t.journalSection.statement} title={t.journalSection.heritage}>
                 <Sparkles className="text-white/50" size={20} />
                 <p className="mt-4 font-semibold text-2xl leading-tight text-white/85">
-                  "We don't sell clothes. We sell heritage."
+                  {t.journalSection.quote}
                 </p>
                 <p className="mt-3 text-sm text-white/55 leading-relaxed">
-                  Each thread should feel inevitable. Not trendy. Not disposable.
+                  {t.journalSection.quoteDesc}
                 </p>
                 <button type="button" onClick={() => navigateToPage("brand")} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                  Read our story <ArrowRight size={14} />
+                  {t.common.readStory} <ArrowRight size={14} />
                 </button>
               </GlassCard>
 
-              <GlassCard as="div" variant="compact" kicker="Image" title="Craft Frame">
+              <GlassCard as="div" variant="compact" kicker={t.journalSection.image} title={t.journalSection.craftFrame}>
                 <div className="rounded-[16px] overflow-hidden border border-white/10 bg-white/[0.02]">
-                  <img src={CATALOG[1]?.image} alt="Journal visual" className="w-full h-[320px] object-cover" loading="lazy" />
+                  <img src={CATALOG[1]?.image} alt={t.journalSection.craftFrame} className="w-full h-[320px] object-cover" loading="lazy" />
                   <div className="p-4">
                     <div className="h-px bg-gradient-to-r from-transparent via-[#D6AC54]/25 to-transparent mb-3" />
-                    <p className="text-sm text-white/55">Notes from the atelier: materials, finishing, and fit.</p>
+                    <p className="text-sm text-white/55">{t.journalSection.craftFrameDesc}</p>
                   </div>
                 </div>
               </GlassCard>
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <p className="text-sm text-white/50">Explore our style guides and care instructions.</p>
+              <p className="text-sm text-white/50">{t.journalSection.explore}</p>
               <button type="button" onClick={() => navigateToPage("journal")} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                View All Guides <ArrowRight size={14} />
+                {t.journalSection.viewAllGuides} <ArrowRight size={14} />
               </button>
             </div>
           </GlassCard>
@@ -367,14 +368,14 @@ export default function App() {
           <GlassCard
             id="about"
             ref={(n) => { refs.about.current = n; }}
-            kicker="Brand"
-            title="About Maniar"
+            kicker={t.about.kicker}
+            title={t.about.title}
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { k: "Design", t: "Discipline", d: "Shapes, seams, and silhouettes are treated like engineered geometry." },
-                { k: "Material", t: "Longevity", d: "We prioritize fabrics that age well, not fabrics that photograph well once." },
-                { k: "Service", t: "Concierge", d: "Sizing, styling, and care. A human-first approach." },
+                { k: t.about.design, t: t.about.discipline, d: t.about.disciplineDesc },
+                { k: t.about.material, t: t.about.longevity, d: t.about.longevityDesc },
+                { k: t.about.service, t: t.about.concierge, d: t.about.conciergeDesc },
               ].map((c) => (
                 <GlassCard key={c.t} as="div" variant="compact" kicker={c.k} title={c.t}>
                   <p className="text-sm text-white/55 leading-relaxed">{c.d}</p>
@@ -384,13 +385,12 @@ export default function App() {
 
             <div className="mt-5 h-px bg-gradient-to-r from-transparent via-[#D6AC54]/20 to-transparent" />
 
-            {/* MOBILE FIX: Use sm:grid-cols-2 instead of 1 to allow side-by-side on larger phones */}
             <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {PAGE_MENU_ITEMS.map((item) => (
                 <button key={item.id} type="button" onClick={() => navigateToPage(item.id)} className="text-left p-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all">
                   <div className="flex items-center gap-2 text-white/50 mb-2">
                     {item.icon}
-                    <span className="text-[10px] tracking-[0.2em] uppercase font-mono">Page</span>
+                    <span className="text-[10px] tracking-[0.2em] uppercase font-mono">{t.about.page}</span>
                   </div>
                   <div className="font-semibold text-white/85">{item.label}</div>
                 </button>
@@ -400,10 +400,13 @@ export default function App() {
             <div className="mt-5 h-px bg-gradient-to-r from-transparent via-[#D6AC54]/20 to-transparent" />
 
             <div className="mt-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <p className="text-sm text-white/50">Maniar Atelier • Moroccan heritage, modern elegance</p>
-              <button type="button" onClick={() => setChatOpen(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
-                Contact <ArrowRight size={14} />
-              </button>
+              <p className="text-sm text-white/50">{t.about.footer}</p>
+              <div className="flex items-center gap-3">
+                <LanguageSelector variant="compact" />
+                <button type="button" onClick={() => setChatOpen(true)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 hover:bg-white/10 transition">
+                  {t.common.contact} <ArrowRight size={14} />
+                </button>
+              </div>
             </div>
           </GlassCard>
 
@@ -418,7 +421,7 @@ export default function App() {
         {showLanding && <LandingSplash onEnter={() => setShowLanding(false)} />}
       </div>
 
-      <div className="min-h-screen bg-[#0B1026] text-white overflow-x-hidden selection:bg-[#D6AC54]/30 selection:text-white">
+      <div className="min-h-screen bg-[#0B1026] text-white overflow-x-hidden selection:bg-[#D6AC54]/30 selection:text-white" dir={isRTL ? "rtl" : "ltr"}>
         {!showLanding && (
           <GlassNav
             section={section}
@@ -446,41 +449,43 @@ export default function App() {
         {renderPage()}
 
         {/* ── Footer ── */}
-        <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12 overflow-hidden">
+        <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12 overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
           <div className="mx-auto max-w-7xl">
-            {/* MOBILE FIX: Stacking columns (grid-cols-1) for readable links on small screens */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
               <div>
-                <h3 className="font-semibold text-xl text-white/90 mb-3">Maniar</h3>
-                <p className="text-sm text-white/50 leading-relaxed">Moroccan heritage, modern elegance. Handcrafted garments from the Atlas mountains.</p>
+                <h3 className="font-semibold text-xl text-white/90 mb-3">{t.footer.brand}</h3>
+                <p className="text-sm text-white/50 leading-relaxed">{t.footer.tagline}</p>
               </div>
               <div>
-                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Shop</h4>
+                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.mensCollection}</h4>
                 <ul className="space-y-2 text-sm text-white/50">
-                  <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-white transition-colors">Men's Collection</button></li>
-                  <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-white transition-colors">Women's Collection</button></li>
-                  <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-white transition-colors">Our Story</button></li>
+                  <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-white transition-colors">{t.nav.mensCollection}</button></li>
+                  <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-white transition-colors">{t.nav.womensCollection}</button></li>
+                  <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-white transition-colors">{t.nav.ourStory}</button></li>
                 </ul>
               </div>
               <div>
-                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Support</h4>
+                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.support}</h4>
                 <ul className="space-y-2 text-sm text-white/50">
-                  <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-white transition-colors">Shipping & Duties</button></li>
-                  <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-white transition-colors">Contact Concierge</button></li>
+                  <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-white transition-colors">{t.nav.shippingReturns}</button></li>
+                  <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-white transition-colors">{t.nav.brandStory}</button></li>
                 </ul>
               </div>
               <div>
-                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">Connect</h4>
+                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.connect}</h4>
                 <div className="flex gap-4 text-sm text-white/50">
-                  <a href="https://www.instagram.com/maniaratelier/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a>
+                  <a href="https://www.instagram.com/maniaratelier/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{t.nav.instagram}</a>
+                </div>
+                <div className="mt-4">
+                  <LanguageSelector variant="default" />
                 </div>
               </div>
             </div>
             <div className="mt-10 pt-6 border-t border-white/[0.06] flex flex-col md:flex-row justify-between gap-4 text-xs text-white/35">
-              <p>© 2026 MANIAR. All rights reserved.</p>
+              <p>© 2026 MANIAR. {t.nav.allRightsReserved}</p>
               <div className="flex gap-6">
-                <a href="#" className="hover:text-white/60 transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-white/60 transition-colors">Terms of Service</a>
+                <a href="#" className="hover:text-white/60 transition-colors">{t.nav.privacyPolicy}</a>
+                <a href="#" className="hover:text-white/60 transition-colors">{t.nav.termsOfService}</a>
               </div>
             </div>
           </div>
