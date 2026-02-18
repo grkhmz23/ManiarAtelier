@@ -45,7 +45,7 @@ export default function GlassNav({
       <div className="mx-auto w-full px-3 sm:px-4 md:px-8 pt-3">
         <motion.nav
           className={cn(
-            "relative w-full rounded-2xl overflow-hidden",
+            "relative w-full rounded-2xl",
             "border border-white/10",
             "bg-[#0B1026]/70 backdrop-blur-2xl",
             "shadow-[0_20px_60px_rgba(0,0,0,0.5)]",

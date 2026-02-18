@@ -449,7 +449,7 @@ export default function App() {
         {renderPage()}
 
         {/* ── Footer ── */}
-        <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12 overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
+        <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12" dir={isRTL ? "rtl" : "ltr"}>
           <div className="mx-auto max-w-7xl">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
               <div>
