@@ -142,7 +142,7 @@ const WomenPageHero = ({ onBack, t }: { onBack: () => void; t: any }) => {
       {/* Back button */}
       <button
         onClick={onBack}
-        className={`absolute top-24 ${isRTL ? 'right-6 md:right-12' : 'left-6 md:left-12'} z-20 flex items-center gap-2 text-xs uppercase tracking-widest text-[#0B1026]/60 hover:text-[#D6AC54] transition-colors`}
+        className={`absolute top-32 ${isRTL ? 'right-6 md:right-12' : 'left-6 md:left-12'} z-20 flex items-center gap-2 text-xs uppercase tracking-widest text-[#0B1026]/60 hover:text-[#D6AC54] transition-colors`}
       >
         <ArrowLeft size={14} />
         <span className="hidden sm:inline">{t.common.backToHome}</span>
