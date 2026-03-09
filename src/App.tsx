@@ -8,6 +8,7 @@ import GlassCard from "@/components/ui/glass-card";
 import TransparentHeader from "@/components/layout/TransparentHeader";
 import FullscreenMenu from "@/components/layout/FullscreenMenu";
 import { SplitHero } from "@/components/home/split-hero";
+import { DiscoverAtelierSection } from "@/components/home/discover-atelier";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
 import { LandingSplash } from "@/components/landing-splash";
 import ProductModal from "@/components/shop/product-modal";
@@ -198,58 +199,10 @@ export default function App() {
       <div className="px-3 sm:px-4 md:px-8 pt-8">
         <div className="mx-auto max-w-7xl flex flex-col gap-6 md:gap-8">
 
-          {/* ── Category Showcase ── */}
-          <GlassCard kicker={t.categories.kicker} title={t.categories.title}>
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-              {/* Men's Card */}
-              <div 
-                onClick={() => navigateToPage("men")}
-                className="group relative h-[360px] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl"
-              >
-                <div className="absolute inset-0">
-                   <img 
-                     src="/images/uomo-gilet.png" 
-                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90" 
-                     alt={t.categories.mensCouture} 
-                     loading="lazy"
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                </div>
-                <div className="absolute bottom-0 p-6">
-                   <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6AC54] mb-2">{t.categories.collection}</div>
-                   <div className="font-serif text-3xl text-white">{t.categories.mensCouture}</div>
-                   <p className="mt-2 text-sm text-white/60 line-clamp-2">
-                     {t.categories.mensCoutureDesc}
-                   </p>
-                </div>
-              </div>
+          {/* ── Discover Atelier Section (Expanding Accordion) ── */}
+          <DiscoverAtelierSection onNavigatePage={navigateToPage} />
 
-              {/* Women's Card */}
-              <div 
-                onClick={() => navigateToPage("women")}
-                className="group relative h-[360px] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl"
-              >
-                <div className="absolute inset-0">
-                   <img 
-                     src="/images/black-dress.png" 
-                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90" 
-                     alt={t.categories.womensElegance} 
-                     loading="lazy"
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                </div>
-                <div className="absolute bottom-0 p-6">
-                   <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6AC54] mb-2">{t.categories.collection}</div>
-                   <div className="font-serif text-3xl text-white">{t.categories.womensElegance}</div>
-                   <p className="mt-2 text-sm text-white/60 line-clamp-2">
-                     {t.categories.womensEleganceDesc}
-                   </p>
-                </div>
-              </div>
-            </div>
-          </GlassCard>
-
-          {/* ── Collection ── */}
+          {/* ── The Collection ── */}
           <GlassCard
             id="collection"
             ref={(n) => { refs.collection.current = n; }}
