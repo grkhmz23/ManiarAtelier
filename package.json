@@ -1,17 +1,31 @@
 {
-  "name": "react-typescript",
+  "name": "maniar-atelier",
   "version": "1.0.0",
   "type": "module",
-  "description": "React TypeScript on Replit, using Vite bundler",
+  "description": "Maniar Atelier - Luxury Moroccan Fashion. Hand-crafted garments inspired by the geometric patterns of Fez.",
+  "author": "Maniar Atelier",
+  "license": "ISC",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "vite preview"
+    "start": "vite preview",
+    "lint": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "fashion",
+    "luxury",
+    "moroccan",
+    "atelier",
+    "ecommerce",
+    "react",
+    "vite",
+    "tailwindcss"
+  ],
   "devDependencies": {
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",

@@ -5,11 +5,10 @@ import { ArrowRight, BookOpen, Truck, Heart, Sparkles } from "lucide-react";
 
 import GlassNav, { NavSection } from "@/components/ui/glass-nav";
 import GlassCard from "@/components/ui/glass-card";
-import { AtelierHero } from "@/components/home/atelier-hero";
+import TransparentHeader from "@/components/layout/TransparentHeader";
+import FullscreenMenu from "@/components/layout/FullscreenMenu";
+import { SplitHero } from "@/components/home/split-hero";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
-import { PhotoGallery } from "@/components/ui/photo-gallery";
-import { KineticMenu } from "@/components/ui/kinetic-menu";
-import "@/components/ui/kinetic-menu.css";
 import { LandingSplash } from "@/components/landing-splash";
 import ProductModal from "@/components/shop/product-modal";
 import CartDrawer, { CartLine } from "@/components/shop/cart-drawer";
@@ -35,6 +34,7 @@ export default function App() {
   const [showLanding, setShowLanding] = useState(true);
   const [section, setSection] = useState<NavSection>("hero");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showGlassNav, setShowGlassNav] = useState(false);
 
   const [cartOpen, setCartOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
@@ -62,6 +62,23 @@ export default function App() {
     { id: "shipping" as const, label: t.nav.shippingReturns, icon: <Truck size={16} /> },
     { id: "journal" as const, label: t.nav.styleGuides, icon: <BookOpen size={16} /> },
   ], [t]);
+
+  // Handle scroll to show GlassNav after hero
+  useEffect(() => {
+    if (currentPage !== "home" || showLanding) {
+      setShowGlassNav(currentPage !== "home");
+      return;
+    }
+
+    const handleScroll = () => {
+      const heroHeight = window.innerHeight;
+      setShowGlassNav(window.scrollY > heroHeight * 0.8);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [currentPage, showLanding]);
 
   useEffect(() => {
     if (currentPage !== "home") return;
@@ -167,18 +184,19 @@ export default function App() {
   };
 
   const renderHomePage = () => (
-    <main className="relative w-full overflow-x-hidden" dir={isRTL ? "rtl" : "ltr"}>
-      <div className="pt-[76px] md:pt-[84px] px-3 sm:px-4 md:px-8">
-        <div className="mx-auto max-w-7xl flex flex-col gap-6 md:gap-8">
+    <main className="relative w-full overflow-x-hidden bg-[#0B1026]" dir={isRTL ? "rtl" : "ltr"}>
+      {/* ── Split Hero (Full Screen) ── */}
+      <div ref={(n) => { refs.hero.current = n; }}>
+        <SplitHero
+          onShopNow={() => scrollToSection("collection")}
+          onOpenMen={() => navigateToPage("men")}
+          onOpenWomen={() => navigateToPage("women")}
+        />
+      </div>
 
-          {/* ── Hero ── */}
-          <div id="hero" ref={(n) => { refs.hero.current = n; }}>
-            <AtelierHero
-              onShopNow={() => scrollToSection("collection")}
-              onOpenMen={() => navigateToPage("men")}
-              onOpenWomen={() => navigateToPage("women")}
-            />
-          </div>
+      {/* Content Sections with padding */}
+      <div className="px-3 sm:px-4 md:px-8 pt-8">
+        <div className="mx-auto max-w-7xl flex flex-col gap-6 md:gap-8">
 
           {/* ── Category Showcase ── */}
           <GlassCard kicker={t.categories.kicker} title={t.categories.title}>
@@ -412,6 +430,49 @@ export default function App() {
 
         </div>
       </div>
+
+      {/* ── Footer ── */}
+      <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12" dir={isRTL ? "rtl" : "ltr"}>
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="font-semibold text-xl text-white/90 mb-3">{t.footer.brand}</h3>
+              <p className="text-sm text-white/50 leading-relaxed">{t.footer.tagline}</p>
+            </div>
+            <div>
+              <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.mensCollection}</h4>
+              <ul className="space-y-2 text-sm text-white/50">
+                <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-white transition-colors">{t.nav.mensCollection}</button></li>
+                <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-white transition-colors">{t.nav.womensCollection}</button></li>
+                <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-white transition-colors">{t.nav.ourStory}</button></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.support}</h4>
+              <ul className="space-y-2 text-sm text-white/50">
+                <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-white transition-colors">{t.nav.shippingReturns}</button></li>
+                <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-white transition-colors">{t.nav.brandStory}</button></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.connect}</h4>
+              <div className="flex gap-4 text-sm text-white/50">
+                <a href="https://www.instagram.com/maniaratelier/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{t.nav.instagram}</a>
+              </div>
+              <div className="mt-4">
+                <LanguageSelector variant="default" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-10 pt-6 border-t border-white/[0.06] flex flex-col md:flex-row justify-between gap-4 text-xs text-white/35">
+            <p>© 2026 MANIAR. {t.nav.allRightsReserved}</p>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-white/60 transition-colors">{t.nav.privacyPolicy}</a>
+              <a href="#" className="hover:text-white/60 transition-colors">{t.nav.termsOfService}</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 
@@ -423,73 +484,41 @@ export default function App() {
 
       <div className="min-h-screen bg-[#0B1026] text-white overflow-x-hidden selection:bg-[#D6AC54]/30 selection:text-white" dir={isRTL ? "rtl" : "ltr"}>
         {!showLanding && (
-          <GlassNav
-            section={section}
-            onNavigate={scrollToSection}
-            cartCount={cartCount}
-            onOpenCart={() => setCartOpen(true)}
-            onOpenChat={() => setChatOpen(true)}
-            onOpenMenu={() => setIsMenuOpen(true)}
-          />
+          <>
+            {/* Transparent Header for Hero (only on home) */}
+            {currentPage === "home" && !showGlassNav && (
+              <TransparentHeader
+                onOpenMenu={() => setIsMenuOpen(true)}
+                onOpenCart={() => setCartOpen(true)}
+                cartCount={cartCount}
+                onNavigateHome={() => navigateToPage("home")}
+              />
+            )}
+
+            {/* GlassNav (appears after scroll or on other pages) */}
+            {showGlassNav && (
+              <GlassNav
+                section={section}
+                onNavigate={scrollToSection}
+                cartCount={cartCount}
+                onOpenCart={() => setCartOpen(true)}
+                onOpenChat={() => setChatOpen(true)}
+                onOpenMenu={() => setIsMenuOpen(true)}
+              />
+            )}
+
+            {/* Fullscreen Menu */}
+            <FullscreenMenu
+              isOpen={isMenuOpen}
+              onClose={() => setIsMenuOpen(false)}
+              onNavigatePage={navigateToPage}
+            />
+          </>
         )}
 
         <InstagramStoriesFloat />
 
-        {/* ── Kinetic Menu ── */}
-        <KineticMenu
-          open={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-          onNavigate={scrollToSection}
-          onNavigatePage={navigateToPage}
-          onOpenCart={() => setCartOpen(true)}
-          onOpenChat={() => setChatOpen(true)}
-          cartCount={cartCount}
-        />
-
         {renderPage()}
-
-        {/* ── Footer ── */}
-        <footer className="mt-12 mx-3 sm:mx-4 md:mx-8 mb-8 rounded-[24px] md:rounded-[32px] border border-white/10 bg-white/[0.02] backdrop-blur-md p-6 sm:p-8 md:p-12" dir={isRTL ? "rtl" : "ltr"}>
-          <div className="mx-auto max-w-7xl">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-              <div>
-                <h3 className="font-semibold text-xl text-white/90 mb-3">{t.footer.brand}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">{t.footer.tagline}</p>
-              </div>
-              <div>
-                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.mensCollection}</h4>
-                <ul className="space-y-2 text-sm text-white/50">
-                  <li><button type="button" onClick={() => navigateToPage("men")} className="hover:text-white transition-colors">{t.nav.mensCollection}</button></li>
-                  <li><button type="button" onClick={() => navigateToPage("women")} className="hover:text-white transition-colors">{t.nav.womensCollection}</button></li>
-                  <li><button type="button" onClick={() => navigateToPage("brand")} className="hover:text-white transition-colors">{t.nav.ourStory}</button></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.support}</h4>
-                <ul className="space-y-2 text-sm text-white/50">
-                  <li><button type="button" onClick={() => navigateToPage("shipping")} className="hover:text-white transition-colors">{t.nav.shippingReturns}</button></li>
-                  <li><button type="button" onClick={() => setChatOpen(true)} className="hover:text-white transition-colors">{t.nav.brandStory}</button></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-[11px] tracking-[0.2em] uppercase font-mono text-[#D6AC54]/70 mb-3">{t.nav.connect}</h4>
-                <div className="flex gap-4 text-sm text-white/50">
-                  <a href="https://www.instagram.com/maniaratelier/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{t.nav.instagram}</a>
-                </div>
-                <div className="mt-4">
-                  <LanguageSelector variant="default" />
-                </div>
-              </div>
-            </div>
-            <div className="mt-10 pt-6 border-t border-white/[0.06] flex flex-col md:flex-row justify-between gap-4 text-xs text-white/35">
-              <p>© 2026 MANIAR. {t.nav.allRightsReserved}</p>
-              <div className="flex gap-6">
-                <a href="#" className="hover:text-white/60 transition-colors">{t.nav.privacyPolicy}</a>
-                <a href="#" className="hover:text-white/60 transition-colors">{t.nav.termsOfService}</a>
-              </div>
-            </div>
-          </div>
-        </footer>
       </div>
 
       <ProductModal
