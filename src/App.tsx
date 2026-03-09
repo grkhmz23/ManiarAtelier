@@ -464,7 +464,6 @@ export default function App() {
             {/* PageHeader (for inner pages) */}
             {currentPage !== "home" && (
               <PageHeader
-                onOpenMenu={() => setIsMenuOpen(true)}
                 onOpenCart={() => setCartOpen(true)}
                 onNavigateHome={() => navigateToPage("home")}
                 cartCount={cartCount}

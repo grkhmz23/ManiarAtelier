@@ -2,18 +2,17 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ShoppingBag, Menu } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
+import { LanguageSelector } from "@/components/language/LanguageSelector";
 import { useTranslation, useLanguage } from "@/i18n";
 
 interface PageHeaderProps {
-  onOpenMenu: () => void;
   onOpenCart: () => void;
   onNavigateHome: () => void;
   cartCount: number;
 }
 
 export default function PageHeader({
-  onOpenMenu,
   onOpenCart,
   onNavigateHome,
   cartCount,
@@ -35,16 +34,10 @@ export default function PageHeader({
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D6AC54]/30 to-transparent" />
 
           <div className="relative px-4 md:px-6 h-[56px] md:h-[60px] flex items-center justify-between gap-4">
-            {/* Left: Menu Button */}
-            <button
-              type="button"
-              onClick={onOpenMenu}
-              className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium text-white/80 hover:text-[#D6AC54] transition-colors"
-              aria-label={t.common.menu}
-            >
-              <Menu size={16} />
-              <span className="hidden sm:inline">{t.common.menu}</span>
-            </button>
+            {/* Left: Language Selector */}
+            <div className="flex items-center">
+              <LanguageSelector variant="compact" />
+            </div>
 
             {/* Center: Logo */}
             <button
