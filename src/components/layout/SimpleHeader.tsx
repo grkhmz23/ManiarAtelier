@@ -43,14 +43,13 @@ export default function SimpleHeader({
         {/* Center: Logo (absolute centered) */}
         <button
           onClick={onNavigateHome}
-          className="pointer-events-auto absolute left-1/2 -translate-x-1/2 flex flex-col items-center group"
+          className="pointer-events-auto absolute left-1/2 -translate-x-1/2 group"
         >
-          <span className="text-xl md:text-2xl uppercase tracking-[0.25em] font-serif text-transparent bg-clip-text bg-gradient-to-b from-[#F9F1D0] via-[#D4AF37] to-[#B5922F] group-hover:from-white group-hover:via-[#F4E5A7] group-hover:to-[#D6AC54] transition-all duration-500">
-            MA
-          </span>
-          <span className="text-[7px] tracking-[0.4em] uppercase text-white/50 mt-0.5 mix-blend-difference">
-            Atelier
-          </span>
+          <img 
+            src="/logo-transparent.png" 
+            alt="Maniar Atelier" 
+            className="h-10 md:h-12 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity duration-300"
+          />
         </button>
 
         {/* Right: Language + Cart */}

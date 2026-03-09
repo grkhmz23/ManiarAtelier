@@ -347,7 +347,7 @@ export default function App() {
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-semibold text-xl text-white/90 mb-3">{t.footer.brand}</h3>
+              <img src="/logoManiar.jpeg" alt="Maniar Atelier" className="h-12 w-auto object-contain rounded-lg mb-3 opacity-80" />
               <p className="text-sm text-white/50 leading-relaxed">{t.footer.tagline}</p>
             </div>
             <div>
