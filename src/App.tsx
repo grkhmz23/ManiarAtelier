@@ -6,6 +6,7 @@ import { ArrowRight, BookOpen, Truck, Heart, Sparkles } from "lucide-react";
 import GlassNav, { NavSection } from "@/components/ui/glass-nav";
 import GlassCard from "@/components/ui/glass-card";
 import TransparentHeader from "@/components/layout/TransparentHeader";
+import PageHeader from "@/components/layout/PageHeader";
 import FullscreenMenu from "@/components/layout/FullscreenMenu";
 import { SplitHero } from "@/components/home/split-hero";
 import { DiscoverAtelierSection } from "@/components/home/discover-atelier";
@@ -448,8 +449,8 @@ export default function App() {
               />
             )}
 
-            {/* GlassNav (appears after scroll or on other pages) */}
-            {showGlassNav && (
+            {/* GlassNav (appears after scroll on home page) */}
+            {currentPage === "home" && showGlassNav && (
               <GlassNav
                 section={section}
                 onNavigate={scrollToSection}
@@ -457,6 +458,16 @@ export default function App() {
                 onOpenCart={() => setCartOpen(true)}
                 onOpenChat={() => setChatOpen(true)}
                 onOpenMenu={() => setIsMenuOpen(true)}
+              />
+            )}
+
+            {/* PageHeader (for inner pages) */}
+            {currentPage !== "home" && (
+              <PageHeader
+                onOpenMenu={() => setIsMenuOpen(true)}
+                onOpenCart={() => setCartOpen(true)}
+                onNavigateHome={() => navigateToPage("home")}
+                cartCount={cartCount}
               />
             )}
 
