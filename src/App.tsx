@@ -24,6 +24,7 @@ import ShippingDuties from "@/pages/ShippingDuties";
 import Journal from "@/pages/Journal";
 import CollectionPage from "@/pages/CollectionPage";
 import MenCollection from "@/pages/MenCollection";
+import WomenCollection from "@/pages/WomenCollection";
 
 import { CATALOG, Product, ProductSize, formatEUR } from "@/lib/catalog";
 import { useTranslation, useLanguage } from "@/i18n";
@@ -181,7 +182,7 @@ export default function App() {
       case "men":
         return <MenCollection onBack={() => navigateToPage("home")} onOpenProduct={openProduct} onOpenChat={() => setChatOpen(true)} onNavigatePage={navigateToPage} />;
       case "women":
-        return <CollectionPage gender="women" onBack={() => navigateToPage("home")} onOpenProduct={openProduct} onOpenChat={() => setChatOpen(true)} />;
+        return <WomenCollection onBack={() => navigateToPage("home")} onOpenProduct={openProduct} onOpenChat={() => setChatOpen(true)} onNavigatePage={navigateToPage} />;
       default:
         return renderHomePage();
     }
