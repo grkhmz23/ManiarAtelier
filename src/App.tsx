@@ -3,10 +3,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, BookOpen, Truck, Heart, Sparkles } from "lucide-react";
 
-import GlassNav, { NavSection } from "@/components/ui/glass-nav";
 import GlassCard from "@/components/ui/glass-card";
-import TransparentHeader from "@/components/layout/TransparentHeader";
-import PageHeader from "@/components/layout/PageHeader";
+import SimpleHeader from "@/components/layout/SimpleHeader";
 import FullscreenMenu from "@/components/layout/FullscreenMenu";
 import { SplitHero } from "@/components/home/split-hero";
 import { DiscoverAtelierSection } from "@/components/home/discover-atelier";
@@ -30,6 +28,7 @@ import { CATALOG, Product, ProductSize, formatEUR } from "@/lib/catalog";
 import { useTranslation, useLanguage } from "@/i18n";
 
 type PageType = "home" | "brand" | "craft" | "shipping" | "journal" | "men" | "women";
+type NavSection = "hero" | "collection" | "atelier" | "journal" | "about";
 
 export default function App() {
   const t = useTranslation();
@@ -37,9 +36,7 @@ export default function App() {
   
   const [currentPage, setCurrentPage] = useState<PageType>("home");
   const [showLanding, setShowLanding] = useState(true);
-  const [section, setSection] = useState<NavSection>("hero");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showGlassNav, setShowGlassNav] = useState(false);
 
   const [cartOpen, setCartOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
@@ -68,53 +65,7 @@ export default function App() {
     { id: "journal" as const, label: t.nav.styleGuides, icon: <BookOpen size={16} /> },
   ], [t]);
 
-  // Handle scroll to show GlassNav after hero
-  useEffect(() => {
-    if (currentPage !== "home" || showLanding) {
-      setShowGlassNav(currentPage !== "home");
-      return;
-    }
 
-    const handleScroll = () => {
-      const heroHeight = window.innerHeight;
-      setShowGlassNav(window.scrollY > heroHeight * 0.8);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [currentPage, showLanding]);
-
-  useEffect(() => {
-    if (currentPage !== "home") return;
-
-    const targets: Array<[NavSection, HTMLElement | null]> = [
-      ["hero", refs.hero.current],
-      ["collection", refs.collection.current],
-      ["atelier", refs.atelier.current],
-      ["journal", refs.journal.current],
-      ["about", refs.about.current],
-    ];
-
-    const els = targets.map((t) => t[1]).filter(Boolean) as HTMLElement[];
-    if (!els.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0));
-        const top = visible[0];
-        if (!top?.target) return;
-        const found = targets.find(([, el]) => el === top.target);
-        if (found) setSection(found[0]);
-      },
-      { threshold: [0.25, 0.5, 0.75] }
-    );
-
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [currentPage]);
 
   const scrollToSection = (s: NavSection) => {
     if (currentPage !== "home") {
@@ -445,36 +396,13 @@ export default function App() {
       <div className="min-h-screen bg-[#0B1026] text-white overflow-x-hidden selection:bg-[#D6AC54]/30 selection:text-white" dir={isRTL ? "rtl" : "ltr"}>
         {!showLanding && (
           <>
-            {/* Transparent Header for Hero (only on home) */}
-            {currentPage === "home" && !showGlassNav && (
-              <TransparentHeader
-                onOpenMenu={() => setIsMenuOpen(true)}
-                onOpenCart={() => setCartOpen(true)}
-                cartCount={cartCount}
-                onNavigateHome={() => navigateToPage("home")}
-              />
-            )}
-
-            {/* GlassNav (appears after scroll on home page) */}
-            {currentPage === "home" && showGlassNav && (
-              <GlassNav
-                section={section}
-                onNavigate={scrollToSection}
-                cartCount={cartCount}
-                onOpenCart={() => setCartOpen(true)}
-                onOpenChat={() => setChatOpen(true)}
-                onOpenMenu={() => setIsMenuOpen(true)}
-              />
-            )}
-
-            {/* PageHeader (for inner pages) */}
-            {currentPage !== "home" && (
-              <PageHeader
-                onOpenCart={() => setCartOpen(true)}
-                onNavigateHome={() => navigateToPage("home")}
-                cartCount={cartCount}
-              />
-            )}
+            {/* Simple Header - Always visible, no borders */}
+            <SimpleHeader
+              onOpenMenu={() => setIsMenuOpen(true)}
+              onOpenCart={() => setCartOpen(true)}
+              cartCount={cartCount}
+              onNavigateHome={() => navigateToPage("home")}
+            />
 
             {/* Fullscreen Menu */}
             <FullscreenMenu

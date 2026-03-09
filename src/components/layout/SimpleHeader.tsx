@@ -1,0 +1,78 @@
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
+import { Menu, ShoppingBag } from "lucide-react";
+import { LanguageSelector } from "@/components/language/LanguageSelector";
+import { useTranslation, useLanguage } from "@/i18n";
+
+interface SimpleHeaderProps {
+  onOpenMenu: () => void;
+  onOpenCart: () => void;
+  onNavigateHome: () => void;
+  cartCount: number;
+}
+
+export default function SimpleHeader({
+  onOpenMenu,
+  onOpenCart,
+  onNavigateHome,
+  cartCount,
+}: SimpleHeaderProps) {
+  const t = useTranslation();
+  const { isRTL } = useLanguage();
+
+  return (
+    <motion.header
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-0 left-0 right-0 z-[200] pointer-events-none"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      <div className="flex items-start justify-between p-6 md:p-8">
+        {/* Left: Menu Button */}
+        <button
+          onClick={onOpenMenu}
+          className="pointer-events-auto flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium text-white mix-blend-difference hover:opacity-70 transition-opacity"
+        >
+          <Menu size={16} strokeWidth={1.5} />
+          <span className="hidden sm:inline">{t.common.menu}</span>
+        </button>
+
+        {/* Center: Logo (absolute centered) */}
+        <button
+          onClick={onNavigateHome}
+          className="pointer-events-auto absolute left-1/2 -translate-x-1/2 flex flex-col items-center group"
+        >
+          <span className="text-xl md:text-2xl uppercase tracking-[0.25em] font-serif text-transparent bg-clip-text bg-gradient-to-b from-[#F9F1D0] via-[#D4AF37] to-[#B5922F] group-hover:from-white group-hover:via-[#F4E5A7] group-hover:to-[#D6AC54] transition-all duration-500">
+            MA
+          </span>
+          <span className="text-[7px] tracking-[0.4em] uppercase text-white/50 mt-0.5 mix-blend-difference">
+            Atelier
+          </span>
+        </button>
+
+        {/* Right: Language + Cart */}
+        <div className="pointer-events-auto flex items-center gap-4">
+          <LanguageSelector variant="minimal" />
+          
+          <button
+            onClick={onOpenCart}
+            className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium text-white mix-blend-difference hover:opacity-70 transition-opacity"
+          >
+            <span className="hidden sm:inline">{t.common.cart}</span>
+            <div className="relative">
+              <ShoppingBag size={16} strokeWidth={1.5} />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-[#D6AC54] text-[#0B1026] text-[9px] font-bold flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </div>
+          </button>
+        </div>
+      </div>
+    </motion.header>
+  );
+}
