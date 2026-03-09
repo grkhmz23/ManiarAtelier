@@ -10,6 +10,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import FullscreenMenu from "@/components/layout/FullscreenMenu";
 import { SplitHero } from "@/components/home/split-hero";
 import { DiscoverAtelierSection } from "@/components/home/discover-atelier";
+import { CurrentEditSection } from "@/components/home/current-edit";
 import InstagramStoriesFloat from "@/components/ui/instagram-stories-float";
 import { LandingSplash } from "@/components/landing-splash";
 import ProductModal from "@/components/shop/product-modal";
@@ -202,6 +203,9 @@ export default function App() {
 
           {/* ── Discover Atelier Section (Expanding Accordion) ── */}
           <DiscoverAtelierSection onNavigatePage={navigateToPage} />
+
+          {/* ── Current Edit (Horizontal Scroll) ── */}
+          <CurrentEditSection onNavigatePage={navigateToPage} onOpenProduct={openProduct} />
 
           {/* ── The Collection ── */}
           <GlassCard

@@ -49,6 +49,7 @@ export const en = {
     atelier: "Atelier",
     items: "Items",
     shop: "Shop",
+    scroll: "Scroll to explore",
   },
 
   // Navigation
