@@ -174,9 +174,9 @@ export function SpiralAnimation({
   const phases: Phase[] = useMemo(() => {
     if (mode === "logo") return [{ name: "formLogo" as const, duration: 9999 }];
     return [
-      { name: "storm" as const, duration: 1.0 }, 
-      { name: "formLogo" as const, duration: 2.0 }, 
-      { name: "settle" as const, duration: 1.0 },
+      { name: "storm" as const, duration: 0.5 }, 
+      { name: "formLogo" as const, duration: 1.0 }, 
+      { name: "settle" as const, duration: 0.5 },
       { name: "done" as const, duration: 9999 },
     ];
   }, [mode]);
