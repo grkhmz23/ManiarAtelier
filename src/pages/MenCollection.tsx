@@ -105,7 +105,11 @@ const ProductCard = ({ product, onClick }: { product: Product; onClick: () => vo
           <h3 className="text-sm font-medium text-white/90 tracking-wide uppercase">
             {product.name}
           </h3>
-          <span className="text-sm text-[#D6AC54] font-mono tracking-tight shrink-0">{formatEUR(product.priceEUR)}</span>
+          {/* Sale Price */}
+          <div className="flex flex-col items-end shrink-0">
+            <span className="text-sm font-bold text-[#D6AC54] font-mono tracking-tight">{formatEUR(product.priceEUR)}</span>
+            <span className="text-[10px] text-white/35 line-through decoration-white/20">{formatEUR(product.originalPriceEUR)}</span>
+          </div>
         </div>
         
         <div className="flex justify-between items-center overflow-hidden">
@@ -417,13 +421,16 @@ export default function MenCollection({ onBack, onOpenProduct, onOpenChat, onNav
                           >
                             <ProductImage src={featuredProducts[0].image} alt={featuredProducts[0].name} />
                             <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 bg-gradient-to-t from-[#0B1026]/90 to-transparent flex flex-col items-start">
-                              <span className="text-[#D6AC54] text-[10px] tracking-[0.3em] uppercase mb-4 font-bold bg-[#0B1026] px-3 py-1 border border-[#D6AC54]/30">
-                                {t.hero.atelier}
+                              <span className="bg-[#D6AC54] text-[#0B1026] text-[10px] tracking-[0.3em] uppercase mb-4 font-bold px-3 py-1">
+                                {featuredProducts[0].badge}
                               </span>
                               <h2 className="text-3xl md:text-5xl text-white font-light tracking-tight uppercase mb-2">
                                 {featuredProducts[0].name}
                               </h2>
-                              <span className="text-[#D6AC54] font-mono">{formatEUR(featuredProducts[0].priceEUR)}</span>
+                              <div className="flex items-baseline gap-3">
+                                <span className="text-2xl font-bold text-[#D6AC54] font-mono">{formatEUR(featuredProducts[0].priceEUR)}</span>
+                                <span className="text-sm text-white/40 line-through decoration-white/30">{formatEUR(featuredProducts[0].originalPriceEUR)}</span>
+                              </div>
                             </div>
                           </button>
                         </motion.div>

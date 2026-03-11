@@ -184,18 +184,21 @@ export default function App() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                    {product.badge && (
-                      <div className="absolute top-3 left-3 rounded-full px-2.5 py-1 bg-black/40 border border-white/15 backdrop-blur text-[10px] font-semibold tracking-wider uppercase text-white/80">
-                        {product.badge}
-                      </div>
-                    )}
+                    {/* Sale Badge */}
+                    <div className="absolute top-3 left-3 rounded-full px-3 py-1.5 bg-[#D6AC54] border border-[#D6AC54]/50 backdrop-blur text-[10px] font-bold tracking-wider uppercase text-[#0B1026]">
+                      {product.badge}
+                    </div>
 
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <div className="h-px bg-gradient-to-r from-transparent via-[#D6AC54]/30 to-transparent mb-3" />
                       <div className="flex items-end justify-between gap-3">
                         <div>
                           <div className="font-semibold text-[15px] text-white/90">{product.name}</div>
-                          <div className="text-sm text-white/55 mt-0.5">{formatEUR(product.priceEUR)}</div>
+                          {/* Sale Price Display */}
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-base font-bold text-[#D6AC54]">{formatEUR(product.priceEUR)}</span>
+                            <span className="text-xs text-white/35 line-through decoration-white/20">{formatEUR(product.originalPriceEUR)}</span>
+                          </div>
                         </div>
                         <ArrowRight size={16} className="text-white/40 shrink-0 mb-0.5 group-hover:text-white/70 transition-colors" />
                       </div>

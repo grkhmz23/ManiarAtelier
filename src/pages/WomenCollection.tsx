@@ -80,18 +80,17 @@ const ProductCard = ({ product, onClick }: { product: Product; onClick: () => vo
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#F2EFEA]">
         <ProductImage src={product.image} alt={product.name} />
         
-        {product.badge && (
-          <div className="absolute top-5 left-5 z-10 overflow-hidden">
-            <motion.span 
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-              className="block bg-[#0B1026]/5 backdrop-blur-md text-[#0B1026] text-[10px] tracking-[0.2em] uppercase px-4 py-1.5 border border-[#0B1026]/10"
-            >
-              {product.badge}
-            </motion.span>
-          </div>
-        )}
+        {/* Sale Badge */}
+        <div className="absolute top-5 left-5 z-10 overflow-hidden">
+          <motion.span 
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="block bg-[#D6AC54] text-[#0B1026] text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-1.5"
+          >
+            {product.badge}
+          </motion.span>
+        </div>
       </div>
 
       <div className="mt-6 flex flex-col space-y-2 relative px-1">
@@ -99,7 +98,11 @@ const ProductCard = ({ product, onClick }: { product: Product; onClick: () => vo
           <h3 className="text-[13px] text-[#0B1026] tracking-[0.15em] uppercase font-light">
             {product.name}
           </h3>
-          <span className="text-[13px] text-[#0B1026]/60 tracking-wider shrink-0">{formatEUR(product.priceEUR)}</span>
+          {/* Sale Price */}
+          <div className="flex flex-col items-end shrink-0">
+            <span className="text-[13px] font-bold text-[#B5922F] tracking-wider">{formatEUR(product.priceEUR)}</span>
+            <span className="text-[10px] text-[#0B1026]/40 line-through">{formatEUR(product.originalPriceEUR)}</span>
+          </div>
         </div>
         
         <div className="flex justify-between items-center overflow-hidden h-6">

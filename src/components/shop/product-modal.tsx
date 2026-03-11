@@ -99,11 +99,17 @@ export default function ProductModal({
 
               {/* Details */}
               <div className="p-5 sm:p-6 md:p-8">
-                {product.badge && (
-                  <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[10px] font-semibold tracking-wider uppercase text-white/70 backdrop-blur">{product.badge}</span>
-                )}
+                {/* Sale Badge */}
+                <span className="inline-flex items-center rounded-full bg-[#D6AC54] px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase text-[#0B1026] backdrop-blur">{product.badge}</span>
+                
                 <h3 className="mt-3 font-semibold text-2xl sm:text-3xl md:text-4xl text-white/90">{product.name}</h3>
-                <div className="mt-2 text-white/55 text-lg">{formatEUR(product.priceEUR)}</div>
+                
+                {/* Sale Price Display */}
+                <div className="mt-3 flex items-baseline gap-3">
+                  <span className="text-2xl font-bold text-[#D6AC54]">{formatEUR(product.priceEUR)}</span>
+                  <span className="text-base text-white/40 line-through decoration-white/30">{formatEUR(product.originalPriceEUR)}</span>
+                  <span className="text-xs font-medium text-[#D6AC54]/80 bg-[#D6AC54]/10 px-2 py-1 rounded-full">Save {Math.round((1 - product.priceEUR / product.originalPriceEUR) * 100)}%</span>
+                </div>
 
                 <p className="mt-5 text-white/55 leading-relaxed text-sm sm:text-base">{product.description}</p>
 

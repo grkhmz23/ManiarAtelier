@@ -23,11 +23,27 @@ export default function SimpleHeader({
   const { isRTL } = useLanguage();
 
   return (
+    <>
+    {/* Sale Banner */}
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-0 left-0 right-0 z-[201] bg-[#D6AC54] text-[#0B1026] pointer-events-auto"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      <div className="flex items-center justify-center py-2 px-4">
+        <span className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase">
+          Spring Sale — 50% Off All Pieces
+        </span>
+      </div>
+    </motion.div>
+
     <motion.header
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-[200] pointer-events-none"
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+      className="fixed top-8 left-0 right-0 z-[200] pointer-events-none"
       dir={isRTL ? "rtl" : "ltr"}
     >
       <div className="flex items-start justify-between p-6 md:p-8">
@@ -73,5 +89,6 @@ export default function SimpleHeader({
         </div>
       </div>
     </motion.header>
+    </>
   );
 }

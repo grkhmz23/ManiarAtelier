@@ -63,7 +63,12 @@ export default function CartDrawer({ open, onClose, lines, onInc, onDec, onRemov
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="font-semibold text-[15px] text-white/85">{l.product.name}</div>
-                    <div className="text-[11px] text-white/45 mt-0.5">{t.common.size} {l.size} · {formatEUR(l.product.priceEUR)}</div>
+                    {/* Sale Price in Cart */}
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[11px] font-medium text-[#D6AC54]">{formatEUR(l.product.priceEUR)}</span>
+                      <span className="text-[10px] text-white/30 line-through">{formatEUR(l.product.originalPriceEUR)}</span>
+                      <span className="text-[9px] text-white/40">· {t.common.size} {l.size}</span>
+                    </div>
                   </div>
                   <button type="button" onClick={() => onRemove(l.key)} className="h-8 w-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition" aria-label={t.common.remove}>
                     <Trash2 size={14} />
@@ -75,7 +80,7 @@ export default function CartDrawer({ open, onClose, lines, onInc, onDec, onRemov
                     <div className="px-3 text-[12px] font-mono text-white/80">{l.qty}</div>
                     <button type="button" onClick={() => onInc(l.key)} className="h-8 w-8 flex items-center justify-center text-white/60 hover:bg-white/[0.08] transition" aria-label={t.common.increase}><Plus size={14} /></button>
                   </div>
-                  <div className="text-[12px] text-white/55">{t.common.lineTotal}: <span className="font-semibold text-white/80">{formatEUR(l.product.priceEUR * l.qty)}</span></div>
+                  <div className="text-[12px] text-white/55">{t.common.lineTotal}: <span className="font-semibold text-[#D6AC54]">{formatEUR(l.product.priceEUR * l.qty)}</span></div>
                 </div>
               </div>
             </div>

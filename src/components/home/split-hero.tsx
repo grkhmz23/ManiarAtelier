@@ -226,15 +226,15 @@ export function SplitHero({ onOpenWomen, onOpenMen, onShopNow }: SplitHeroProps)
           animate="visible"
           className="relative z-30 flex flex-col items-center text-center max-w-2xl mt-16 md:mt-0"
         >
-          {/* Brand Kicker */}
+          {/* Sale Kicker */}
           <motion.div
             variants={fadeUpItem}
             className="mb-6"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#D6AC54]/30 bg-[#D6AC54]/5 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D6AC54] animate-pulse" />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#F4E5A7]">
-                {t.hero.atelier}
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D6AC54] backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0B1026] animate-pulse" />
+              <span className="text-[10px] tracking-[0.3em] uppercase text-[#0B1026] font-bold">
+                Spring Sale — 50% Off
               </span>
             </span>
           </motion.div>
@@ -254,7 +254,7 @@ export function SplitHero({ onOpenWomen, onOpenMen, onShopNow }: SplitHeroProps)
             variants={fadeUpItem}
             className="max-w-md mx-auto text-sm md:text-base text-white/60 font-light leading-relaxed mb-10"
           >
-            {t.hero.subtitle}
+            Limited time offer on all hand-crafted Moroccan pieces. Prices shown reflect 50% discount.
           </motion.p>
 
           {/* Primary CTAs */}
