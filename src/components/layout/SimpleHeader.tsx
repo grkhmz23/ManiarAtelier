@@ -34,7 +34,7 @@ export default function SimpleHeader({
     >
       <div className="flex items-center justify-center py-2 px-4">
         <span className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase">
-          Spring Sale — 50% Off All Pieces
+          {t.hero.saleBanner}
         </span>
       </div>
     </motion.div>

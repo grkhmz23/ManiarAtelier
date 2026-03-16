@@ -8,6 +8,7 @@ export const es = {
     readStory: "Leer Nuestra Historia",
     contact: "Contacto",
     close: "Cerrar",
+    image: "Imagen",
     addToCart: "Añadir al Carrito",
     added: "✓ ¡Añadido!",
     continueBrowsing: "Seguir Navegando",
@@ -48,6 +49,7 @@ export const es = {
     atelier: "Atelier",
     items: "Artículos",
     shop: "Tienda",
+    viewPiece: "Ver Pieza",
   },
 
   nav: {
@@ -83,6 +85,11 @@ export const es = {
     trackedDelivery: "Entrega rastreada",
     atelier: "Atelier",
     tagline: "Herencia Marroquí · Elegancia Moderna",
+    feminineEdit: "La Edición Femenina",
+    gentlemanEdit: "La Edición del Caballero",
+    springSale: "Rebajas de Primavera — 50% de Descuento",
+    saleBanner: "Rebajas de Primavera — 50% en Todas las Piezas",
+    limitedTimeOffer: "Oferta por tiempo limitado en todas las piezas marroquíes hechas a mano. Los precios mostrados reflejan el descuento del 50%.",
   },
 
   categories: {

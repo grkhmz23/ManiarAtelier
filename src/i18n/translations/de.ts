@@ -8,6 +8,7 @@ export const de = {
     readStory: "Unsere Geschichte Lesen",
     contact: "Kontakt",
     close: "Schließen",
+    image: "Bild",
     addToCart: "In den Warenkorb",
     added: "✓ Hinzugefügt!",
     continueBrowsing: "Weiter Stöbern",
@@ -48,6 +49,7 @@ export const de = {
     atelier: "Atelier",
     items: "Artikel",
     shop: "Shop",
+    viewPiece: "Stück Ansehen",
   },
 
   nav: {
@@ -83,6 +85,11 @@ export const de = {
     trackedDelivery: "Sendungsverfolgung",
     atelier: "Atelier",
     tagline: "Marokkanisches Erbe · Moderne Eleganz",
+    feminineEdit: "Die Damen-Auswahl",
+    gentlemanEdit: "Die Herren-Auswahl",
+    springSale: "Frühlings-Sale — 50% Rabatt",
+    saleBanner: "Frühlings-Sale — 50% auf alle Stücke",
+    limitedTimeOffer: "Zeitlich begrenztes Angebot auf alle handgefertigten marokkanischen Stücke. Die angezeigten Preise beinhalten 50% Rabatt.",
   },
 
   categories: {

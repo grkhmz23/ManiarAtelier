@@ -173,8 +173,7 @@ const MenPageHero = ({ onBack, t }: { onBack: () => void; t: any }) => {
             transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-6xl md:text-8xl font-light text-white tracking-tighter uppercase leading-[0.9]"
           >
-            Structure<br/>
-            <span className="text-white/40">& Form</span>
+            {t.collectionPage.men.heroTitle}
           </motion.h1>
         </div>
 

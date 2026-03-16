@@ -14,6 +14,7 @@ interface SplitPanelProps {
   setHoveredSide: (side: "women" | "men" | null) => void;
   bgImage: string;
   onClick: () => void;
+  label: string;
 }
 
 const SplitPanel: React.FC<SplitPanelProps> = ({
@@ -22,6 +23,7 @@ const SplitPanel: React.FC<SplitPanelProps> = ({
   setHoveredSide,
   bgImage,
   onClick,
+  label,
 }) => {
   const isHovered = hoveredSide === id;
   const isOtherHovered = hoveredSide !== null && hoveredSide !== id;
@@ -80,7 +82,7 @@ const SplitPanel: React.FC<SplitPanelProps> = ({
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       >
         <span className="text-[10px] tracking-[0.3em] uppercase text-[#D6AC54] block mb-2">
-          {id === "women" ? "The Feminine Edit" : "The Gentleman's Edit"}
+          {label}
         </span>
         <span className="text-2xl md:text-3xl font-serif text-white/90 capitalize">
           {id}
@@ -173,6 +175,7 @@ export function SplitHero({ onOpenWomen, onOpenMen, onShopNow }: SplitHeroProps)
         setHoveredSide={setHoveredSide}
         bgImage="/images/verde-acqua.png"
         onClick={onOpenWomen}
+        label={t.hero.feminineEdit}
       />
 
       {/* Center Divider Line (Desktop only) */}
@@ -195,6 +198,7 @@ export function SplitHero({ onOpenWomen, onOpenMen, onShopNow }: SplitHeroProps)
         setHoveredSide={setHoveredSide}
         bgImage="/images/uomo-gilet.png"
         onClick={onOpenMen}
+        label={t.hero.gentlemanEdit}
       />
 
       {/* Absolute Grain Texture - CSS Only */}
@@ -234,7 +238,7 @@ export function SplitHero({ onOpenWomen, onOpenMen, onShopNow }: SplitHeroProps)
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D6AC54] backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-[#0B1026] animate-pulse" />
               <span className="text-[10px] tracking-[0.3em] uppercase text-[#0B1026] font-bold">
-                Spring Sale — 50% Off
+                {t.hero.springSale}
               </span>
             </span>
           </motion.div>
@@ -254,7 +258,7 @@ export function SplitHero({ onOpenWomen, onOpenMen, onShopNow }: SplitHeroProps)
             variants={fadeUpItem}
             className="max-w-md mx-auto text-sm md:text-base text-white/60 font-light leading-relaxed mb-10"
           >
-            Limited time offer on all hand-crafted Moroccan pieces. Prices shown reflect 50% discount.
+            {t.hero.limitedTimeOffer}
           </motion.p>
 
           {/* Primary CTAs */}

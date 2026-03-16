@@ -70,7 +70,7 @@ const ProductImage = ({ src, alt }: { src: string; alt: string }) => {
 };
 
 // Product Card Component
-const ProductCard = ({ product, onClick }: { product: Product; onClick: () => void }) => {
+const ProductCard = ({ product, onClick, t }: { product: Product; onClick: () => void; t: any }) => {
   return (
     <motion.button
       onClick={onClick}
@@ -112,7 +112,7 @@ const ProductCard = ({ product, onClick }: { product: Product; onClick: () => vo
           
           <div className="absolute bottom-0 left-1 translate-y-8 opacity-0 transition-all duration-700 ease-[0.25,0.1,0.25,1] group-hover:translate-y-0 group-hover:opacity-100">
             <span className="text-[11px] text-[#0B1026] flex items-center gap-3 uppercase tracking-[0.2em] border-b border-[#0B1026]/20 pb-1">
-              View Piece <ArrowRight size={12} strokeWidth={1.5} className="transition-transform duration-500 group-hover:translate-x-1.5" />
+              {t.common.viewPiece} <ArrowRight size={12} strokeWidth={1.5} className="transition-transform duration-500 group-hover:translate-x-1.5" />
             </span>
           </div>
         </div>
@@ -170,7 +170,7 @@ const WomenPageHero = ({ onBack, t }: { onBack: () => void; t: any }) => {
             transition={{ duration: 1.4, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             className="text-5xl md:text-7xl lg:text-8xl font-light text-[#0B1026] tracking-[-0.02em] uppercase leading-tight"
           >
-            Soft Power
+            {t.collectionPage.women.heroTitle}
           </motion.h1>
         </div>
 
@@ -311,7 +311,7 @@ export default function WomenCollection({ onBack, onOpenProduct, onOpenChat, onN
                       <div className="md:col-span-5 lg:col-span-5 flex flex-col gap-12 md:gap-20 md:mt-32">
                         {featuredProducts.slice(1).map((prod) => (
                           <div key={prod.id} className="w-full max-w-sm mx-auto md:mr-auto md:ml-0">
-                            <ProductCard product={prod} onClick={() => onOpenProduct(prod)} />
+                            <ProductCard product={prod} onClick={() => onOpenProduct(prod)} t={t} />
                           </div>
                         ))}
                       </div>
@@ -364,7 +364,7 @@ export default function WomenCollection({ onBack, onOpenProduct, onOpenChat, onN
                       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-20"
                     >
                       {remainingProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} onClick={() => onOpenProduct(product)} />
+                        <ProductCard key={product.id} product={product} onClick={() => onOpenProduct(product)} t={t} />
                       ))}
                     </motion.div>
                   </section>
@@ -391,7 +391,7 @@ export default function WomenCollection({ onBack, onOpenProduct, onOpenChat, onN
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-20"
                   >
                     {filteredProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} onClick={() => onOpenProduct(product)} />
+                      <ProductCard key={product.id} product={product} onClick={() => onOpenProduct(product)} t={t} />
                     ))}
                   </motion.div>
                 </section>

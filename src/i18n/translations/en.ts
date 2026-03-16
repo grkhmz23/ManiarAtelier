@@ -9,6 +9,7 @@ export const en = {
     readStory: "Read our story",
     contact: "Contact",
     close: "Close",
+    image: "Image",
     addToCart: "Add to cart",
     added: "✓ Added!",
     continueBrowsing: "Continue browsing",
@@ -50,6 +51,7 @@ export const en = {
     items: "Items",
     shop: "Shop",
     scroll: "Scroll to explore",
+    viewPiece: "View Piece",
   },
 
   // Navigation
@@ -87,6 +89,11 @@ export const en = {
     trackedDelivery: "Tracked delivery",
     atelier: "Atelier",
     tagline: "Moroccan Heritage · Modern Elegance",
+    feminineEdit: "The Feminine Edit",
+    gentlemanEdit: "The Gentleman's Edit",
+    springSale: "Spring Sale — 50% Off",
+    saleBanner: "Spring Sale — 50% Off All Pieces",
+    limitedTimeOffer: "Limited time offer on all hand-crafted Moroccan pieces. Prices shown reflect 50% discount.",
   },
 
   // Categories

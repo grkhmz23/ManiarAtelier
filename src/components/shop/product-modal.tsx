@@ -80,7 +80,7 @@ export default function ProductModal({
                   {images.length > 1 && (
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
                       {images.map((_, i) => (
-                        <button key={i} type="button" onClick={() => setImgIdx(i)} className={`h-2 rounded-full transition-all ${i === imgIdx ? "w-6 bg-[#D6AC54]" : "w-2 bg-white/35 hover:bg-white/55"}`} aria-label={`Image ${i + 1}`} />
+                        <button key={i} type="button" onClick={() => setImgIdx(i)} className={`h-2 rounded-full transition-all ${i === imgIdx ? "w-6 bg-[#D6AC54]" : "w-2 bg-white/35 hover:bg-white/55"}`} aria-label={`${t.common.image} ${i + 1}`} />
                       ))}
                     </div>
                   )}
@@ -108,7 +108,7 @@ export default function ProductModal({
                 <div className="mt-3 flex items-baseline gap-3">
                   <span className="text-2xl font-bold text-[#D6AC54]">{formatEUR(product.priceEUR)}</span>
                   <span className="text-base text-white/40 line-through decoration-white/30">{formatEUR(product.originalPriceEUR)}</span>
-                  <span className="text-xs font-medium text-[#D6AC54]/80 bg-[#D6AC54]/10 px-2 py-1 rounded-full">Save {Math.round((1 - product.priceEUR / product.originalPriceEUR) * 100)}%</span>
+                  <span className="text-xs font-medium text-[#D6AC54]/80 bg-[#D6AC54]/10 px-2 py-1 rounded-full">{Math.round((1 - product.priceEUR / product.originalPriceEUR) * 100)}% OFF</span>
                 </div>
 
                 <p className="mt-5 text-white/55 leading-relaxed text-sm sm:text-base">{product.description}</p>

@@ -8,6 +8,7 @@ export const ar = {
     readStory: "اقرأ قصتنا",
     contact: "اتصل بنا",
     close: "إغلاق",
+    image: "صورة",
     addToCart: "أضف إلى السلة",
     added: "✓ تمت الإضافة!",
     continueBrowsing: "مواصلة التصفح",
@@ -48,6 +49,7 @@ export const ar = {
     atelier: "أتيليه",
     items: "قطع",
     shop: "متجر",
+    viewPiece: "عرض القطعة",
   },
 
   nav: {
@@ -83,6 +85,11 @@ export const ar = {
     trackedDelivery: "توصيل متتبع",
     atelier: "أتيليه",
     tagline: "تراث مغربي · أناقة عصرية",
+    feminineEdit: "الإصدار النسائي",
+    gentlemanEdit: "اختيار الجنتلمان",
+    springSale: "تخفيضات الربيع — خصم 50%",
+    saleBanner: "تخفيضات الربيع — خصم 50% على جميع القطع",
+    limitedTimeOffer: "عرض لفترة محدودة على جميع القطع المغربية المصنوعة يدوياً. الأسعار المعروضة تعكس خصم 50%.",
   },
 
   categories: {

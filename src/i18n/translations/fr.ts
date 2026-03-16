@@ -8,6 +8,7 @@ export const fr = {
     readStory: "Lire Notre Histoire",
     contact: "Contact",
     close: "Fermer",
+    image: "Image",
     addToCart: "Ajouter au Panier",
     added: "✓ Ajouté !",
     continueBrowsing: "Continuer la Navigation",
@@ -48,6 +49,7 @@ export const fr = {
     atelier: "Atelier",
     items: "Articles",
     shop: "Boutique",
+    viewPiece: "Voir la Pièce",
   },
 
   nav: {
@@ -83,6 +85,11 @@ export const fr = {
     trackedDelivery: "Livraison suivie",
     atelier: "Atelier",
     tagline: "Héritage Marocain · Élégance Moderne",
+    feminineEdit: "L'Édition Féminine",
+    gentlemanEdit: "L'Édition du Gentleman",
+    springSale: "Soldes de Printemps — 50% de Réduction",
+    saleBanner: "Soldes de Printemps — 50% sur Toutes les Pièces",
+    limitedTimeOffer: "Offre à durée limitée sur toutes les pièces marocaines faites à la main. Les prix affichés reflètent la remise de 50%.",
   },
 
   categories: {
