@@ -66,9 +66,9 @@ export default function CollectionPage({ gender, onBack, onOpenProduct, onOpenCh
   const getPriceRangeLabel = (id: PriceRangeId) => {
     const keyMap: Record<PriceRangeId, keyof typeof t.priceRanges> = {
       "all": "all",
-      "under-250": "under250",
-      "250-350": "range250to350",
-      "over-350": "over350",
+      "under-50": "under250",
+      "50-80": "range250to350",
+      "over-80": "over350",
     };
     return t.priceRanges[keyMap[id]];
   };
