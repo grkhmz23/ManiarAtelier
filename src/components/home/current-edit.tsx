@@ -71,11 +71,14 @@ export const CurrentEditSection: React.FC<CurrentEditSectionProps> = ({
   const [activeItem, setActiveItem] = useState(1);
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
 
-  // Get products from catalog (first 5)
-  const products = CATALOG.slice(0, 5).map((product, index) => ({
+  // Get all products from catalog
+  const allProducts = CATALOG;
+  const totalProducts = allProducts.length;
+  
+  const products = allProducts.map((product, index) => ({
     id: String(index + 1).padStart(2, '0'),
     product,
-    alignment: ['start', 'end', 'center', 'start', 'end'][index] as 'start' | 'center' | 'end',
+    alignment: ['start', 'end', 'center', 'start', 'end'][index % 5] as 'start' | 'center' | 'end',
   }));
 
   // Setup vertical to horizontal scroll mapping
@@ -92,7 +95,9 @@ export const CurrentEditSection: React.FC<CurrentEditSectionProps> = ({
   });
 
   // Transform vertical progress into horizontal translation
-  const x = useTransform(smoothProgress, [0, 1], ["0%", isRTL ? "75%" : "-75%"]);
+  // Calculate scroll distance based on number of products
+  const scrollPercentage = Math.min(85, totalProducts * 12); // ~12% per product, max 85%
+  const x = useTransform(smoothProgress, [0, 1], ["0%", isRTL ? `${scrollPercentage}%` : `-${scrollPercentage}%`]);
   
   // Background typography parallax
   const bgX = useTransform(smoothProgress, [0, 1], ["0%", isRTL ? "-20%" : "20%"]);
@@ -103,10 +108,14 @@ export const CurrentEditSection: React.FC<CurrentEditSectionProps> = ({
     setActiveItem(Math.min(Math.max(itemIndex + 1, 1), products.length));
   });
 
+  // Calculate section height based on number of products (more products = more scroll)
+  const sectionHeight = Math.max(300, totalProducts * 80); // ~80vh per product, minimum 300vh
+  
   return (
     <section 
       ref={containerRef} 
-      className="relative h-[400vh] bg-[#E8E4DC] text-[#0B1026] cursor-none"
+      className="relative bg-[#E8E4DC] text-[#0B1026] cursor-none"
+      style={{ height: `${sectionHeight}vh` }}
       dir={isRTL ? "rtl" : "ltr"}
     >
       <CustomCursor isHovering={hoveredProduct !== null} />
@@ -205,7 +214,7 @@ export const CurrentEditSection: React.FC<CurrentEditSectionProps> = ({
         {/* Fixed Footer */}
         <footer className="relative z-20 flex justify-between items-end w-full px-6 py-8 md:px-12 md:py-12 pointer-events-none">
           <div className="flex flex-col gap-2">
-            <span className="text-[10px] uppercase tracking-widest text-[#0B1026]/50">Vol. 01</span>
+            <span className="text-[10px] uppercase tracking-widest text-[#0B1026]/50">{t.common.new} / {t.hero.atelier}</span>
             {/* Dynamic Counter */}
             <div className="font-serif text-5xl md:text-7xl overflow-hidden h-[1.1em] flex items-start text-[#0B1026]">
               <motion.div
@@ -217,7 +226,7 @@ export const CurrentEditSection: React.FC<CurrentEditSectionProps> = ({
                   <span key={p.id} className="h-full flex items-center leading-none">{p.id}</span>
                 ))}
               </motion.div>
-              <span className="text-[#D6AC54]/30">/05</span>
+              <span className="text-[#D6AC54]/30">/{String(totalProducts).padStart(2, '0')}</span>
             </div>
           </div>
 
